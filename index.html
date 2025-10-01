@@ -20,12 +20,37 @@
     th { background: #eee; }
     .actions { margin: 10px 0; text-align: center; }
     .btn { padding: 10px 16px; background: #0a7; color: #fff; border: none; border-radius: 6px; cursor: pointer; margin: 5px; }
+    .input { padding: 8px; margin: 4px 0; width: 100%; }
   </style>
 </head>
 <body>
   <div class="actions">
+    <h2>إدخال بيانات النشاط</h2>
+    <input id="title" class="input" placeholder="اسم البرنامج / النشاط">
+    <input id="owner" class="input" placeholder="المنفذ">
+    <input id="count" class="input" placeholder="عدد المستفيدين">
+    <input id="date" class="input" type="date">
+    <input id="place" class="input" placeholder="المكان">
+    <textarea id="goals" class="input" placeholder="الأهداف"></textarea>
+    <textarea id="desc" class="input" placeholder="وصف النشاط"></textarea>
+    <br>
+
+    <h2>إضافة صور الشواهد</h2>
     <input type="file" id="witnessFiles" accept="image/*" multiple hidden>
     <button class="btn" onclick="document.getElementById('witnessFiles').click()">إضافة الشواهد</button>
+    <div id="witnessPreview" class="witnesses"></div>
+
+    <h2>إضافة حصة انتظار</h2>
+    <input id="day" class="input" placeholder="اليوم">
+    <input id="sessionDate" class="input" type="date">
+    <input id="className" class="input" placeholder="الصف">
+    <input id="number" class="input" placeholder="رقم الحصة">
+    <input id="teacher" class="input" placeholder="المعلمة الغائبة">
+    <textarea id="activities" class="input" placeholder="ما تم تنفيذه"></textarea>
+    <input id="fields" class="input" placeholder="المجال">
+    <button class="btn" onclick="addSession()">حفظ الحصة</button>
+
+    <h2>إجراءات</h2>
     <button class="btn" onclick="exportReport()">تصدير التقرير النهائي (PDF)</button>
   </div>
 
@@ -40,37 +65,36 @@
   </div>
 
   <script>
-    // بيانات النشاط (غيّرها كما تريد)
-    const activityData = {
-      title: "نشاط رياضي",
-      owner: "المنفذ أ",
-      count: "50",
-      date: "2025-10-01",
-      place: "الملعب",
-      goals: "تعزيز اللياقة",
-      desc: "وصف النشاط ..."
-    };
-
-    // مصفوفة صور الشواهد
     let witnesses = [];
+    let sessions = [];
 
-    // بيانات الحصص (أمثلة)
-    const sessions = [
-      { day: "الأحد", date: "2025-10-02", className: "ثالث", number: "1", teacher: "أ. سارة", activities: "نشاط", fields: "مهارات المستقبل" }
-    ];
-
-    // تحميل صور الشواهد
     document.getElementById('witnessFiles').addEventListener('change', function(e) {
       const files = Array.from(e.target.files).slice(0, 4);
       witnesses = [];
+      document.getElementById('witnessPreview').innerHTML = "";
       files.forEach(file => {
         const reader = new FileReader();
         reader.onload = function(ev) {
           witnesses.push({ name: file.name, url: ev.target.result });
+          document.getElementById('witnessPreview').innerHTML += `<img src="${ev.target.result}" alt="${file.name}">`;
         };
         reader.readAsDataURL(file);
       });
     });
+
+    function addSession() {
+      const s = {
+        day: document.getElementById('day').value,
+        date: document.getElementById('sessionDate').value,
+        className: document.getElementById('className').value,
+        number: document.getElementById('number').value,
+        teacher: document.getElementById('teacher').value,
+        activities: document.getElementById('activities').value,
+        fields: document.getElementById('fields').value
+      };
+      sessions.push(s);
+      alert("تمت إضافة الحصة");
+    }
 
     function fmtDate(d) {
       try { return new Date(d).toLocaleDateString('ar-SA'); } catch { return d; }
@@ -78,13 +102,13 @@
 
     function buildActivity() {
       let html = '<div class="boxes">';
-      html += `<div class="box"><strong>اسم البرنامج:</strong> ${activityData.title}</div>`;
-      html += `<div class="box"><strong>المنفذ:</strong> ${activityData.owner}</div>`;
-      html += `<div class="box"><strong>عدد المستفيدين:</strong> ${activityData.count}</div>`;
-      html += `<div class="box"><strong>التاريخ:</strong> ${fmtDate(activityData.date)}</div>`;
-      html += `<div class="box"><strong>المكان:</strong> ${activityData.place}</div>`;
-      html += `<div class="box"><strong>الأهداف:</strong> ${activityData.goals}</div>`;
-      html += `<div class="box" style="grid-column: span 2;"><strong>وصف النشاط:</strong> ${activityData.desc}</div>`;
+      html += `<div class="box"><strong>اسم البرنامج:</strong> ${document.getElementById('title').value}</div>`;
+      html += `<div class="box"><strong>المنفذ:</strong> ${document.getElementById('owner').value}</div>`;
+      html += `<div class="box"><strong>عدد المستفيدين:</strong> ${document.getElementById('count').value}</div>`;
+      html += `<div class="box"><strong>التاريخ:</strong> ${fmtDate(document.getElementById('date').value)}</div>`;
+      html += `<div class="box"><strong>المكان:</strong> ${document.getElementById('place').value}</div>`;
+      html += `<div class="box"><strong>الأهداف:</strong> ${document.getElementById('goals').value}</div>`;
+      html += `<div class="box" style="grid-column: span 2;"><strong>وصف النشاط:</strong> ${document.getElementById('desc').value}</div>`;
       html += '</div>';
       document.getElementById('activity-section').innerHTML = html;
     }
