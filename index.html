@@ -1,23 +1,13 @@
-# Build "v10" — single-file site like the user's code, but with the letterhead image at repo root as 26.png.
-# Contents:
-# - index.html (complete, self-contained except for 26.png at root)
-# - 26.png (1x1 transparent placeholder; user replaces)
-import os, base64, zipfile, textwrap
-
-base = "/mnt/data/school26-v10-root-image"
-os.makedirs(base, exist_ok=True)
-
-index_html = """<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="المدرسة السادسة والعشرون بتبوك - نظام تقارير الأنشطة والحصص">
-  <meta name="keywords" content="المدرسة السادسة والعشرون، تبوك، تقارير مدرسية">
   <title>المدرسة السادسة والعشرون - تبوك</title>
   <!-- مكتبات PDF ولقطة الشاشة -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-NaW7C+2yTQY+0o2iY9v3aHe9d5kzjzU3rjS9C8xH6l5nqfna3yX9tHfA3bQWq1JrZpJ/9v8Q4QdXKq7b0Q5xNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNa5H2qS8KjYyJp0hJr3eH8D9m1QjQ5j3oH8m2p9Dg9q8Qkq1z8X7UoIRc9mF3B8p9QhQxw1J1c9Z7eYb7F8bA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
     :root{
@@ -27,7 +17,7 @@ index_html = """<!DOCTYPE html>
       font-family:'Segoe UI','Arial',sans-serif; background:linear-gradient(135deg,var(--primary-green) 0%, var(--secondary-green) 100%);
       min-height:100vh; line-height:1.6; padding-bottom:120px;
     }
-    /* Header Logo - ثابت ويطبع */
+    /* Header Logo - ثابت بالتصفح فقط */
     .header-logo{background:#fff;padding:15px 20px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.15);position:sticky;top:0;z-index:1000}
     .logo-container{max-width:1200px;margin:0 auto}
     .logo-img{width:100%;max-width:780px;height:auto;max-height:110px;object-fit:contain;display:inline-block}
@@ -152,22 +142,13 @@ index_html = """<!DOCTYPE html>
     <!-- الصفحة الرئيسية -->
     <div id="home" class="page active">
       <div class="home-content">
-        <h1>🌟 مرحباً بكم في نظام التقارير المدرسية</h1>
+        <h1>🌟 نظام التقارير المدرسية</h1>
         <p><strong>المدرسة السادسة والعشرون - تبوك</strong></p>
-        <p>نظام متكامل وحديث لإدارة وتوثيق تقارير الأنشطة والحصص المدرسية</p>
+        <p>توثيق الأنشطة والحصص المدرسية بتنسيق احترافي وتصدير PDF</p>
         <div class="features">
-          <div class="feature-card">
-            <h3>📊 تقارير الأنشطة</h3>
-            <p>توثيق شامل للأنشطة مع رفع الصور والشواهد بتنسيق احترافي</p>
-          </div>
-          <div class="feature-card">
-            <h3>📝 تقارير الحصص</h3>
-            <p>متابعة دقيقة لحصص الانتظار وتوثيق الأنشطة المنفذة في جداول مرتبة</p>
-          </div>
-          <div class="feature-card">
-            <h3>📄 تصدير PDF</h3>
-            <p>تصدير التقارير بصيغة PDF للطباعة والأرشفة بجودة عالية</p>
-          </div>
+          <div class="feature-card"><h3>📊 تقارير الأنشطة</h3><p>رفع الصور والشواهد وتصدير PDF</p></div>
+          <div class="feature-card"><h3>📝 تقارير الحصص</h3><p>حفظ وعرض حصص الانتظار وجدول منظم</p></div>
+          <div class="feature-card"><h3>📄 طباعة وتقارير</h3><p>التقارير تطبع بدون تذليل الموقع</p></div>
         </div>
       </div>
     </div>
@@ -175,13 +156,13 @@ index_html = """<!DOCTYPE html>
     <!-- صفحة تقارير الأنشطة -->
     <div id="activities" class="page">
       <h1>📊 تقرير النشاط المدرسي</h1>
-      <div class="form-group"><label>📝 اسم البرنامج / النشاط: *</label><input type="text" id="activityName" placeholder="أدخل اسم البرنامج أو النشاط"></div>
-      <div class="form-group"><label>👤 المنفذ: *</label><input type="text" id="executor" placeholder="اسم المنفذ"></div>
-      <div class="form-group"><label>👥 عدد المستفيدين:</label><input type="number" id="beneficiaries" placeholder="عدد المستفيدين" min="1"></div>
-      <div class="form-group"><label>📅 التاريخ: *</label><input type="date" id="activityDate"></div>
-      <div class="form-group"><label>📍 المكان:</label><input type="text" id="location" placeholder="مكان تنفيذ النشاط"></div>
-      <div class="form-group"><label>🎯 الأهداف:</label><textarea id="objectives" placeholder="أهداف النشاط..."></textarea></div>
-      <div class="form-group"><label>📋 وصف النشاط:</label><textarea id="description" placeholder="وصف تفصيلي للنشاط المنفذ..."></textarea></div>
+      <div class="form-group"><label>📝 اسم البرنامج / النشاط: *</label><input class="input" type="text" id="activityName" placeholder="أدخل اسم البرنامج أو النشاط"></div>
+      <div class="form-group"><label>👤 المنفذ: *</label><input class="input" type="text" id="executor" placeholder="اسم المنفذ"></div>
+      <div class="form-group"><label>👥 عدد المستفيدين:</label><input class="input" type="number" id="beneficiaries" placeholder="عدد المستفيدين" min="1"></div>
+      <div class="form-group"><label>📅 التاريخ: *</label><input class="input" type="date" id="activityDate"></div>
+      <div class="form-group"><label>📍 المكان:</label><input class="input" type="text" id="location" placeholder="مكان تنفيذ النشاط"></div>
+      <div class="form-group"><label>🎯 الأهداف:</label><textarea class="input" id="objectives" placeholder="أهداف النشاط..."></textarea></div>
+      <div class="form-group"><label>📋 وصف النشاط:</label><textarea class="input" id="description" placeholder="وصف تفصيلي للنشاط المنفذ..."></textarea></div>
       <div class="form-group">
         <label>📷 رفع صور الشواهد:</label>
         <div class="image-upload" onclick="document.getElementById('activityImages').click()">
@@ -202,13 +183,13 @@ index_html = """<!DOCTYPE html>
       <h1>📝 تقرير حصص الانتظار</h1>
       <h2>📝 إدخال بيانات الحصة</h2>
       <div class="form-group"><label>📅 اليوم: *</label>
-        <select id="dayName"><option value="">اختر اليوم</option><option value="الأحد">الأحد</option><option value="الاثنين">الاثنين</option><option value="الثلاثاء">الثلاثاء</option><option value="الأربعاء">الأربعاء</option><option value="الخميس">الخميس</option></select>
+        <select class="input" id="dayName"><option value="">اختر اليوم</option><option value="الأحد">الأحد</option><option value="الاثنين">الاثنين</option><option value="الثلاثاء">الثلاثاء</option><option value="الأربعاء">الأربعاء</option><option value="الخميس">الخميس</option></select>
       </div>
-      <div class="form-group"><label>📆 التاريخ: *</label><input type="date" id="sessionDate"></div>
-      <div class="form-group"><label>🏫 الصف: *</label><input type="text" id="className" placeholder="مثال: الثالث الابتدائي"></div>
-      <div class="form-group"><label>🔢 رقم الحصة: *</label><input type="number" id="sessionNumber" placeholder="رقم الحصة" min="1" max="10"></div>
-      <div class="form-group"><label>👩‍🏫 اسم المعلمة الغائبة: *</label><input type="text" id="absentTeacher" placeholder="اسم المعلمة"></div>
-      <div class="form-group"><label>✍️ ما تم تنفيذه: *</label><textarea id="activities" placeholder="اكتب الأنشطة المنفذة بالتفصيل..."></textarea></div>
+      <div class="form-group"><label>📆 التاريخ: *</label><input class="input" type="date" id="sessionDate"></div>
+      <div class="form-group"><label>🏫 الصف: *</label><input class="input" type="text" id="className" placeholder="مثال: الثالث الابتدائي"></div>
+      <div class="form-group"><label>🔢 رقم الحصة: *</label><input class="input" type="number" id="sessionNumber" placeholder="رقم الحصة" min="1" max="10"></div>
+      <div class="form-group"><label>👩‍🏫 اسم المعلمة الغائبة: *</label><input class="input" type="text" id="absentTeacher" placeholder="اسم المعلمة"></div>
+      <div class="form-group"><label>✍️ ما تم تنفيذه: *</label><textarea class="input" id="activitiesText" placeholder="اكتب الأنشطة المنفذة بالتفصيل..."></textarea></div>
       <div class="form-group"><label>🎯 المجال: *</label>
         <div class="checkbox-group">
           <div class="checkbox-item"><input type="checkbox" id="basicSkills" value="المهارات الأساسية"><label for="basicSkills">المهارات الأساسية</label></div>
@@ -243,19 +224,27 @@ index_html = """<!DOCTYPE html>
   </footer>
 
   <script>
-    let activityImages = [];
-    let sessions = [];
+    // ===== Utilities =====
+    const $ = (s, r=document) => r.querySelector(s);
+    const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+    const storage = {
+      get(key, fallback){ try{ return JSON.parse(localStorage.getItem(key)) ?? fallback; }catch{ return fallback; } },
+      set(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+    };
 
+    // ===== Navigation =====
     function showPage(pageId, ev){
-      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-      document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-      document.getElementById(pageId).classList.add('active');
+      $$('.page').forEach(p=>p.classList.remove('active'));
+      $$('.nav-btn').forEach(b=>b.classList.remove('active'));
+      $('#'+pageId).classList.add('active');
       if (ev && ev.target) ev.target.classList.add('active');
       window.scrollTo({top:0, behavior:'smooth'});
     }
 
+    // ===== Activities (Report) =====
+    let activityImages = [];
     function previewActivityImages(e){
-      const files = e.target.files; const preview = document.getElementById('activityPreview');
+      const files = e.target.files; const preview = $('#activityPreview');
       preview.innerHTML=''; activityImages=[];
       if (!files.length) return;
       Array.from(files).forEach(file=>{
@@ -275,14 +264,14 @@ index_html = """<!DOCTYPE html>
     }
 
     function generateActivityReport(){
-      const report = document.getElementById('activityReport');
-      const name = document.getElementById('activityName').value.trim();
-      const executor = document.getElementById('executor').value.trim();
-      const beneficiaries = document.getElementById('beneficiaries').value.trim();
-      const date = document.getElementById('activityDate').value;
-      const location = document.getElementById('location').value.trim();
-      const objectives = document.getElementById('objectives').value.trim();
-      const description = document.getElementById('description').value.trim();
+      const report = $('#activityReport');
+      const name = $('#activityName').value.trim();
+      const executor = $('#executor').value.trim();
+      const beneficiaries = $('#beneficiaries').value.trim();
+      const date = $('#activityDate').value;
+      const location = $('#location').value.trim();
+      const objectives = $('#objectives').value.trim();
+      const description = $('#description').value.trim();
       if (!name || !executor || !date){ alert('⚠️ الرجاء تعبئة الحقول الأساسية المطلوبة (*)'); return; }
 
       let html = `
@@ -321,7 +310,7 @@ index_html = """<!DOCTYPE html>
     }
 
     async function exportActivityPDF(){
-      const report = document.getElementById('activityReport');
+      const report = $('#activityReport');
       if (report.style.display==='none' || !report.innerHTML.trim()){ alert('⚠️ الرجاء معاينة التقرير أولاً'); return; }
       const loadingMsg = document.createElement('div');
       loadingMsg.textContent='⏳ جاري تصدير PDF...';
@@ -329,58 +318,81 @@ index_html = """<!DOCTYPE html>
       document.body.appendChild(loadingMsg);
       try{
         await new Promise(r=>setTimeout(r,300));
-        const canvas = await html2canvas(report,{scale:2,useCORS:true,backgroundColor:'#ffffff',logging:false,windowWidth:1200,
-          onclone:(doc)=>{const el=doc.querySelector('#activityReport'); if(el){el.style.display='block';el.style.padding='40px';}}});
+        const canvas = await html2canvas(report,{scale:2,useCORS:true,backgroundColor:'#ffffff',logging:false,windowWidth:1200});
         const imgData = canvas.toDataURL('image/jpeg',0.98);
         const { jsPDF } = window.jspdf; const pdf = new jsPDF('p','mm','a4');
-        const imgWidth = 210, pageHeight = 297; const imgHeight = (canvas.height*imgWidth)/canvas.width;
-        let heightLeft = imgHeight, position = 0;
-        pdf.addImage(imgData,'JPEG',0,position,imgWidth,imgHeight); heightLeft -= pageHeight;
-        while (heightLeft >= 0){ position = heightLeft - imgHeight; pdf.addPage(); pdf.addImage(imgData,'JPEG',0,position,imgWidth,imgHeight); heightLeft -= pageHeight; }
-        const activityName = (document.getElementById('activityName').value||'مدرسي').trim();
+        const pageWidth = 210, pageHeight = 297, margin = 10, usable = pageHeight - margin*2;
+        const imgWidth = pageWidth - margin*2;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight, position = margin;
+        pdf.addImage(imgData,'JPEG',margin,position,imgWidth,imgHeight,'','FAST');
+        heightLeft -= usable;
+        while (heightLeft > 0){
+          pdf.addPage();
+          position = margin - (imgHeight - heightLeft);
+          pdf.addImage(imgData,'JPEG',margin,position,imgWidth,imgHeight,'','FAST');
+          heightLeft -= usable;
+        }
+        const activityName = ($('#activityName').value||'مدرسي').trim();
         pdf.save(`تقرير_نشاط_${activityName||'مدرسي'}.pdf`);
       }catch(err){ console.error(err); alert('❌ حدث خطأ أثناء التصدير'); }
       finally{ document.body.removeChild(loadingMsg); }
     }
 
+    // ===== Sessions (Save & PDF) =====
+    let sessions = storage.get('sessionsData', []);
     function addSession(){
-      const day = document.getElementById('dayName').value;
-      const date = document.getElementById('sessionDate').value;
-      const className = document.getElementById('className').value.trim();
-      const number = document.getElementById('sessionNumber').value;
-      const teacher = document.getElementById('absentTeacher').value.trim();
-      const acts = document.getElementById('activities').value.trim();
+      const day = $('#dayName').value;
+      const date = $('#sessionDate').value;
+      const className = $('#className').value.trim();
+      const number = $('#sessionNumber').value;
+      const teacher = $('#absentTeacher').value.trim();
+      const acts = $('#activitiesText').value.trim();
       if (!day || !date || !className || !number || !teacher || !acts){ alert('⚠️ الرجاء تعبئة جميع الحقول المطلوبة'); return; }
-      const fields = []; if(document.getElementById('basicSkills').checked) fields.push('المهارات الأساسية');
-      if(document.getElementById('values').checked) fields.push('القيم والمواطنة الصالحة');
-      if(document.getElementById('futureSkills').checked) fields.push('مهارات المستقبل');
+      const fields = []; if($('#basicSkills').checked) fields.push('المهارات الأساسية');
+      if($('#values').checked) fields.push('القيم والمواطنة الصالحة');
+      if($('#futureSkills').checked) fields.push('مهارات المستقبل');
       if (!fields.length){ alert('⚠️ الرجاء اختيار مجال واحد على الأقل'); return; }
       sessions.push({day,date,className,number,teacher,activities:acts,fields:fields.join('، ')});
+      storage.set('sessionsData', sessions);
       displaySessions(); clearSessionForm(); alert('✅ تم حفظ الحصة بنجاح!');
     }
 
     function displaySessions(){
-      const container = document.getElementById('sessionsTableContainer');
-      const tbody = document.getElementById('sessionsTableBody');
-      if (!sessions.length){ container.style.display='none'; return; }
+      const container = $('#sessionsTableContainer');
+      const tbody = $('#sessionsTableBody');
+      if (!sessions.length){ container.style.display='none'; tbody.innerHTML=''; return; }
       container.style.display='block'; tbody.innerHTML='';
       sessions.forEach((s,i)=>{
         const row = tbody.insertRow();
-        row.innerHTML = \`
-          <td><strong>\${i+1}</strong></td>
-          <td>\${s.day}</td>
-          <td>\${formatDate(s.date)}</td>
-          <td>\${s.className}</td>
-          <td>\${s.number}</td>
-          <td>\${s.teacher}</td>
-          <td style="text-align:right;padding:14px;">\${s.activities}</td>
-          <td style="text-align:right;padding:14px;">\${s.fields}</td>
-          <td class="no-print"><button class="delete-btn" onclick="deleteSession(\${i})">🗑️</button></td>\`;
+        row.innerHTML = `
+          <td><strong>${i+1}</strong></td>
+          <td>${s.day}</td>
+          <td>${formatDate(s.date)}</td>
+          <td>${s.className}</td>
+          <td>${s.number}</td>
+          <td>${s.teacher}</td>
+          <td style="text-align:right;padding:14px;">${s.activities}</td>
+          <td style="text-align:right;padding:14px;">${s.fields}</td>
+          <td class="no-print"><button class="delete-btn" onclick="deleteSession(${i})">🗑️</button></td>`;
       });
     }
-    function deleteSession(i){ if(confirm('هل أنت متأكد من حذف هذه الحصة؟')){ sessions.splice(i,1); displaySessions(); alert('✅ تم الحذف'); } }
-    function clearAllSessions(){ if(!sessions.length){alert('⚠️ لا توجد حصص');return;} if(confirm('⚠️ حذف جميع الحصص؟')){ sessions=[]; displaySessions(); alert('✅ تم الحذف'); } }
-    function clearSessionForm(){ ['dayName','sessionDate','className','sessionNumber','absentTeacher','activities'].forEach(id=>document.getElementById(id).value=''); ['basicSkills','values','futureSkills'].forEach(id=>document.getElementById(id).checked=false); }
+
+    function deleteSession(i){
+      if(confirm('هل أنت متأكد من حذف هذه الحصة؟')){
+        sessions.splice(i,1);
+        storage.set('sessionsData', sessions);
+        displaySessions(); alert('✅ تم الحذف');
+      }
+    }
+    function clearAllSessions(){
+      if(!sessions.length){alert('⚠️ لا توجد حصص');return;}
+      if(confirm('⚠️ حذف جميع الحصص؟')){ sessions=[]; storage.set('sessionsData', sessions); displaySessions(); alert('✅ تم الحذف'); }
+    }
+    function clearSessionForm(){
+      ['dayName','sessionDate','className','sessionNumber','absentTeacher','activitiesText'].forEach(id=>$('#'+id).value='');
+      ['basicSkills','values','futureSkills'].forEach(id=>$('#'+id).checked=false);
+    }
 
     async function exportSessionsPDF(){
       if (!sessions.length){ alert('⚠️ لا توجد حصص لتصديرها'); return; }
@@ -389,78 +401,68 @@ index_html = """<!DOCTYPE html>
       loadingMsg.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#2E7D32;color:#fff;padding:20px 40px;border-radius:10px;font-size:18px;z-index:9999;box-shadow:0 10px 30px rgba(0,0,0,.3)';
       document.body.appendChild(loadingMsg);
       try{
+        // منطقة طباعة مخصصة (بدون تذليل)
         const wrap = document.createElement('div');
-        wrap.style.cssText='padding:40px;background:#fff;font-family:Arial,sans-serif;width:1400px;';
-        wrap.innerHTML = \`
-          <div style="text-align:center;margin-bottom:30px;padding:20px;background:linear-gradient(135deg,#f1f8f4,#e8f5e9);border-radius:15px;border:3px solid #4CAF50;">
+        wrap.style.cssText='padding:40px;background:#fff;font-family:Arial,sans-serif;max-width:1200px;margin:0 auto;';
+        wrap.innerHTML = `
+          <div style="text-align:center;margin-bottom:20px;padding:16px;background:linear-gradient(135deg,#f1f8f4,#e8f5e9);border-radius:12px;border:3px solid #4CAF50;">
             <img src="26.png" alt="ديباجة" style="max-height:110px;object-fit:contain;display:block;margin:0 auto 10px">
-            <h1 style="color:#2E7D32;font-size:32px;margin:10px 0 0;">📝 تقرير حصص الانتظار</h1>
-            <p style="color:#666;font-size:18px;margin:10px 0;"><strong>المدرسة السادسة والعشرون - تبوك</strong></p>
-            <p style="color:#888;margin-top:6px;font-size:14px;">📅 تاريخ التقرير: \${new Date().toLocaleDateString('ar-SA')}</p>
+            <h1 style="color:#2E7D32;font-size:28px;margin:10px 0 0;">📝 تقرير حصص الانتظار</h1>
+            <p style="color:#666;font-size:16px;margin:8px 0;"><strong>المدرسة السادسة والعشرون - تبوك</strong></p>
+            <p style="color:#888;margin-top:6px;font-size:14px;">📅 تاريخ التقرير: ${new Date().toLocaleDateString('ar-SA')}</p>
           </div>
-          <table style="width:100%;border-collapse:collapse;box-shadow:0 6px 25px rgba(46,125,50,.2);">
+          <table style="width:100%;border-collapse:collapse;">
             <thead>
               <tr style="background:linear-gradient(135deg,#2E7D32,#388E3C);color:#fff">
-                <th style="border:2px solid #fff;padding:12px;font-size:14px;">م</th>
-                <th style="border:2px solid #fff;padding:12px;font-size:14px;">اليوم</th>
-                <th style="border:2px solid #fff;padding:12px;font-size:14px;">التاريخ</th>
-                <th style="border:2px solid #fff;padding:12px;font-size:14px;">الصف</th>
-                <th style="border:2px solid #fff;padding:12px;font-size:14px;">الحصة</th>
-                <th style="border:2px solid #fff;padding:12px;font-size:14px;">المعلمة الغائبة</th>
-                <th style="border:2px solid #fff;padding:12px;font-size:14px;">ما تم تنفيذه</th>
-                <th style="border:2px solid #fff;padding:12px;font-size:14px;">المجال</th>
+                <th style="border:2px solid #fff;padding:10px;font-size:13px;">م</th>
+                <th style="border:2px solid #fff;padding:10px;font-size:13px;">اليوم</th>
+                <th style="border:2px solid #fff;padding:10px;font-size:13px;">التاريخ</th>
+                <th style="border:2px solid #fff;padding:10px;font-size:13px;">الصف</th>
+                <th style="border:2px solid #fff;padding:10px;font-size:13px;">الحصة</th>
+                <th style="border:2px solid #fff;padding:10px;font-size:13px;">المعلمة الغائبة</th>
+                <th style="border:2px solid #fff;padding:10px;font-size:13px;">ما تم تنفيذه</th>
+                <th style="border:2px solid #fff;padding:10px;font-size:13px;">المجال</th>
               </tr>
             </thead>
             <tbody>
-              \${sessions.map((s,i)=>\`
+              ${sessions.map((s,i)=>`
                 <tr>
-                  <td style="border:1px solid #e0e0e0;padding:10px;text-align:center">\${i+1}</td>
-                  <td style="border:1px solid #e0e0e0;padding:10px;text-align:center">\${s.day}</td>
-                  <td style="border:1px solid #e0e0e0;padding:10px;text-align:center">\${formatDate(s.date)}</td>
-                  <td style="border:1px solid #e0e0e0;padding:10px;text-align:center">\${s.className}</td>
-                  <td style="border:1px solid #e0e0e0;padding:10px;text-align:center">\${s.number}</td>
-                  <td style="border:1px solid #e0e0e0;padding:10px;text-align:center">\${s.teacher}</td>
-                  <td style="border:1px solid #e0e0e0;padding:10px;text-align:right">\${s.activities}</td>
-                  <td style="border:1px solid #e0e0e0;padding:10px;text-align:right">\${s.fields}</td>
-                </tr>\`).join('')}
+                  <td style="border:1px solid #e0e0e0;padding:8px;text-align:center">${i+1}</td>
+                  <td style="border:1px solid #e0e0e0;padding:8px;text-align:center">${s.day}</td>
+                  <td style="border:1px solid #e0e0e0;padding:8px;text-align:center">${formatDate(s.date)}</td>
+                  <td style="border:1px solid #e0e0e0;padding:8px;text-align:center">${s.className}</td>
+                  <td style="border:1px solid #e0e0e0;padding:8px;text-align:center">${s.number}</td>
+                  <td style="border:1px solid #e0e0e0;padding:8px;text-align:center">${s.teacher}</td>
+                  <td style="border:1px solid #e0e0e0;padding:8px;text-align:right">${s.activities}</td>
+                  <td style="border:1px solid #e0e0e0;padding:8px;text-align:right">${s.fields}</td>
+                </tr>`).join('')}
             </tbody>
-          </table>\`;
+          </table>`;
         document.body.appendChild(wrap);
-        await new Promise(r=>setTimeout(r,300));
-        const canvas = await html2canvas(wrap,{scale:2,useCORS:true,backgroundColor:'#ffffff',logging:false,windowWidth:1400});
+        await new Promise(r=>setTimeout(r,250));
+        const canvas = await html2canvas(wrap,{scale:2,useCORS:true,backgroundColor:'#ffffff',logging:false,windowWidth:1200});
         const imgData = canvas.toDataURL('image/jpeg',0.98);
         const { jsPDF } = window.jspdf; const pdf = new jsPDF('p','mm','a4');
-        const imgWidth = 210, pageHeight = 297; const imgHeight = (canvas.height*imgWidth)/canvas.width;
-        let heightLeft = imgHeight, position = 0;
-        pdf.addImage(imgData,'JPEG',0,position,imgWidth,imgHeight); heightLeft -= pageHeight;
-        while (heightLeft >= 0){ position = heightLeft - imgHeight; pdf.addPage(); pdf.addImage(imgData,'JPEG',0,position,imgWidth,imgHeight); heightLeft -= pageHeight; }
+        const pageWidth = 210, pageHeight = 297, margin = 10, usable = pageHeight - margin*2;
+        const imgWidth = pageWidth - margin*2;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight, position = margin;
+        pdf.addImage(imgData,'JPEG',margin,position,imgWidth,imgHeight,'','FAST');
+        heightLeft -= usable;
+        while (heightLeft > 0){
+          pdf.addPage();
+          position = margin - (imgHeight - heightLeft);
+          pdf.addImage(imgData,'JPEG',margin,position,imgWidth,imgHeight,'','FAST');
+          heightLeft -= usable;
+        }
         pdf.save('تقرير_حصص_الانتظار.pdf');
+        document.body.removeChild(wrap);
       }catch(err){ console.error(err); alert('❌ حدث خطأ أثناء التصدير'); }
-      finally{
-        document.body.removeChild(document.body.lastChild); // remove wrap
-        document.body.removeChild(loadingMsg);
-      }
+      finally{ document.body.removeChild(loadingMsg); }
     }
+
+    // Init
+    displaySessions();
   </script>
 </body>
 </html>
-"""
-
-with open(os.path.join(base, "index.html"), "w", encoding="utf-8") as f:
-    f.write(index_html)
-
-# 1x1 transparent PNG placeholder named 26.png at root
-png_bytes = base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAuMBgV3b8U0AAAAASUVORK5CYII=")
-with open(os.path.join(base, "26.png"), "wb") as f:
-    f.write(png_bytes)
-
-# Zip the bundle
-zip_path = "/mnt/data/school26-v10-root-image.zip"
-with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
-    for root, dirs, files in os.walk(base):
-        for name in files:
-            full = os.path.join(root, name)
-            rel = os.path.relpath(full, base)
-            z.write(full, rel)
-
-zip_path
