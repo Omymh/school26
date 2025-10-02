@@ -13,7 +13,6 @@
       --light: #d1fae5;
       --accent: #fbbf24;
       --container: max(280px, min(1200px, 94vw));
-      --print-width: 180mm;
     }
     
     * {
@@ -29,15 +28,6 @@
       line-height: 1.7;
       color: #0f172a;
       min-height: 100vh;
-    }
-    
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: radial-gradient(circle at 20% 50%, rgba(16, 185, 129, .05) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(5, 150, 105, .05) 0%, transparent 50%);
-      pointer-events: none;
-      z-index: 0;
     }
     
     .header-logo {
@@ -414,105 +404,6 @@
       background: linear-gradient(135deg, #f59e0b, #d97706);
     }
     
-    .print-doc {
-      display: none;
-    }
-    
-    .print-wrap {
-      width: var(--print-width);
-      margin: 0 auto;
-    }
-    
-    .print-header-edge {
-      width: 210mm;
-      margin-left: calc((210mm - var(--print-width)) / -2);
-      margin-right: calc((210mm - var(--print-width)) / -2);
-      margin-bottom: 6mm;
-    }
-    
-    .print-header-edge img {
-      width: 210mm;
-      height: auto;
-      display: block;
-    }
-    
-    .print-title {
-      font-size: 19pt;
-      color: #0b3d3a;
-      font-weight: 800;
-      margin: 2mm 0;
-      text-align: center;
-    }
-    
-    .print-sub {
-      font-size: 11pt;
-      color: #000;
-      margin-bottom: 2mm;
-      text-align: center;
-    }
-    
-    .boxes {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3mm;
-      margin-top: 2mm;
-    }
-    
-    .box {
-      border: 2px solid #000;
-      border-radius: 6px;
-      padding: 3mm;
-    }
-    
-    .box .label {
-      font-weight: 800;
-      margin-bottom: 2mm;
-    }
-    
-    .box .value {
-      white-space: pre-wrap;
-    }
-    
-    .witness-section {
-      break-inside: avoid-page;
-      page-break-inside: avoid;
-    }
-    
-    .witness2x2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4mm;
-    }
-    
-    .witness2x2 .slot {
-      width: 100%;
-      height: 88mm;
-      border: 2px solid #000;
-      border-radius: 6px;
-      overflow: hidden;
-    }
-    
-    .witness2x2 .slot img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    
-    .print-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 3mm;
-      table-layout: fixed;
-    }
-    
-    .print-table th, .print-table td {
-      border: 2px solid #000;
-      padding: 2.2mm 1.8mm;
-      font-size: 10pt;
-      text-align: center;
-    }
-    
     @media (max-width: 900px) {
       .grid-2 {
         grid-template-columns: 1fr;
@@ -581,38 +472,14 @@
         font-size: 12px;
       }
     }
-    
-    @media print {
-      @page {
-        size: A4;
-        margin: 0;
-      }
-      header, nav, main, .site-footer, .toast, .no-print {
-        display: none !important;
-      }
-      .print-doc {
-        display: block !important;
-      }
-      .print-page {
-        width: var(--print-width);
-        margin: 0 auto;
-        background: #fff;
-      }
-      .print-page, .print-page * {
-        background: #fff !important;
-        box-shadow: none !important;
-      }
-      .print-table thead th {
-        background: #fff !important;
-        color: #000 !important;
-      }
-    }
   </style>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <!-- مكتبات التصدير -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
   <header class="header-logo">
-    <div class="wrap"><img src="26.png" alt="ديباجة المدرسة"></div>
+    <div class="wrap"><img src="https://omymh.github.io/school26/26.png" alt="شعار المدرسة السادسة والعشرون"></div>
   </header>
   <nav>
     <div class="nav">
@@ -704,323 +571,533 @@
       </div>
     </section>
   </main>
-  <div id="printRoot" class="print-doc"></div>
+
   <footer class="site-footer">
     <p><strong>مديرة المدرسة:</strong> أماني آل عبشان</p>
     <p><strong>تصميم الهيئة الإدارية:</strong> عيدة صلاح، منيرة العمراني</p>
   </footer>
+
   <script>
-    (function(){
-      var witness = [];
-      var sessions = [];
+    // تهيئة المتغيرات
+    let witness = [];
+    let sessions = [];
+
+    // تحميل البيانات من localStorage عند بدء التشغيل
+    document.addEventListener('DOMContentLoaded', function() {
+      loadSessions();
+      initializeNavigation();
+      initializeWitnessManagement();
+      initializeActivityExport();
+      initializeSessionManagement();
+      initializeSessionsExport();
+    });
+
+    function loadSessions() {
       try {
-        var s = localStorage.getItem('sessionsData');
-        if (s) sessions = JSON.parse(s);
-      } catch(e) {}
-
-      function toast(m, t) {
-        var d = document.createElement('div');
-        d.className = 'toast ' + (t || '');
-        d.textContent = m;
-        document.body.appendChild(d);
-        setTimeout(function() {
-          d.style.opacity = '0';
-        }, 1400);
-        setTimeout(function() {
-          d.remove();
-        }, 1900);
-      }
-
-      function fmt(v) {
-        try {
-          return new Date(v).toLocaleDateString('ar-SA', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          });
-        } catch(e) {
-          return v || '';
+        const savedSessions = localStorage.getItem('sessionsData');
+        if (savedSessions) {
+          sessions = JSON.parse(savedSessions);
+          renderSessions();
         }
+      } catch(e) {
+        console.log('لا توجد بيانات محفوظة');
       }
+    }
 
-      document.getElementById('navHome').onclick = function() {
-        document.querySelectorAll('.page').forEach(function(p) {
-          p.classList.remove('active');
-        });
-        document.querySelectorAll('.nav-btn').forEach(function(b) {
-          b.classList.remove('active');
-        });
-        document.getElementById('home').classList.add('active');
-        this.classList.add('active');
-      };
+    // دالة لعرض الرسائل
+    function showToast(message, type = '') {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+      }, 1400);
+      
+      setTimeout(() => {
+        if (toast.parentNode) {
+          toast.remove();
+        }
+      }, 1900);
+    }
 
-      document.getElementById('navActivities').onclick = function() {
-        document.querySelectorAll('.page').forEach(function(p) {
-          p.classList.remove('active');
+    // دالة لتنسيق التاريخ
+    function formatDate(dateString) {
+      try {
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) {
+          return dateString || '';
+        }
+        return date.toLocaleDateString('ar-SA', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
         });
-        document.querySelectorAll('.nav-btn').forEach(function(b) {
-          b.classList.remove('active');
-        });
-        document.getElementById('activities').classList.add('active');
-        this.classList.add('active');
-      };
+      } catch(e) {
+        return dateString || '';
+      }
+    }
 
-      document.getElementById('navSessions').onclick = function() {
-        document.querySelectorAll('.page').forEach(function(p) {
-          p.classList.remove('active');
-        });
-        document.querySelectorAll('.nav-btn').forEach(function(b) {
-          b.classList.remove('active');
-        });
-        document.getElementById('sessions').classList.add('active');
-        this.classList.add('active');
-      };
+    // التنقل بين الصفحات
+    function initializeNavigation() {
+      document.getElementById('navHome').addEventListener('click', function() {
+        showPage('home');
+        setActiveNav(this);
+      });
 
-      var wInput = document.getElementById('witnessFiles');
-      var wPrev = document.getElementById('witnessPreview');
-      var wCount = document.getElementById('wCount');
+      document.getElementById('navActivities').addEventListener('click', function() {
+        showPage('activities');
+        setActiveNav(this);
+      });
 
-      document.getElementById('uploadBox').onclick = function() {
-        wInput.click();
-      };
+      document.getElementById('navSessions').addEventListener('click', function() {
+        showPage('sessions');
+        setActiveNav(this);
+      });
+    }
 
-      document.getElementById('addWitness').onclick = function(e) {
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+      });
+      
+      const targetPage = document.getElementById(pageId);
+      if (targetPage) {
+        targetPage.classList.add('active');
+      }
+    }
+
+    function setActiveNav(activeButton) {
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      activeButton.classList.add('active');
+    }
+
+    // إدارة الشواهد
+    function initializeWitnessManagement() {
+      const witnessFiles = document.getElementById('witnessFiles');
+      const witnessPreview = document.getElementById('witnessPreview');
+      const witnessCount = document.getElementById('wCount');
+
+      document.getElementById('uploadBox').addEventListener('click', function() {
+        witnessFiles.click();
+      });
+
+      document.getElementById('addWitness').addEventListener('click', function(e) {
         e.preventDefault();
-        wInput.click();
-      };
+        e.stopPropagation();
+        witnessFiles.click();
+      });
 
-      wInput.onchange = function(e) {
-        witness = [];
-        wPrev.innerHTML = '';
-        var files = [].slice.call(e.target.files || []).filter(function(f) {
-          return f.type.indexOf('image/') === 0;
-        }).slice(0, 4);
+      witnessFiles.addEventListener('change', function(e) {
+        const files = Array.from(e.target.files || [])
+          .filter(file => file.type.startsWith('image/'))
+          .slice(0, 4 - witness.length);
+
+        if (files.length === 0) return;
+
+        let processed = 0;
         
-        (function loop(i) {
-          if (i >= files.length) {
-            wCount.textContent = '(' + witness.length + '/4)';
-            toast('تم تحميل الشواهد');
-            return;
-          }
-          var fr = new FileReader();
-          fr.onload = function() {
+        files.forEach(file => {
+          if (witness.length >= 4) return;
+          
+          const reader = new FileReader();
+          reader.onload = function(e) {
             witness.push({
-              name: files[i].name,
-              url: fr.result
+              name: file.name,
+              url: e.target.result
             });
-            var im = document.createElement('img');
-            im.src = fr.result;
-            wPrev.appendChild(im);
-            loop(i + 1);
+            
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.alt = 'شاهد النشاط';
+            witnessPreview.appendChild(img);
+            
+            processed++;
+            if (processed === files.length) {
+              witnessCount.textContent = `(${witness.length}/4)`;
+              showToast('تم تحميل الشواهد');
+            }
           };
-          fr.readAsDataURL(files[i]);
-        })(0);
-      };
+          reader.readAsDataURL(file);
+        });
+      });
 
-      document.getElementById('clearWitness').onclick = function(e) {
+      document.getElementById('clearWitness').addEventListener('click', function(e) {
         e.preventDefault();
-        if (!witness.length) {
-          toast('لا توجد صور', 'warn');
+        if (witness.length === 0) {
+          showToast('لا توجد صور', 'warn');
           return;
         }
+        
         if (!confirm('حذف جميع صور الشواهد؟')) return;
+        
         witness = [];
-        wInput.value = '';
-        wPrev.innerHTML = '';
-        wCount.textContent = '(0/4)';
-        toast('تم الحذف');
-      };
+        witnessFiles.value = '';
+        witnessPreview.innerHTML = '';
+        witnessCount.textContent = '(0/4)';
+        showToast('تم الحذف');
+      });
+    }
 
-      document.getElementById('exportActivity').onclick = function(e) {
+    // تصدير تقرير النشاط - بحجم 1200 × 300 بكسل وبدون توقيع
+    function initializeActivityExport() {
+      document.getElementById('exportActivity').addEventListener('click', async function(e) {
         e.preventDefault();
-        var form = document.getElementById('actForm');
-        var data = {};
-        var fd = new FormData(form);
-        fd.forEach(function(v, k) {
-          data[k] = v;
-        });
+        
+        const form = document.getElementById('actForm');
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData);
+        
         if (!data.title || !data.owner || !data.date) {
-          toast('أكمل الحقول الأساسية (*)', 'warn');
+          showToast('أكمل الحقول الأساسية (*)', 'warn');
           return;
         }
 
-        var fields = [
-          ['اسم البرنامج', data.title],
-          ['المنفذ', data.owner],
-          ['عدد المستفيدين', data.count || '—'],
-          ['التاريخ', fmt(data.date)],
-          ['المكان', data.place || '—'],
-          ['الأهداف', data.goals || '—'],
-          ['وصف النشاط', data.desc || '—']
-        ];
-        
-        var boxes = fields.map(function(r) {
-          return '<div class="box"><div class="label">' + r[0] + '</div><div class="value">' + String(r[1]).replace(/\n/g, '<br>') + '</div></div>';
-        }).join('');
-        
-        var slots = [];
-        for (var i = 0; i < 4; i++) slots.push(witness[i] || null);
-        
-        var grid = slots.length ? ('<div class="witness-section"><h3 style="margin:0 0 4mm;color:#0f172a;text-align:center">صور الشواهد</h3><div class="witness2x2">' + slots.map(function(s) {
-          return s ? ('<div class="slot"><img src="' + s.url + '"></div>') : '<div class="slot"></div>';
-        }).join('') + '</div></div>') : '';
-        
-        var html = '<div class="print-header-edge"><img src="26.png"></div><div class="print-title">تقرير النشاط المدرسي</div><div class="boxes">' + boxes + '</div>' + grid;
-
-        // استخدام العنصر المخصص للطباعة بدلاً من إنشاء عنصر مؤقت
-        var printRoot = document.getElementById('printRoot');
-        printRoot.innerHTML = '<div class="print-page"><div class="print-wrap">' + html + '</div></div>';
-        
-        // تصدير المحتوى الموجود في printRoot
-        var opt = {
-          margin: 10,
-          filename: 'تقرير نشاط - ' + (data.title || 'المدرسة') + '.pdf',
-          image: {
-            type: 'jpeg',
-            quality: 0.98
-          },
-          html2canvas: {
-            scale: 2,
-            useCORS: true,
-            backgroundColor: '#fff'
-          },
-          jsPDF: {
-            unit: 'mm',
-            format: 'a4',
-            orientation: 'portrait'
-          }
-        };
-        
-        // تأخير التصدير لضمان تحميل الصور
-        setTimeout(function() {
-          html2pdf().set(opt).from(printRoot).save().then(function() {
-            toast('تم التصدير');
-          }).catch(function(error) {
-            console.error('خطأ في التصدير:', error);
-            toast('حدث خطأ أثناء التصدير', 'err');
-          });
-        }, 500);
-      };
-
-      function renderSessions() {
-        var body = document.getElementById('sessionsBody');
-        body.innerHTML = '';
-        sessions.forEach(function(s, i) {
-          var tr = document.createElement('tr');
-          tr.innerHTML = '<td>' + (i + 1) + '</td><td>' + s.day + '</td><td>' + fmt(s.date) + '</td><td>' + s.className + '</td><td>' + s.number + '</td><td>' + s.teacher + '</td><td style="text-align:right">' + s.activities + '</td><td style="text-align:right">' + s.fields + '</td><td class="no-print"><button class="btn danger" data-del="' + i + '">حذف</button></td>';
-          body.appendChild(tr);
-        });
-      }
-      renderSessions();
-
-      document.getElementById('sessionsTable').onclick = function(e) {
-        var btn = e.target;
-        if (btn.tagName !== 'BUTTON' || !btn.hasAttribute('data-del')) return;
-        var i = parseInt(btn.getAttribute('data-del'), 10);
-        if (!confirm('حذف هذه الحصة؟')) return;
-        sessions.splice(i, 1);
         try {
-          localStorage.setItem('sessionsData', JSON.stringify(sessions));
-        } catch(e) {}
-        renderSessions();
-        toast('تم الحذف');
-      };
+          showToast('جاري التصدير...', 'warn');
+          
+          const printElement = document.createElement('div');
+          printElement.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 800px;
+            background: white;
+            padding: 40px;
+            z-index: 10000;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            font-family: 'Tajawal', sans-serif;
+            direction: rtl;
+          `;
+          
+          printElement.innerHTML = `
+            <!-- الديباجة بحجم 1200 × 300 بكسل -->
+            <div style="text-align: center; margin-bottom: 30px;">
+              <img src="https://omymh.github.io/school26/26.png" alt="شعار المدرسة" 
+                   style="width: 100%; height: 120px; object-fit: cover; object-position: center; margin-bottom: 25px;">
+              <h1 style="color: #047857; font-size: 32px; margin: 0; font-weight: 900; border-bottom: 3px solid #10b981; padding-bottom: 15px;">
+                تقرير النشاط المدرسي
+              </h1>
+            </div>
 
-      document.getElementById('saveSession').onclick = function(e) {
+            <!-- معلومات النشاط -->
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+              <tr>
+                <td style="padding: 12px; border: 1px solid #e2e8f0; background: #f8fafc; font-weight: bold; width: 30%;">اسم البرنامج / النشاط</td>
+                <td style="padding: 12px; border: 1px solid #e2e8f0;">${data.title}</td>
+              </tr>
+              <tr>
+                <td style="padding: 12px; border: 1px solid #e2e8f0; background: #f8fafc; font-weight: bold;">المنفذ</td>
+                <td style="padding: 12px; border: 1px solid #e2e8f0;">${data.owner}</td>
+              </tr>
+              <tr>
+                <td style="padding: 12px; border: 1px solid #e2e8f0; background: #f8fafc; font-weight: bold;">عدد المستفيدين</td>
+                <td style="padding: 12px; border: 1px solid #e2e8f0;">${data.count || 'غير محدد'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 12px; border: 1px solid #e2e8f0; background: #f8fafc; font-weight: bold;">التاريخ</td>
+                <td style="padding: 12px; border: 1px solid #e2e8f0;">${formatDate(data.date)}</td>
+              </tr>
+              <tr>
+                <td style="padding: 12px; border: 1px solid #e2e8f0; background: #f8fafc; font-weight: bold;">المكان</td>
+                <td style="padding: 12px; border: 1px solid #e2e8f0;">${data.place || 'غير محدد'}</td>
+              </tr>
+            </table>
+
+            <!-- الأهداف -->
+            ${data.goals ? `
+            <div style="margin-bottom: 25px;">
+              <h4 style="color: #047857; font-size: 18px; margin-bottom: 10px; border-right: 4px solid #10b981; padding-right: 10px;">الأهداف</h4>
+              <div style="padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                ${data.goals}
+              </div>
+            </div>
+            ` : ''}
+
+            <!-- وصف النشاط -->
+            ${data.desc ? `
+            <div style="margin-bottom: 25px;">
+              <h4 style="color: #047857; font-size: 18px; margin-bottom: 10px; border-right: 4px solid #10b981; padding-right: 10px;">وصف النشاط</h4>
+              <div style="padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                ${data.desc}
+              </div>
+            </div>
+            ` : ''}
+
+            <!-- صور الشواهد -->
+            ${witness.length > 0 ? `
+            <div style="margin-bottom: 25px;">
+              <h4 style="color: #047857; font-size: 18px; margin-bottom: 15px; border-right: 4px solid #10b981; padding-right: 10px;">صور الشواهد</h4>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                ${witness.map(w => `
+                  <div style="text-align: center;">
+                    <img src="${w.url}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; border: 2px solid #10b981;">
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+            ` : ''}
+          `;
+
+          document.body.appendChild(printElement);
+
+          const canvas = await html2canvas(printElement, {
+            scale: 2,
+            backgroundColor: "#ffffff",
+            useCORS: true,
+            logging: false
+          });
+
+          document.body.removeChild(printElement);
+
+          const imgData = canvas.toDataURL('image/jpeg', 0.95);
+
+          const { jsPDF } = window.jspdf;
+          const pdf = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'a4'
+          });
+
+          const pageWidth = pdf.internal.pageSize.getWidth();
+          const pageHeight = pdf.internal.pageSize.getHeight();
+          
+          const imgWidth = pageWidth;
+          const imgHeight = (canvas.height * pageWidth) / canvas.width;
+
+          pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+          
+          pdf.save('تقرير نشاط - ' + (data.title || 'المدرسة') + '.pdf');
+          showToast('تم التصدير بنجاح');
+
+        } catch (error) {
+          console.error('خطأ في التصدير:', error);
+          showToast('حدث خطأ أثناء التصدير', 'err');
+        }
+      });
+    }
+
+    // إدارة الحصص
+    function renderSessions() {
+      const body = document.getElementById('sessionsBody');
+      if (!body) return;
+      
+      body.innerHTML = '';
+      
+      sessions.forEach((session, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${session.day}</td>
+          <td>${formatDate(session.date)}</td>
+          <td>${session.className}</td>
+          <td>${session.number}</td>
+          <td>${session.teacher}</td>
+          <td style="text-align:right">${session.activities}</td>
+          <td style="text-align:right">${session.fields}</td>
+          <td class="no-print">
+            <button class="btn danger" data-index="${index}">حذف</button>
+          </td>
+        `;
+        body.appendChild(row);
+      });
+
+      body.querySelectorAll('button[data-index]').forEach(button => {
+        button.addEventListener('click', function() {
+          const index = parseInt(this.getAttribute('data-index'));
+          deleteSession(index);
+        });
+      });
+    }
+
+    function deleteSession(index) {
+      if (!confirm('حذف هذه الحصة؟')) return;
+      
+      sessions.splice(index, 1);
+      try {
+        localStorage.setItem('sessionsData', JSON.stringify(sessions));
+      } catch(e) {}
+      renderSessions();
+      showToast('تم الحذف');
+    }
+
+    function initializeSessionManagement() {
+      document.getElementById('saveSession').addEventListener('click', function(e) {
         e.preventDefault();
-        var day = document.getElementById('dayName').value;
-        var date = document.getElementById('sessionDate').value;
-        var cls = document.getElementById('className').value.trim();
-        var num = document.getElementById('sessionNumber').value.trim();
-        var teacher = document.getElementById('absentTeacher').value.trim();
-        var acts = document.getElementById('activitiesText').value.trim();
-        var fields = [];
+        
+        const day = document.getElementById('dayName').value;
+        const date = document.getElementById('sessionDate').value;
+        const className = document.getElementById('className').value.trim();
+        const sessionNumber = document.getElementById('sessionNumber').value.trim();
+        const absentTeacher = document.getElementById('absentTeacher').value.trim();
+        const activitiesText = document.getElementById('activitiesText').value.trim();
+        
+        const fields = [];
         if (document.getElementById('basicSkills').checked) fields.push('المهارات الأساسية');
         if (document.getElementById('values').checked) fields.push('القيم والمواطنة الصالحة');
         if (document.getElementById('futureSkills').checked) fields.push('مهارات المستقبل');
-        if (!day || !date || !cls || !num || !teacher || !acts || !fields.length) {
-          toast('أكمل كل الحقول واختر مجالاً واحداً على الأقل', 'warn');
+        
+        if (!day || !date || !className || !sessionNumber || !absentTeacher || !activitiesText || fields.length === 0) {
+          showToast('أكمل كل الحقول واختر مجالاً واحداً على الأقل', 'warn');
           return;
         }
+        
         sessions.push({
           day: day,
           date: date,
-          className: cls,
-          number: num,
-          teacher: teacher,
-          activities: acts,
+          className: className,
+          number: sessionNumber,
+          teacher: absentTeacher,
+          activities: activitiesText,
           fields: fields.join('، ')
         });
+        
         try {
           localStorage.setItem('sessionsData', JSON.stringify(sessions));
         } catch(e) {}
+        
         renderSessions();
-        toast('تم حفظ الحصة');
-      };
+        showToast('تم حفظ الحصة');
+        
+        document.getElementById('sesForm').reset();
+      });
 
-      document.getElementById('clearAll').onclick = function(e) {
+      document.getElementById('clearAll').addEventListener('click', function(e) {
         e.preventDefault();
-        if (!sessions.length) {
-          toast('لا توجد حصص', 'warn');
+        
+        if (sessions.length === 0) {
+          showToast('لا توجد حصص', 'warn');
           return;
         }
+        
         if (!confirm('مسح جميع الحصص؟')) return;
+        
         sessions = [];
         try {
           localStorage.setItem('sessionsData', JSON.stringify(sessions));
         } catch(e) {}
         renderSessions();
-        toast('تم المسح');
-      };
+        showToast('تم المسح');
+      });
+    }
 
-      document.getElementById('exportSessions').onclick = function(e) {
+    // تصدير تقرير الحصص - بحجم 1200 × 300 بكسل وبدون توقيع
+    function initializeSessionsExport() {
+      document.getElementById('exportSessions').addEventListener('click', async function(e) {
         e.preventDefault();
-        if (!sessions.length) {
-          toast('لا توجد حصص للتصدير', 'warn');
+        
+        if (sessions.length === 0) {
+          showToast('لا توجد حصص للتصدير', 'warn');
           return;
         }
-        var repTeacher = document.getElementById('reportTeacher').value || '';
-        var rows = sessions.map(function(s, i) {
-          return '<tr><td>' + (i + 1) + '</td><td>' + s.day + '</td><td>' + fmt(s.date) + '</td><td>' + s.className + '</td><td>' + s.number + '</td><td>' + s.teacher + '</td><td style="text-align:right">' + s.activities + '</td><td style="text-align:right">' + s.fields + '</td></tr>';
-        }).join('');
         
-        var html = '<div class="print-header-edge"><img src="26.png"></div><div class="print-title">تقرير حصص الانتظار</div>' + (repTeacher ? '<div class="print-sub">اسم المعلمة: ' + repTeacher + '</div>' : '') + '<table class="print-table"><colgroup><col style="width:5%"><col style="width:10%"><col style="width:13%"><col style="width:12%"><col style="width:8%"><col style="width:17%"><col style="width:20%"><col style="width:15%"></colgroup><thead><tr><th>م</th><th>اليوم</th><th>التاريخ</th><th>الصف</th><th>الحصة</th><th>المعلمة الغائبة</th><th>ما تم تنفيذه</th><th>المجال</th></tr></thead><tbody>' + rows + '</tbody></table>';
+        const reportTeacher = document.getElementById('reportTeacher').value || '';
 
-        // استخدام العنصر المخصص للطباعة بدلاً من إنشاء عنصر مؤقت
-        var printRoot = document.getElementById('printRoot');
-        printRoot.innerHTML = '<div class="print-page"><div class="print-wrap">' + html + '</div></div>';
-        
-        // تصدير المحتوى الموجود في printRoot
-        var opt = {
-          margin: 10,
-          filename: 'تقرير حصص - ' + (repTeacher || 'المدرسة') + '.pdf',
-          image: {
-            type: 'jpeg',
-            quality: 0.98
-          },
-          html2canvas: {
-            scale: 2,
-            useCORS: true,
-            backgroundColor: '#fff'
-          },
-          jsPDF: {
-            unit: 'mm',
-            format: 'a4',
-            orientation: 'portrait'
-          }
-        };
-        
-        // تأخير التصدير لضمان تحميل الصور
-        setTimeout(function() {
-          html2pdf().set(opt).from(printRoot).save().then(function() {
-            toast('تم التصدير');
-          }).catch(function(error) {
-            console.error('خطأ في التصدير:', error);
-            toast('حدث خطأ أثناء التصدير', 'err');
+        try {
+          showToast('جاري التصدير...', 'warn');
+          
+          const printElement = document.createElement('div');
+          printElement.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 1000px;
+            background: white;
+            padding: 40px;
+            z-index: 10000;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            font-family: 'Tajawal', sans-serif;
+            direction: rtl;
+          `;
+          
+          let sessionsHTML = '';
+          sessions.forEach((session, index) => {
+            sessionsHTML += `
+              <tr>
+                <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">${index + 1}</td>
+                <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">${session.day}</td>
+                <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">${formatDate(session.date)}</td>
+                <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">${session.className}</td>
+                <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">${session.number}</td>
+                <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">${session.teacher}</td>
+                <td style="padding: 10px; border: 1px solid #ddd; text-align: right;">${session.activities}</td>
+                <td style="padding: 10px; border: 1px solid #ddd; text-align: right;">${session.fields}</td>
+              </tr>
+            `;
           });
-        }, 500);
-      };
-    })();
+          
+          printElement.innerHTML = `
+            <!-- الديباجة بحجم 1200 × 300 بكسل -->
+            <div style="text-align: center; margin-bottom: 30px;">
+              <img src="https://omymh.github.io/school26/26.png" alt="شعار المدرسة" 
+                   style="width: 100%; height: 120px; object-fit: cover; object-position: center; margin-bottom: 25px;">
+              <h1 style="color: #047857; font-size: 32px; margin: 0; font-weight: 900; border-bottom: 3px solid #10b981; padding-bottom: 15px;">
+                تقرير حصص الانتظار
+              </h1>
+              ${reportTeacher ? `<p style="color: #64748b; font-size: 18px; margin: 10px 0;">اسم المعلمة: ${reportTeacher}</p>` : ''}
+            </div>
+            
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+              <thead>
+                <tr style="background: #10b981; color: white;">
+                  <th style="padding: 12px; border: 1px solid #ddd;">م</th>
+                  <th style="padding: 12px; border: 1px solid #ddd;">اليوم</th>
+                  <th style="padding: 12px; border: 1px solid #ddd;">التاريخ</th>
+                  <th style="padding: 12px; border: 1px solid #ddd;">الصف</th>
+                  <th style="padding: 12px; border: 1px solid #ddd;">الحصة</th>
+                  <th style="padding: 12px; border: 1px solid #ddd;">المعلمة الغائبة</th>
+                  <th style="padding: 12px; border: 1px solid #ddd;">ما تم تنفيذه</th>
+                  <th style="padding: 12px; border: 1px solid #ddd;">المجال</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${sessionsHTML}
+              </tbody>
+            </table>
+          `;
+
+          document.body.appendChild(printElement);
+
+          const canvas = await html2canvas(printElement, {
+            scale: 2,
+            backgroundColor: "#ffffff",
+            useCORS: true,
+            logging: false
+          });
+
+          document.body.removeChild(printElement);
+
+          const imgData = canvas.toDataURL('image/jpeg', 0.95);
+
+          const { jsPDF } = window.jspdf;
+          const pdf = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'a4'
+          });
+
+          const pageWidth = pdf.internal.pageSize.getWidth();
+          const pageHeight = pdf.internal.pageSize.getHeight();
+          
+          const imgWidth = pageWidth;
+          const imgHeight = (canvas.height * pageWidth) / canvas.width;
+
+          pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+          
+          pdf.save('تقرير حصص الانتظار.pdf');
+          showToast('تم التصدير بنجاح');
+
+        } catch (error) {
+          console.error('خطأ في التصدير:', error);
+          showToast('حدث خطأ أثناء التصدير', 'err');
+        }
+      });
+    }
   </script>
 </body>
 </html>
