@@ -131,10 +131,7 @@
     }
     
     h1 {
-      color: transparent;
-      background: linear-gradient(135deg, var(--primary), var(--dark));
-      -webkit-background-clip: text;
-      background-clip: text;
+      color: #047857;
       text-align: center;
       margin: 0 0 20px;
       font-size: 32px;
@@ -167,6 +164,12 @@
     .grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 12px;
     }
     
@@ -405,7 +408,7 @@
     }
     
     @media (max-width: 900px) {
-      .grid-2 {
+      .grid-2, .grid-3 {
         grid-template-columns: 1fr;
       }
       .witness-grid {
@@ -524,9 +527,25 @@
       <h1>تقرير حصص الانتظار</h1>
       <form id="sesForm" class="form">
         <label>اسم المعلمة<input class="input" id="reportTeacher" placeholder="اكتبي اسم المعلمة هنا"></label>
-        <div class="grid-2">
+        <div class="grid-3">
+          <label>الأسبوع *<select class="input" id="weekNumber" required>
+            <option value="">اختر الأسبوع</option>
+            <option>الأسبوع الأول</option>
+            <option>الأسبوع الثاني</option>
+            <option>الأسبوع الثالث</option>
+            <option>الأسبوع الرابع</option>
+            <option>الأسبوع الخامس</option>
+            <option>الأسبوع السادس</option>
+            <option>الأسبوع السابع</option>
+            <option>الأسبوع الثامن</option>
+            <option>الأسبوع التاسع</option>
+            <option>الأسبوع العاشر</option>
+            <option>الأسبوع الحادي عشر</option>
+            <option>الأسبوع الثاني عشر</option>
+            <option>الأسبوع الثالث عشر</option>
+          </select></label>
           <label>اليوم *<select class="input" id="dayName" required>
-            <option value="">اختر</option>
+            <option value="">اختر اليوم</option>
             <option>الأحد</option>
             <option>الاثنين</option>
             <option>الثلاثاء</option>
@@ -556,6 +575,7 @@
           <thead>
             <tr>
               <th style="width:50px">م</th>
+              <th style="width:90px">الأسبوع</th>
               <th style="width:90px">اليوم</th>
               <th style="width:120px">التاريخ</th>
               <th>الصف</th>
@@ -744,7 +764,7 @@
       });
     }
 
-    // تصدير تقرير النشاط - بحجم 1200 × 300 بكسل وبدون توقيع
+    // تصدير تقرير النشاط - بدون تظليل في العنوان
     function initializeActivityExport() {
       document.getElementById('exportActivity').addEventListener('click', async function(e) {
         e.preventDefault();
@@ -893,6 +913,7 @@
         const row = document.createElement('tr');
         row.innerHTML = `
           <td>${index + 1}</td>
+          <td>${session.week || ''}</td>
           <td>${session.day}</td>
           <td>${formatDate(session.date)}</td>
           <td>${session.className}</td>
@@ -930,6 +951,7 @@
       document.getElementById('saveSession').addEventListener('click', function(e) {
         e.preventDefault();
         
+        const week = document.getElementById('weekNumber').value;
         const day = document.getElementById('dayName').value;
         const date = document.getElementById('sessionDate').value;
         const className = document.getElementById('className').value.trim();
@@ -942,12 +964,13 @@
         if (document.getElementById('values').checked) fields.push('القيم والمواطنة الصالحة');
         if (document.getElementById('futureSkills').checked) fields.push('مهارات المستقبل');
         
-        if (!day || !date || !className || !sessionNumber || !absentTeacher || !activitiesText || fields.length === 0) {
+        if (!week || !day || !date || !className || !sessionNumber || !absentTeacher || !activitiesText || fields.length === 0) {
           showToast('أكمل كل الحقول واختر مجالاً واحداً على الأقل', 'warn');
           return;
         }
         
         sessions.push({
+          week: week,
           day: day,
           date: date,
           className: className,
@@ -986,7 +1009,7 @@
       });
     }
 
-    // تصدير تقرير الحصص - بحجم 1200 × 300 بكسل وبدون توقيع
+    // تصدير تقرير الحصص - بدون تظليل في العنوان + إضافة اسم المعلمة فوق الجدول
     function initializeSessionsExport() {
       document.getElementById('exportSessions').addEventListener('click', async function(e) {
         e.preventDefault();
@@ -1020,6 +1043,7 @@
             sessionsHTML += `
               <tr>
                 <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">${index + 1}</td>
+                <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">${session.week || ''}</td>
                 <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">${session.day}</td>
                 <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">${formatDate(session.date)}</td>
                 <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">${session.className}</td>
@@ -1039,13 +1063,21 @@
               <h1 style="color: #047857; font-size: 32px; margin: 0; font-weight: 900; border-bottom: 3px solid #10b981; padding-bottom: 15px;">
                 تقرير حصص الانتظار
               </h1>
-              ${reportTeacher ? `<p style="color: #64748b; font-size: 18px; margin: 10px 0;">اسم المعلمة: ${reportTeacher}</p>` : ''}
             </div>
+
+            <!-- اسم المعلمة فوق الجدول -->
+            ${reportTeacher ? `
+            <div style="margin-bottom: 20px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+              <strong style="color: #10b981; font-size: 16px;">اسم المعلمة:</strong>
+              <span style="font-size: 16px; margin-right: 10px;">${reportTeacher}</span>
+            </div>
+            ` : ''}
             
             <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
               <thead>
                 <tr style="background: #10b981; color: white;">
                   <th style="padding: 12px; border: 1px solid #ddd;">م</th>
+                  <th style="padding: 12px; border: 1px solid #ddd;">الأسبوع</th>
                   <th style="padding: 12px; border: 1px solid #ddd;">اليوم</th>
                   <th style="padding: 12px; border: 1px solid #ddd;">التاريخ</th>
                   <th style="padding: 12px; border: 1px solid #ddd;">الصف</th>
