@@ -503,7 +503,8 @@
           <label>اسم البرنامج / النشاط *<input class="input" name="title" required></label>
           <label>المنفذ *<input class="input" name="owner" required></label>
           <label>عدد المستفيدين<input class="input" name="count" type="number" min="1"></label>
-          <label>التاريخ *<input class="input" type="date" name="date" required></label>
+          <!-- تم إزالة الـ placeholder من حقل التاريخ -->
+          <label>التاريخ *<input class="input" name="date" required></label>
           <label>المكان<input class="input" name="place"></label>
         </div>
         <label>الأهداف<textarea class="input" name="goals"></textarea></label>
@@ -526,7 +527,7 @@
     <section id="sessions" class="page">
       <h1>تقرير حصص الانتظار</h1>
       <form id="sesForm" class="form">
-        <label>اسم المعلمة<input class="input" id="reportTeacher" placeholder="اكتبي اسم المعلمة هنا"></label>
+        <label>اسم المعلمة<input class="input" id="reportTeacher"></label>
         <div class="grid-3">
           <label>الأسبوع *<select class="input" id="weekNumber" required>
             <option value="">اختر الأسبوع</option>
@@ -552,9 +553,11 @@
             <option>الأربعاء</option>
             <option>الخميس</option>
           </select></label>
-          <label>التاريخ *<input class="input" type="date" id="sessionDate" required></label>
+          <!-- تم إزالة الـ placeholder من حقل التاريخ -->
+          <label>التاريخ *<input class="input" id="sessionDate" required></label>
           <label>الصف *<input class="input" id="className" required></label>
-          <label>رقم الحصة *<input class="input" type="number" id="sessionNumber" min="1" max="10" required></label>
+          <!-- تم إزالة الـ placeholder من حقل رقم الحصة -->
+          <label>رقم الحصة *<input class="input" id="sessionNumber" required></label>
           <label>المعلمة الغائبة *<input class="input" id="absentTeacher" required></label>
         </div>
         <label>ما تم تنفيذه *<textarea class="input" id="activitiesText" required></textarea></label>
@@ -641,23 +644,6 @@
           toast.remove();
         }
       }, 1900);
-    }
-
-    // دالة لتنسيق التاريخ
-    function formatDate(dateString) {
-      try {
-        const date = new Date(dateString);
-        if (isNaN(date.getTime())) {
-          return dateString || '';
-        }
-        return date.toLocaleDateString('ar-SA', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        });
-      } catch(e) {
-        return dateString || '';
-      }
     }
 
     // التنقل بين الصفحات
@@ -764,7 +750,7 @@
       });
     }
 
-    // تصدير تقرير النشاط - بدون تظليل في العنوان
+    // تصدير تقرير النشاط - العودة للنسخة الأصلية مع تحسين عرض الشواهد
     function initializeActivityExport() {
       document.getElementById('exportActivity').addEventListener('click', async function(e) {
         e.preventDefault();
@@ -795,8 +781,11 @@
             direction: rtl;
           `;
           
+          // حساب عدد الصفوف اللازمة للشواهد (صفين لكل 4 صور)
+          const witnessRows = Math.ceil(witness.length / 2);
+          
           printElement.innerHTML = `
-            <!-- الديباجة بحجم 1200 × 300 بكسل -->
+            <!-- الديباجة -->
             <div style="text-align: center; margin-bottom: 30px;">
               <img src="https://omymh.github.io/school26/26.png" alt="شعار المدرسة" 
                    style="width: 100%; height: 120px; object-fit: cover; object-position: center; margin-bottom: 25px;">
@@ -821,7 +810,7 @@
               </tr>
               <tr>
                 <td style="padding: 12px; border: 1px solid #e2e8f0; background: #f8fafc; font-weight: bold;">التاريخ</td>
-                <td style="padding: 12px; border: 1px solid #e2e8f0;">${formatDate(data.date)}</td>
+                <td style="padding: 12px; border: 1px solid #e2e8f0;">${data.date}</td>
               </tr>
               <tr>
                 <td style="padding: 12px; border: 1px solid #e2e8f0; background: #f8fafc; font-weight: bold;">المكان</td>
@@ -849,14 +838,14 @@
             </div>
             ` : ''}
 
-            <!-- صور الشواهد -->
+            <!-- صور الشواهد - نسخة محسنة تضمن ظهور جميع الصور -->
             ${witness.length > 0 ? `
-            <div style="margin-bottom: 25px;">
+            <div style="margin-bottom: 25px; page-break-inside: avoid;">
               <h4 style="color: #047857; font-size: 18px; margin-bottom: 15px; border-right: 4px solid #10b981; padding-right: 10px;">صور الشواهد</h4>
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 ${witness.map(w => `
-                  <div style="text-align: center;">
-                    <img src="${w.url}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; border: 2px solid #10b981;">
+                  <div style="text-align: center; height: 200px; display: flex; justify-content: center; align-items: center; overflow: hidden;">
+                    <img src="${w.url}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
                   </div>
                 `).join('')}
               </div>
@@ -915,7 +904,7 @@
           <td>${index + 1}</td>
           <td>${session.week || ''}</td>
           <td>${session.day}</td>
-          <td>${formatDate(session.date)}</td>
+          <td>${session.date}</td>
           <td>${session.className}</td>
           <td>${session.number}</td>
           <td>${session.teacher}</td>
@@ -1009,159 +998,157 @@
       });
     }
 
-    // تصدير تقرير الحصص - بدون تظليل في العنوان + إضافة اسم المعلمة فوق الجدول
+    // تصدير تقرير الحصص
     function initializeSessionsExport() {
-  const btn = document.getElementById('exportSessions') 
-           || document.querySelector('[data-export="sessions"]') 
-           || document.querySelector('#exportSessionsPDF');
-  if (!btn) return;
+      const btn = document.getElementById('exportSessions');
+      if (!btn) return;
 
-  // نخزن الاسم مباشرة أثناء الكتابة لو وُجد الحقل
-  const rt = document.getElementById('reportTeacher');
-  if (rt) {
-    rt.addEventListener('input', () => {
-      try { localStorage.setItem('reportTeacher', rt.value || ''); } catch(_) {}
-    });
-  }
+      // نخزن الاسم مباشرة أثناء الكتابة لو وُجد الحقل
+      const rt = document.getElementById('reportTeacher');
+      if (rt) {
+        rt.addEventListener('input', () => {
+          try { localStorage.setItem('reportTeacher', rt.value || ''); } catch(_) {}
+        });
+      }
 
-  btn.addEventListener('click', async function (e) {
-    e.preventDefault();
-    if (!Array.isArray(sessions) || sessions.length === 0) {
-      if (typeof showToast === 'function') showToast('لا توجد حصص للتصدير', 'warn');
-      return;
-    }
+      btn.addEventListener('click', async function (e) {
+        e.preventDefault();
+        if (!Array.isArray(sessions) || sessions.length === 0) {
+          if (typeof showToast === 'function') showToast('لا توجد حصص للتصدير', 'warn');
+          return;
+        }
 
-    // ————— حل نهائي لاسم المعلمة —————
-    function resolveTeacherName() {
-      const selectors = [
-        '#reportTeacher', '#teacherName', '#teacher',
-        'input[name="reportTeacher"]', 'input[name="teacher"]',
-        '[data-teacher]', '[data-name="teacher"]', '.teacher-name', '.report-teacher'
-      ];
-      for (const sel of selectors) {
-        const el = document.querySelector(sel);
-        if (el) {
-          if (typeof el.value === 'string' && el.value.trim()) return el.value.trim();
-          if (el.textContent && el.textContent.trim()) return el.textContent.trim();
-          if (el.dataset && (el.dataset.teacher || el.dataset.name)) {
-            const d = (el.dataset.teacher || el.dataset.name || '').trim();
-            if (d) return d;
+        // ————— حل نهائي لاسم المعلمة —————
+        function resolveTeacherName() {
+          const selectors = [
+            '#reportTeacher', '#teacherName', '#teacher',
+            'input[name="reportTeacher"]', 'input[name="teacher"]',
+            '[data-teacher]', '[data-name="teacher"]', '.teacher-name', '.report-teacher'
+          ];
+          for (const sel of selectors) {
+            const el = document.querySelector(sel);
+            if (el) {
+              if (typeof el.value === 'string' && el.value.trim()) return el.value.trim();
+              if (el.textContent && el.textContent.trim()) return el.textContent.trim();
+              if (el.dataset && (el.dataset.teacher || el.dataset.name)) {
+                const d = (el.dataset.teacher || el.dataset.name || '').trim();
+                if (d) return d;
+              }
+            }
           }
+          // ابحث بالـ placeholder
+          const inputs = Array.from(document.querySelectorAll('input,textarea'));
+          for (const el of inputs) {
+            const ph = (el.getAttribute('placeholder') || '').trim();
+            if (ph && /اسم\s*المعلمة|المعلمة/i.test(ph) && el.value && el.value.trim()) {
+              return el.value.trim();
+            }
+          }
+          // جرّب متغيرات عامة محتملة
+          const globals = ['reportTeacherName', 'currentTeacher', 'selectedTeacher', 'teacherName'];
+          for (const key of globals) {
+            if (typeof window[key] === 'string' && window[key].trim()) return window[key].trim();
+          }
+          // من التخزين المحلي إن وجد
+          try {
+            const ls = (localStorage.getItem('reportTeacher') || '').trim();
+            if (ls) return ls;
+          } catch(_) {}
+
+          // آخر حل: نطلبه من المستخدم مباشرة
+          let manual = '';
+          try {
+            manual = (window.prompt('اكتبي اسم المعلمة للطباعة:', '') || '').trim();
+          } catch(_) {}
+          if (manual) {
+            try { localStorage.setItem('reportTeacher', manual); } catch(_) {}
+            return manual;
+          }
+          return '';
         }
-      }
-      // ابحث بالـ placeholder
-      const inputs = Array.from(document.querySelectorAll('input,textarea'));
-      for (const el of inputs) {
-        const ph = (el.getAttribute('placeholder') || '').trim();
-        if (ph && /اسم\s*المعلمة|المعلمة/i.test(ph) && el.value && el.value.trim()) {
-          return el.value.trim();
+
+        const teacherName = resolveTeacherName();
+
+        try {
+          if (typeof showToast === 'function') showToast('جاري التصدير...', 'warn');
+
+          // عنصر الطباعة
+          const printElement = document.createElement('div');
+          printElement.style.cssText = [
+            'position: fixed','top: 0','left: 0','width: 1000px',
+            'background: #ffffff','padding: 40px','z-index: 10000',
+            "font-family: 'Tajawal', sans-serif",'direction: rtl'
+          ].join(';') + ';';
+
+          // بناء الصفوف
+          let rows = '';
+          sessions.forEach((s, i) => {
+            rows += `
+              <tr>
+                <td style="padding:10px;border:1px solid #ddd;text-align:center;">${i + 1}</td>
+                <td style="padding:10px;border:1px solid #ddd;text-align:center;">${s.week || ''}</td>
+                <td style="padding:10px;border:1px solid #ddd;text-align:center;">${s.day || ''}</td>
+                <td style="padding:10px;border:1px solid #ddd;text-align:center;">${s.date || ''}</td>
+                <td style="padding:10px;border:1px solid #ddd;text-align:center;">${s.className || ''}</td>
+                <td style="padding:10px;border:1px solid #ddd;text-align:center;">${s.number || ''}</td>
+                <td style="padding:10px;border:1px solid #ddd;text-align:center;">${s.teacher || ''}</td>
+                <td style="padding:10px;border:1px solid #ddd;text-align:right;">${s.activities || ''}</td>
+                <td style="padding:10px;border:1px solid #ddd;text-align:right;">${s.fields || ''}</td>
+              </tr>`;
+          });
+
+          // الهيدر + اسم المعلمة فوق الجدول
+          printElement.innerHTML = `
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+              <img src="https://omymh.github.io/school26/26.png" alt="شعار المدرسة"
+                   style="width:100%;height:120px;object-fit:cover;object-position:center;border-radius:6px;">
+            </div>
+
+            <h1 style="color:#047857;font-size:32px;font-weight:900;border-bottom:3px solid #10b981;padding-bottom:12px;margin:0 0 16px 0;">
+              تقرير حصص الانتظار
+            </h1>
+
+            <div style="margin:0 0 20px 0;padding:14px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;display:flex;gap:10px;align-items:center;">
+              <strong style="color:#10b981;font-size:16px;">اسم المعلمة:</strong>
+              <span style="font-size:16px;">${teacherName || '—'}</span>
+            </div>
+
+            <table style="width:100%;border-collapse:collapse;margin-top:10px;">
+              <thead>
+                <tr style="background:#10b981;color:#fff;">
+                  <th style="padding:12px;border:1px solid #ddd;">م</th>
+                  <th style="padding:12px;border:1px solid #ddd;">الأسبوع</th>
+                  <th style="padding:12px;border:1px solid #ddd;">اليوم</th>
+                  <th style="padding:12px;border:1px solid #ddd;">التاريخ</th>
+                  <th style="padding:12px;border:1px solid #ddd;">الصف</th>
+                  <th style="padding:12px;border:1px solid #ddd;">الحصة</th>
+                  <th style="padding:12px;border:1px solid #ddd;">المعلمة الغائبة</th>
+                  <th style="padding:12px;border:1px solid #ddd;">ما تم تنفيذه</th>
+                  <th style="padding:12px;border:1px solid #ddd;">المجال</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          `;
+
+          document.body.appendChild(printElement);
+
+          // تصوير + PDF
+          const canvas = await html2canvas(printElement, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
+          const imgData = canvas.toDataURL('image/jpeg', 0.95);
+          const { jsPDF } = window.jspdf;
+          const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+          const pageWidth = pdf.internal.pageSize.getWidth();
+          const imgHeight = (canvas.height * pageWidth) / canvas.width;
+          pdf.addImage(imgData, 'JPEG', 0, 0, pageWidth, imgHeight);
+          pdf.save('تقرير حصص الانتظار.pdf');
+          if (typeof showToast === 'function') showToast('تم التصدير بنجاح');
+        } catch (err) {
+          console.error('خطأ في التصدير:', err);
+          if (typeof showToast === 'function') showToast('حدث خطأ أثناء التصدير', 'err');
         }
-      }
-      // جرّب متغيرات عامة محتملة
-      const globals = ['reportTeacherName', 'currentTeacher', 'selectedTeacher', 'teacherName'];
-      for (const key of globals) {
-        if (typeof window[key] === 'string' && window[key].trim()) return window[key].trim();
-      }
-      // من التخزين المحلي إن وجد
-      try {
-        const ls = (localStorage.getItem('reportTeacher') || '').trim();
-        if (ls) return ls;
-      } catch(_) {}
-
-      // آخر حل: نطلبه من المستخدم مباشرة
-      let manual = '';
-      try {
-        manual = (window.prompt('اكتبي اسم المعلمة للطباعة:', '') || '').trim();
-      } catch(_) {}
-      if (manual) {
-        try { localStorage.setItem('reportTeacher', manual); } catch(_) {}
-        return manual;
-      }
-      return '';
-    }
-
-    const teacherName = resolveTeacherName();
-
-    try {
-      if (typeof showToast === 'function') showToast('جاري التصدير...', 'warn');
-
-      // عنصر الطباعة
-      const printElement = document.createElement('div');
-      printElement.style.cssText = [
-        'position: fixed','top: 0','left: 0','width: 1000px',
-        'background: #ffffff','padding: 40px','z-index: 10000',
-        "font-family: 'Tajawal', sans-serif",'direction: rtl'
-      ].join(';') + ';';
-
-      // بناء الصفوف
-      let rows = '';
-      sessions.forEach((s, i) => {
-        rows += `
-          <tr>
-            <td style="padding:10px;border:1px solid #ddd;text-align:center;">${i + 1}</td>
-            <td style="padding:10px;border:1px solid #ddd;text-align:center;">${s.week || ''}</td>
-            <td style="padding:10px;border:1px solid #ddd;text-align:center;">${s.day || ''}</td>
-            <td style="padding:10px;border:1px solid #ddd;text-align:center;">${(typeof formatDate==='function')? formatDate(s.date) : (s.date || '')}</td>
-            <td style="padding:10px;border:1px solid #ddd;text-align:center;">${s.className || ''}</td>
-            <td style="padding:10px;border:1px solid #ddd;text-align:center;">${s.number || ''}</td>
-            <td style="padding:10px;border:1px solid #ddd;text-align:center;">${s.teacher || ''}</td>
-            <td style="padding:10px;border:1px solid #ddd;text-align:right;">${s.activities || ''}</td>
-            <td style="padding:10px;border:1px solid #ddd;text-align:right;">${s.fields || ''}</td>
-          </tr>`;
       });
-
-      // الهيدر + اسم المعلمة فوق الجدول
-      printElement.innerHTML = `
-        <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
-          <img src="https://omymh.github.io/school26/26.png" alt="شعار المدرسة"
-               style="width:100%;height:120px;object-fit:cover;object-position:center;border-radius:6px;">
-        </div>
-
-        <h1 style="color:#047857;font-size:32px;font-weight:900;border-bottom:3px solid #10b981;padding-bottom:12px;margin:0 0 16px 0;">
-          تقرير حصص الانتظار
-        </h1>
-
-        <div style="margin:0 0 20px 0;padding:14px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;display:flex;gap:10px;align-items:center;">
-          <strong style="color:#10b981;font-size:16px;">اسم المعلمة:</strong>
-          <span style="font-size:16px;">${teacherName || '—'}</span>
-        </div>
-
-        <table style="width:100%;border-collapse:collapse;margin-top:10px;">
-          <thead>
-            <tr style="background:#10b981;color:#fff;">
-              <th style="padding:12px;border:1px solid #ddd;">م</th>
-              <th style="padding:12px;border:1px solid #ddd;">الأسبوع</th>
-              <th style="padding:12px;border:1px solid #ddd;">اليوم</th>
-              <th style="padding:12px;border:1px solid #ddd;">التاريخ</th>
-              <th style="padding:12px;border:1px solid #ddd;">الصف</th>
-              <th style="padding:12px;border:1px solid #ddd;">الحصة</th>
-              <th style="padding:12px;border:1px solid #ddd;">المعلمة الغائبة</th>
-              <th style="padding:12px;border:1px solid #ddd;">ما تم تنفيذه</th>
-              <th style="padding:12px;border:1px solid #ddd;">المجال</th>
-            </tr>
-          </thead>
-          <tbody>${rows}</tbody>
-        </table>
-      `;
-
-      document.body.appendChild(printElement);
-
-      // تصوير + PDF
-      const canvas = await html2canvas(printElement, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
-      const imgData = canvas.toDataURL('image/jpeg', 0.95);
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const imgHeight = (canvas.height * pageWidth) / canvas.width;
-      pdf.addImage(imgData, 'JPEG', 0, 0, pageWidth, imgHeight);
-      pdf.save('تقرير حصص الانتظار.pdf');
-      if (typeof showToast === 'function') showToast('تم التصدير بنجاح');
-    } catch (err) {
-      console.error('خطأ في التصدير:', err);
-      if (typeof showToast === 'function') showToast('حدث خطأ أثناء التصدير', 'err');
     }
-  });
-}
   </script>
 </body>
 </html>
