@@ -977,7 +977,7 @@
       });
     }
 
-    // تصدير تقرير النشاط
+    // تصدير تقرير النشاط - مع تحسين عرض الصور
     function initializeActivityExport() {
       document.getElementById('exportActivity').addEventListener('click', async function(e) {
         e.preventDefault();
@@ -1008,6 +1008,7 @@
             direction: rtl;
           `;
           
+          // إنشاء محتوى التقرير مع تحسين عرض الصور
           printElement.innerHTML = `
             <!-- الديباجة -->
             <div style="text-align: center; margin-bottom: 30px;">
@@ -1062,14 +1063,15 @@
             </div>
             ` : ''}
 
-            <!-- صور الشواهد -->
+            <!-- صور الشواهد - نسخة محسنة تضمن ظهور جميع الصور -->
             ${witness.length > 0 ? `
             <div style="margin-bottom: 25px; page-break-inside: avoid;">
               <h4 style="color: #047857; font-size: 18px; margin-bottom: 15px; border-right: 4px solid #10b981; padding-right: 10px;">صور الشواهد</h4>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                 ${witness.map(w => `
-                  <div style="text-align: center; height: 200px; display: flex; justify-content: center; align-items: center; overflow: hidden;">
-                    <img src="${w.url}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                  <div style="text-align: center; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; background: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 250px;">
+                    <img src="${w.url}" style="max-width: 100%; max-height: 200px; object-fit: contain; display: block; margin: 0 auto;">
+                    <p style="margin-top: 10px; font-size: 14px; color: #64748b;">شاهد النشاط</p>
                   </div>
                 `).join('')}
               </div>
@@ -1083,7 +1085,17 @@
             scale: 2,
             backgroundColor: "#ffffff",
             useCORS: true,
-            logging: false
+            logging: false,
+            allowTaint: true,
+            onclone: function(clonedDoc) {
+              // ضمان تحميل الصور بشكل صحيح في العنصر المستنسخ
+              const images = clonedDoc.querySelectorAll('img');
+              images.forEach(img => {
+                if (img.src.startsWith('data:')) {
+                  img.crossOrigin = 'anonymous';
+                }
+              });
+            }
           });
 
           document.body.removeChild(printElement);
@@ -1103,7 +1115,19 @@
           const imgWidth = pageWidth;
           const imgHeight = (canvas.height * pageWidth) / canvas.width;
 
-          pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+          // إضافة الصفحات الإضافية إذا كان المحتوى طويلاً
+          let heightLeft = imgHeight;
+          let position = 0;
+
+          pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+
+          while (heightLeft >= 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+          }
           
           pdf.save('تقرير نشاط - ' + (data.title || 'المدرسة') + '.pdf');
           showToast('تم التصدير بنجاح');
