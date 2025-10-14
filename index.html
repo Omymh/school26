@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>المدرسة السادسة والعشرون - تبوك</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
@@ -12,7 +12,7 @@
       --dark: #047857;
       --light: #d1fae5;
       --accent: #fbbf24;
-      --container: max(280px, min(1200px, 94vw));
+      --container: 94vw;
     }
     
     * {
@@ -28,6 +28,7 @@
       line-height: 1.7;
       color: #0f172a;
       min-height: 100vh;
+      overflow-x: hidden;
     }
     
     .header-logo {
@@ -60,6 +61,9 @@
     nav {
       background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
       box-shadow: 0 4px 20px rgba(16, 185, 129, .2);
+      position: sticky;
+      top: 0;
+      z-index: 999;
     }
     
     .nav {
@@ -67,22 +71,25 @@
       margin: auto;
       display: flex;
       justify-content: center;
-      gap: 12px;
+      gap: 8px;
       flex-wrap: wrap;
-      padding: 16px;
+      padding: 12px;
     }
     
     .nav-btn {
       border: none;
       border-radius: 25px;
-      padding: 12px 28px;
+      padding: 10px 16px;
       font-weight: 700;
       color: var(--primary);
       cursor: pointer;
       background: #fff;
       box-shadow: 0 4px 15px rgba(0, 0, 0, .1);
       transition: all .3s;
-      font-size: 15px;
+      font-size: 14px;
+      flex: 1;
+      min-width: 120px;
+      text-align: center;
     }
     
     .nav-btn:hover {
@@ -100,7 +107,7 @@
     .container {
       width: var(--container);
       margin: auto;
-      padding: 24px 24px 120px;
+      padding: 16px 16px 120px;
       position: relative;
       z-index: 1;
     }
@@ -108,10 +115,10 @@
     .page {
       display: none;
       background: #fff;
-      padding: 32px;
-      border-radius: 20px;
-      box-shadow: 0 20px 60px rgba(16, 185, 129, .1);
-      margin-bottom: 24px;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(16, 185, 129, .1);
+      margin-bottom: 16px;
     }
     
     .page.active {
@@ -133,71 +140,72 @@
     h1 {
       color: #047857;
       text-align: center;
-      margin: 0 0 20px;
-      font-size: 32px;
+      margin: 0 0 16px;
+      font-size: 24px;
       font-weight: 900;
     }
     
     h2 {
       color: var(--primary);
-      margin: 24px 0 12px;
-      font-size: 22px;
-      border-right: 6px solid var(--accent);
-      padding-right: 12px;
+      margin: 20px 0 10px;
+      font-size: 20px;
+      border-right: 4px solid var(--accent);
+      padding-right: 10px;
       font-weight: 800;
     }
     
     .page p {
       text-align: center;
-      font-size: 18px;
+      font-size: 16px;
       color: #64748b;
-      margin: 20px auto;
-      max-width: 800px;
-      line-height: 1.8;
+      margin: 16px auto;
+      max-width: 100%;
+      line-height: 1.6;
     }
     
     .form {
       display: grid;
-      gap: 16px;
+      gap: 12px;
     }
     
     .grid-2 {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 12px;
     }
     
     .grid-3 {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 12px;
     }
     
     label {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
       color: #334155;
       font-weight: 600;
-      font-size: 15px;
+      font-size: 14px;
     }
     
     .chipset {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
     }
     
     .chip {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       background: linear-gradient(135deg, #f0fdf4, #dcfce7);
-      padding: 10px 16px;
-      border-radius: 12px;
+      padding: 8px 12px;
+      border-radius: 10px;
       border: 2px solid var(--light);
       cursor: pointer;
       transition: all .3s;
+      font-size: 14px;
     }
     
     .chip:hover {
@@ -206,17 +214,17 @@
     }
     
     .chip input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       accent-color: var(--primary);
       cursor: pointer;
     }
     
     .input, select, textarea {
       width: 100%;
-      padding: 14px;
+      padding: 12px;
       border: 2px solid #e2e8f0;
-      border-radius: 12px;
+      border-radius: 10px;
       background: #f8fafc;
       font-size: 16px;
       transition: all .3s;
@@ -230,23 +238,24 @@
     }
     
     textarea {
-      min-height: 110px;
+      min-height: 100px;
       resize: vertical;
     }
     
     .btn {
-      padding: 14px 24px;
+      padding: 12px 20px;
       border: none;
-      border-radius: 20px;
+      border-radius: 16px;
       color: #fff;
       font-weight: 800;
       cursor: pointer;
       background: linear-gradient(135deg, var(--primary), var(--secondary));
-      box-shadow: 0 6px 20px rgba(16, 185, 129, .3);
+      box-shadow: 0 4px 15px rgba(16, 185, 129, .3);
       transition: all .2s;
-      font-size: 15px;
+      font-size: 14px;
       display: inline-block;
       text-align: center;
+      width: 100%;
     }
     
     .btn:active {
@@ -255,7 +264,7 @@
     
     .btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(16, 185, 129, .4);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, .4);
     }
     
     .btn.danger {
@@ -264,15 +273,15 @@
     
     .actions {
       display: flex;
+      flex-direction: column;
       gap: 10px;
-      flex-wrap: wrap;
     }
     
     .upload {
       border: 3px dashed var(--primary);
-      border-radius: 16px;
+      border-radius: 12px;
       background: linear-gradient(135deg, #f0fdf4, #dcfce7);
-      padding: 20px;
+      padding: 16px;
       text-align: center;
       cursor: pointer;
       transition: all .3s;
@@ -285,32 +294,32 @@
     .upload p {
       color: var(--primary);
       font-weight: 800;
-      margin: 0 0 10px;
-      font-size: 15px;
+      margin: 0 0 8px;
+      font-size: 14px;
     }
     
     .witness-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-top: 16px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 12px;
     }
     
     .witness-grid img {
       width: 100%;
-      height: 160px;
+      height: 140px;
       object-fit: cover;
-      border-radius: 12px;
-      border: 3px solid var(--light);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, .1);
+      border-radius: 10px;
+      border: 2px solid var(--light);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, .1);
     }
     
     .hint {
       text-align: center;
       color: var(--secondary);
       font-weight: 600;
-      margin-top: 10px;
-      font-size: 14px;
+      margin-top: 8px;
+      font-size: 13px;
     }
     
     table {
@@ -318,24 +327,25 @@
       border-collapse: separate;
       border-spacing: 0;
       background: #fff;
-      border-radius: 12px;
+      border-radius: 10px;
       overflow: hidden;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, .08);
-      margin: 16px 0;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, .08);
+      margin: 12px 0;
+      min-width: 700px;
     }
     
     th, td {
-      padding: 12px 10px;
+      padding: 10px 8px;
       text-align: center;
       border-bottom: 1px solid #f1f5f9;
-      font-size: 14px;
+      font-size: 13px;
     }
     
     th {
       background: linear-gradient(135deg, var(--primary), var(--secondary));
       color: #fff;
       font-weight: 800;
-      font-size: 13px;
+      font-size: 12px;
     }
     
     tbody tr:hover {
@@ -347,9 +357,10 @@
     }
     
     .table-wrap {
-      border-radius: 12px;
+      border-radius: 10px;
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, .05);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, .05);
+      overflow-x: auto;
     }
     
     .site-footer {
@@ -357,15 +368,15 @@
       inset: auto 0 0 0;
       background: linear-gradient(135deg, var(--primary), var(--dark));
       color: #fff;
-      padding: 12px;
+      padding: 10px;
       text-align: center;
-      box-shadow: 0 -8px 30px rgba(0, 0, 0, .15);
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, .15);
       z-index: 5;
     }
     
     .site-footer p {
-      margin: 5px 0;
-      font-size: 14px;
+      margin: 4px 0;
+      font-size: 12px;
     }
     
     .site-footer strong {
@@ -379,13 +390,15 @@
       transform: translateX(-50%);
       background: linear-gradient(135deg, var(--primary), var(--secondary));
       color: #fff;
-      padding: 12px 20px;
-      border-radius: 16px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, .2);
+      padding: 10px 16px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, .2);
       z-index: 9999;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
       animation: toastIn .3s ease;
+      max-width: 90%;
+      text-align: center;
     }
     
     @keyframes toastIn {
@@ -424,18 +437,21 @@
     }
     
     .hijri-calendar {
-      position: absolute;
+      position: fixed;
       background: white;
       border-radius: 12px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
       padding: 15px;
       z-index: 100;
-      width: 300px;
+      width: 90vw;
+      max-width: 320px;
       display: none;
-      margin-top: 5px;
-      top: 100%;
-      right: 0;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       border: 2px solid var(--light);
+      max-height: 80vh;
+      overflow-y: auto;
     }
     
     .hijri-calendar.active {
@@ -472,6 +488,7 @@
       font-weight: bold;
       color: var(--dark);
       transition: all 0.2s;
+      font-size: 14px;
     }
     
     .hijri-nav button:hover {
@@ -486,7 +503,7 @@
       font-weight: 700;
       margin-bottom: 5px;
       color: var(--dark);
-      font-size: 14px;
+      font-size: 13px;
     }
     
     .hijri-days {
@@ -496,12 +513,12 @@
     }
     
     .hijri-day {
-      padding: 8px;
+      padding: 8px 5px;
       text-align: center;
-      border-radius: 8px;
+      border-radius: 6px;
       cursor: pointer;
       transition: all 0.2s;
-      font-size: 14px;
+      font-size: 13px;
     }
     
     .hijri-day:hover {
@@ -565,6 +582,7 @@
       font-weight: 600;
       width: 100%;
       transition: all 0.2s;
+      font-size: 14px;
     }
     
     .today-btn:hover {
@@ -572,80 +590,106 @@
       color: white;
     }
     
-    @media (max-width: 900px) {
-      .grid-2, .grid-3 {
-        grid-template-columns: 1fr;
+    /* تحسينات للجوال */
+    @media (min-width: 768px) {
+      :root {
+        --container: min(1200px, 94vw);
       }
+      
+      .container {
+        padding: 24px 24px 120px;
+      }
+      
+      .page {
+        padding: 32px;
+        border-radius: 20px;
+      }
+      
+      h1 {
+        font-size: 32px;
+        margin: 0 0 20px;
+      }
+      
+      h2 {
+        font-size: 22px;
+        margin: 24px 0 12px;
+      }
+      
+      .page p {
+        font-size: 18px;
+      }
+      
+      .grid-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+      
+      .grid-3 {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+      
+      .nav-btn {
+        padding: 12px 28px;
+        font-size: 15px;
+        flex: 0 1 auto;
+      }
+      
+      .btn {
+        padding: 14px 24px;
+        width: auto;
+      }
+      
+      .actions {
+        flex-direction: row;
+      }
+      
       .witness-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(4, 1fr);
       }
+      
       .witness-grid img {
-        height: 130px;
+        height: 160px;
+      }
+      
+      .hijri-calendar {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        left: auto;
+        transform: none;
+        width: 300px;
+        max-width: none;
       }
     }
     
     @media (max-width: 480px) {
-      :root {
-        --container: 100vw;
-      }
-      .container {
-        width: 100vw;
-        padding: 16px 16px 120px;
-      }
-      .page {
-        padding: 20px;
-        border-radius: 16px;
-      }
-      h1 {
-        font-size: 24px;
-      }
-      .nav {
-        width: 100vw;
-        padding: 12px;
-        gap: 8px;
-      }
-      .nav-btn {
-        flex: 1 1 auto;
-        padding: 10px 12px;
-        font-size: 13px;
-      }
-      .actions {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 10px;
-      }
-      .btn {
-        width: 100%;
-        padding: 14px;
-        font-size: 15px;
-      }
-      .witness-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-      }
-      .witness-grid img {
-        height: 120px;
-      }
-      .table-wrap {
-        overflow-x: auto;
-      }
-      table {
-        min-width: 760px;
-        font-size: 13px;
-      }
       .header-logo img {
         max-height: 70px;
       }
-      .site-footer p {
+      
+      .nav {
+        gap: 6px;
+        padding: 10px;
+      }
+      
+      .nav-btn {
+        min-width: 100px;
+        padding: 8px 12px;
         font-size: 12px;
       }
-      .hijri-calendar {
-        width: 280px;
-        right: 0;
-        left: auto;
+      
+      .witness-grid img {
+        height: 120px;
       }
-      .date-input-container .input {
-        padding-right: 45px;
+    }
+    
+    /* تحسينات للطباعة */
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      
+      .site-footer {
+        position: static;
       }
     }
   </style>
@@ -799,16 +843,16 @@
         <table id="sessionsTable">
           <thead>
             <tr>
-              <th style="width:50px">م</th>
-              <th style="width:90px">الأسبوع</th>
-              <th style="width:90px">اليوم</th>
-              <th style="width:120px">التاريخ</th>
+              <th style="width:40px">م</th>
+              <th style="width:80px">الأسبوع</th>
+              <th style="width:80px">اليوم</th>
+              <th style="width:100px">التاريخ</th>
               <th>الصف</th>
-              <th style="width:70px">الحصة</th>
-              <th style="width:160px">المعلمة الغائبة</th>
-              <th style="min-width:240px">ما تم تنفيذه</th>
-              <th style="min-width:160px">المجال</th>
-              <th class="no-print" style="width:90px">إجراء</th>
+              <th style="width:60px">الحصة</th>
+              <th style="width:140px">المعلمة الغائبة</th>
+              <th style="min-width:200px">ما تم تنفيذه</th>
+              <th style="min-width:140px">المجال</th>
+              <th class="no-print" style="width:80px">إجراء</th>
             </tr>
           </thead>
           <tbody id="sessionsBody"></tbody>
@@ -977,7 +1021,7 @@
       });
     }
 
-    // تصدير تقرير النشاط - مع تحسين عرض الصور
+    // تصدير تقرير النشاط - مع تحسين عرض الصور للجوال
     function initializeActivityExport() {
       document.getElementById('exportActivity').addEventListener('click', async function(e) {
         e.preventDefault();
@@ -1008,7 +1052,7 @@
             direction: rtl;
           `;
           
-          // إنشاء محتوى التقرير مع تحسين عرض الصور
+          // إنشاء محتوى التقرير مع تحسين عرض الصور للجوال
           printElement.innerHTML = `
             <!-- الديباجة -->
             <div style="text-align: center; margin-bottom: 30px;">
