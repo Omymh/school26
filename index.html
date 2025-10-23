@@ -693,7 +693,7 @@
     <nav>
         <div class="nav">
             <button class="nav-btn active" id="navHome">الصفحة الرئيسية</button>
-            <button class="nav-btn" id="navActivities">تقارير الأنشطة</button>
+            <button class="nav-btn" id="navReport">التقرير</button>
             <button class="nav-btn" id="navSessions">تقارير الحصص</button>
         </div>
     </nav>
@@ -704,11 +704,11 @@
             <p>مرحباً بالمعلمات الكريمات في منصة المدرسة السادسة والعشرون بتبوك لتوثيق الأنشطة والحصص بكفاءة وسهولة.</p>
         </section>
         
-        <section id="activities" class="page">
-            <h1>تقرير النشاط المدرسي</h1>
-            <form id="actForm" class="form">
+        <section id="report" class="page">
+            <h1>التقرير</h1>
+            <form id="reportForm" class="form">
                 <div class="grid-2">
-                    <label>اسم البرنامج / النشاط *<input class="input" name="title" required></label>
+                    <label>اسم البرنامج *<input class="input" name="title" required></label>
                     <label>المنفذ *<input class="input" name="owner" required></label>
                     <label>عدد المستفيدين<input class="input" name="count" type="number" min="1"></label>
                     
@@ -743,7 +743,7 @@
                 </div>
                 
                 <label>الأهداف<textarea class="input" name="goals"></textarea></label>
-                <label>وصف النشاط<textarea class="input" name="desc"></textarea></label>
+                <label>وصف التقرير<textarea class="input" name="desc"></textarea></label>
                 
                 <div>
                     <div class="upload" id="uploadBox">
@@ -753,7 +753,7 @@
                     </div>
                     <div id="witnessPreview" class="witness-grid"></div>
                     <div class="actions" style="margin-top:16px">
-                        <button class="btn" type="button" id="exportActivity">تصدير PDF</button>
+                        <button class="btn" type="button" id="exportReport">تصدير PDF</button>
                         <button class="btn danger" type="button" id="clearWitness">حذف الصور</button>
                     </div>
                     <div class="hint" id="wCount">(0/4)</div>
@@ -883,7 +883,7 @@
             loadSessions();
             initializeNavigation();
             initializeWitnessManagement();
-            initializeActivityExport();
+            initializeReportExport();
             initializeSessionManagement();
             initializeSessionsExport();
             initializeHijriCalendar();
@@ -927,8 +927,8 @@
                 setActiveNav(this);
             });
             
-            document.getElementById('navActivities').addEventListener('click', function() {
-                showPage('activities');
+            document.getElementById('navReport').addEventListener('click', function() {
+                showPage('report');
                 setActiveNav(this);
             });
             
@@ -994,7 +994,7 @@
                         
                         const img = document.createElement('img');
                         img.src = e.target.result;
-                        img.alt = 'شاهد النشاط';
+                        img.alt = 'شاهد التقرير';
                         witnessPreview.appendChild(img);
                         
                         processed++;
@@ -1024,12 +1024,12 @@
             });
         }
         
-        // تصدير تقرير النشاط
-        function initializeActivityExport() {
-            document.getElementById('exportActivity').addEventListener('click', async function(e) {
+        // تصدير التقرير
+        function initializeReportExport() {
+            document.getElementById('exportReport').addEventListener('click', async function(e) {
                 e.preventDefault();
                 
-                const form = document.getElementById('actForm');
+                const form = document.getElementById('reportForm');
                 const formData = new FormData(form);
                 const data = Object.fromEntries(formData);
                 
@@ -1062,14 +1062,14 @@
                             <img src="https://omymh.github.io/school26/26.png" alt="شعار المدرسة" 
                                  style="width: 100%; height: 120px; object-fit: cover; object-position: center; margin-bottom: 25px;">
                             <h1 style="color: #047857; font-size: 32px; margin: 0; font-weight: 900; border-bottom: 3px solid #10b981; padding-bottom: 15px;">
-                                تقرير النشاط المدرسي
+                                التقرير
                             </h1>
                         </div>
         
-                        <!-- معلومات النشاط -->
+                        <!-- معلومات التقرير -->
                         <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
                             <tr>
-                                <td style="padding: 12px; border: 1px solid #e2e8f0; background: #f8fafc; font-weight: bold; width: 30%;">اسم البرنامج / النشاط</td>
+                                <td style="padding: 12px; border: 1px solid #e2e8f0; background: #f8fafc; font-weight: bold; width: 30%;">اسم البرنامج</td>
                                 <td style="padding: 12px; border: 1px solid #e2e8f0;">${data.title}</td>
                             </tr>
                             <tr>
@@ -1100,10 +1100,10 @@
                         </div>
                         ` : ''}
         
-                        <!-- وصف النشاط -->
+                        <!-- وصف التقرير -->
                         ${data.desc ? `
                         <div style="margin-bottom: 25px;">
-                            <h4 style="color: #047857; font-size: 18px; margin-bottom: 10px; border-right: 4px solid #10b981; padding-right: 10px;">وصف النشاط</h4>
+                            <h4 style="color: #047857; font-size: 18px; margin-bottom: 10px; border-right: 4px solid #10b981; padding-right: 10px;">وصف التقرير</h4>
                             <div style="padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
                                 ${data.desc}
                             </div>
@@ -1118,7 +1118,7 @@
                                 ${witness.map(w => `
                                     <div style="text-align: center; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; background: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 250px;">
                                         <img src="${w.url}" style="max-width: 100%; max-height: 200px; object-fit: contain; display: block; margin: 0 auto;">
-                                        <p style="margin-top: 10px; font-size: 14px; color: #64748b;">شاهد النشاط</p>
+                                        <p style="margin-top: 10px; font-size: 14px; color: #64748b;">شاهد التقرير</p>
                                     </div>
                                 `).join('')}
                             </div>
@@ -1152,7 +1152,7 @@
         
                     pdf.addImage(imgData, 'JPEG', 0, 0, pageWidth, imgHeight);
                     
-                    pdf.save('تقرير نشاط - ' + (data.title || 'المدرسة') + '.pdf');
+                    pdf.save('التقرير - ' + (data.title || 'المدرسة') + '.pdf');
                     showToast('تم التصدير بنجاح');
         
                 } catch (error) {
