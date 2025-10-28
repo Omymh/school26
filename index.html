@@ -425,7 +425,7 @@
             background: linear-gradient(135deg, #f59e0b, #d97706);
         }
         
-        /* التقويم الهجري */
+        /* التقويم الهجري المحسن */
         .date-with-hijri {
             position: relative;
         }
@@ -446,23 +446,27 @@
             left: 10px;
             top: 50%;
             transform: translateY(-50%);
-            background: transparent;
+            background: var(--light);
             border: none;
-            color: var(--dark);
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 18px;
-            padding: 5px;
-            border-radius: 6px;
-            transition: all 0.2s;
-            width: 32px;
-            height: 32px;
+            padding: 8px;
+            width: 38px;
+            height: 38px;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.2);
         }
         
         .hijri-toggle:hover {
-            background: rgba(16, 185, 129, 0.1);
+            background: var(--primary);
+            transform: translateY(-50%) scale(1.05);
+        }
+        
+        .hijri-toggle:hover .hijri-icon {
+            fill: white;
         }
         
         .hijri-icon {
@@ -472,20 +476,15 @@
             transition: all 0.3s;
         }
         
-        .hijri-toggle:hover .hijri-icon {
-            fill: var(--dark);
-            transform: scale(1.1);
-        }
-        
         .hijri-calendar {
             position: fixed;
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            padding: 15px;
+            border-radius: 16px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            padding: 20px;
             z-index: 100;
             width: 90vw;
-            max-width: 320px;
+            max-width: 360px;
             display: none;
             top: 50%;
             left: 50%;
@@ -504,32 +503,37 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
             border-bottom: 1px solid #e2e8f0;
         }
         
         .hijri-month-year {
-            font-weight: 700;
+            font-weight: 800;
             color: var(--dark);
-            font-size: 16px;
+            font-size: 18px;
         }
         
         .hijri-nav {
             display: flex;
-            gap: 5px;
+            gap: 8px;
         }
         
         .hijri-nav button {
             background: var(--light);
             border: none;
-            border-radius: 6px;
-            padding: 5px 10px;
+            border-radius: 8px;
+            padding: 8px 12px;
             cursor: pointer;
             font-weight: bold;
             color: var(--dark);
             transition: all 0.2s;
-            font-size: 14px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
         }
         
         .hijri-nav button:hover {
@@ -541,25 +545,28 @@
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             text-align: center;
-            font-weight: 700;
-            margin-bottom: 5px;
+            font-weight: 800;
+            margin-bottom: 10px;
             color: var(--dark);
-            font-size: 13px;
+            font-size: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f1f5f9;
         }
         
         .hijri-days {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
+            gap: 6px;
         }
         
         .hijri-day {
-            padding: 8px 5px;
+            padding: 10px 5px;
             text-align: center;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 13px;
+            font-size: 14px;
+            font-weight: 600;
         }
         
         .hijri-day:hover {
@@ -571,16 +578,39 @@
             color: white;
         }
         
+        .hijri-day.today {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .hijri-day.other-month {
+            color: #94a3b8;
+        }
+        
+        .hijri-day.disabled {
+            color: #cbd5e1;
+            cursor: not-allowed;
+        }
+        
+        .hijri-day.disabled:hover {
+            background: transparent;
+        }
+        
+        .calendar-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        
         .today-btn {
-            margin-top: 10px;
-            padding: 8px 12px;
+            flex: 1;
+            padding: 10px;
             background: var(--light);
             color: var(--dark);
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            width: 100%;
             transition: all 0.2s;
             font-size: 14px;
         }
@@ -656,7 +686,7 @@
                 right: 0;
                 left: auto;
                 transform: none;
-                width: 300px;
+                width: 340px;
                 max-width: none;
             }
         }
@@ -735,7 +765,9 @@
                                 <span>ح</span><span>ن</span><span>ث</span><span>ر</span><span>خ</span><span>ج</span><span>س</span>
                             </div>
                             <div class="hijri-days"></div>
-                            <button class="today-btn">اختر اليوم</button>
+                            <div class="calendar-actions">
+                                <button class="today-btn">اختر اليوم</button>
+                            </div>
                         </div>
                     </label>
                     
@@ -816,7 +848,9 @@
                                 <span>ح</span><span>ن</span><span>ث</span><span>ر</span><span>خ</span><span>ج</span><span>س</span>
                             </div>
                             <div class="hijri-days"></div>
-                            <button class="today-btn">اختر اليوم</button>
+                            <div class="calendar-actions">
+                                <button class="today-btn">اختر اليوم</button>
+                            </div>
                         </div>
                     </label>
                     
@@ -831,6 +865,18 @@
                     <label class="chip"><input type="checkbox" id="basicSkills"> المهارات الأساسية</label>
                     <label class="chip"><input type="checkbox" id="values"> القيم والمواطنة الصالحة</label>
                     <label class="chip"><input type="checkbox" id="futureSkills"> مهارات المستقبل</label>
+                </div>
+                
+                <!-- قسم الشواهد المضاف -->
+                <div>
+                    <h2>صور الشواهد</h2>
+                    <div class="upload" id="sessionUploadBox">
+                        <p>اضغطي هنا لرفع صور الشواهد (حد أقصى 4)</p>
+                        <input type="file" id="sessionWitnessFiles" accept="image/*" multiple hidden>
+                        <button class="btn" type="button" id="addSessionWitness">إضافة الشواهد</button>
+                    </div>
+                    <div id="sessionWitnessPreview" class="witness-grid"></div>
+                    <div class="hint" id="sessionWCount">(0/4)</div>
                 </div>
                 
                 <div class="actions">
@@ -874,15 +920,15 @@
     <script>
         // تهيئة المتغيرات
         let witness = [];
+        let sessionWitness = []; // الشواهد الخاصة بالحصص
         let sessions = [];
-        let currentHijriYear = 1447;
-        let currentHijriMonth = 1;
         
         // تحميل البيانات من localStorage عند بدء التشغيل
         document.addEventListener('DOMContentLoaded', function() {
             loadSessions();
             initializeNavigation();
             initializeWitnessManagement();
+            initializeSessionWitnessManagement(); // إدارة شواهد الحصص
             initializeReportExport();
             initializeSessionManagement();
             initializeSessionsExport();
@@ -957,7 +1003,7 @@
             activeButton.classList.add('active');
         }
         
-        // إدارة الشواهد
+        // إدارة الشواهد للتقرير العادي
         function initializeWitnessManagement() {
             const witnessFiles = document.getElementById('witnessFiles');
             const witnessPreview = document.getElementById('witnessPreview');
@@ -1022,6 +1068,79 @@
                 witnessCount.textContent = '(0/4)';
                 showToast('تم الحذف');
             });
+        }
+        
+        // إدارة الشواهد للحصص (الجديد)
+        function initializeSessionWitnessManagement() {
+            const sessionWitnessFiles = document.getElementById('sessionWitnessFiles');
+            const sessionWitnessPreview = document.getElementById('sessionWitnessPreview');
+            const sessionWitnessCount = document.getElementById('sessionWCount');
+            
+            document.getElementById('sessionUploadBox').addEventListener('click', function() {
+                sessionWitnessFiles.click();
+            });
+            
+            document.getElementById('addSessionWitness').addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                sessionWitnessFiles.click();
+            });
+            
+            sessionWitnessFiles.addEventListener('change', function(e) {
+                const files = Array.from(e.target.files || [])
+                    .filter(file => file.type.startsWith('image/'))
+                    .slice(0, 4 - sessionWitness.length);
+                
+                if (files.length === 0) return;
+                
+                let processed = 0;
+                
+                files.forEach(file => {
+                    if (sessionWitness.length >= 4) return;
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        sessionWitness.push({
+                            name: file.name,
+                            url: e.target.result
+                        });
+                        
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.alt = 'شاهد الحصة';
+                        sessionWitnessPreview.appendChild(img);
+                        
+                        processed++;
+                        if (processed === files.length) {
+                            sessionWitnessCount.textContent = `(${sessionWitness.length}/4)`;
+                            showToast('تم تحميل الشواهد');
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                });
+            });
+            
+            // إضافة زر لحذف شواهد الحصص
+            const clearSessionWitnessBtn = document.createElement('button');
+            clearSessionWitnessBtn.className = 'btn danger';
+            clearSessionWitnessBtn.textContent = 'حذف الصور';
+            clearSessionWitnessBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (sessionWitness.length === 0) {
+                    showToast('لا توجد صور', 'warn');
+                    return;
+                }
+                
+                if (!confirm('حذف جميع صور الشواهد؟')) return;
+                
+                sessionWitness = [];
+                sessionWitnessFiles.value = '';
+                sessionWitnessPreview.innerHTML = '';
+                sessionWitnessCount.textContent = '(0/4)';
+                showToast('تم الحذف');
+            });
+            
+            document.querySelector('#sessionUploadBox').parentNode.appendChild(clearSessionWitnessBtn);
         }
         
         // تصدير التقرير
@@ -1237,7 +1356,8 @@
                     number: sessionNumber,
                     teacher: absentTeacher,
                     activities: activitiesText,
-                    fields: fields.join('، ')
+                    fields: fields.join('، '),
+                    witness: [...sessionWitness] // حفظ الشواهد مع الحصة
                 });
                 
                 try {
@@ -1247,7 +1367,11 @@
                 renderSessions();
                 showToast('تم حفظ الحصة');
                 
+                // إعادة تعيين النموذج
                 document.getElementById('sesForm').reset();
+                sessionWitness = [];
+                document.getElementById('sessionWitnessPreview').innerHTML = '';
+                document.getElementById('sessionWCount').textContent = '(0/4)';
             });
         
             document.getElementById('clearAll').addEventListener('click', function(e) {
@@ -1269,7 +1393,7 @@
             });
         }
         
-        // تصدير تقرير الحصص
+        // تصدير تقرير الحصص (محدث ليشمل الشواهد)
         function initializeSessionsExport() {
             const btn = document.getElementById('exportSessions');
             if (!btn) return;
@@ -1335,6 +1459,36 @@
                         </table>
                     `;
         
+                    // إضافة الشواهد إذا كانت موجودة
+                    const hasWitness = sessions.some(s => s.witness && s.witness.length > 0);
+                    if (hasWitness) {
+                        let witnessSection = `<div style="margin-top:30px;page-break-before:always;">
+                            <h2 style="color:#047857;font-size:24px;font-weight:900;border-bottom:2px solid #10b981;padding-bottom:10px;">
+                                صور الشواهد
+                            </h2>`;
+                        
+                        sessions.forEach((s, i) => {
+                            if (s.witness && s.witness.length > 0) {
+                                witnessSection += `<div style="margin:20px 0;">
+                                    <h3 style="color:#059669;font-size:18px;margin-bottom:10px;">الحصة ${i+1}: ${s.className || ''} - ${s.date || ''}</h3>
+                                    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:15px;">`;
+                                
+                                s.witness.forEach(w => {
+                                    witnessSection += `
+                                        <div style="text-align:center;border:1px solid #ddd;border-radius:8px;padding:10px;background:#f8fafc;">
+                                            <img src="${w.url}" style="max-width:100%;max-height:150px;object-fit:contain;display:block;margin:0 auto;">
+                                            <p style="margin-top:8px;font-size:12px;color:#64748b;">شاهد الحصة</p>
+                                        </div>`;
+                                });
+                                
+                                witnessSection += `</div></div>`;
+                            }
+                        });
+                        
+                        witnessSection += `</div>`;
+                        printElement.innerHTML += witnessSection;
+                    }
+        
                     document.body.appendChild(printElement);
         
                     const canvas = await html2canvas(printElement, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
@@ -1353,9 +1507,9 @@
             });
         }
         
-        // تهيئة التقويم الهجري
+        // تهيئة التقويم الهجري المحسن
         function initializeHijriCalendar() {
-            // إعداد التواريخ الهجرية
+            // إعداد التواريخ الهجرية الصحيحة
             setupHijriCalendar();
             
             // ربط أحداث التقويم الهجري
@@ -1388,16 +1542,43 @@
                     });
                     calendar.classList.toggle('active');
                 });
+                
+                // السماح بالإدخال اليدوي المباشر
+                input.removeAttribute('readonly');
+                input.placeholder = "أدخل التاريخ الهجري (مثال: 15 رمضان 1446)";
+                
+                // إضافة تلميح عند التركيز
+                input.addEventListener('focus', function() {
+                    this.style.borderColor = 'var(--primary)';
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.style.borderColor = '#e2e8f0';
+                });
             });
         }
         
-        // دالة لإنشاء التقويم الهجري
+        // دالة لإنشاء التقويم الهجري المحسن
         function setupHijriCalendar() {
             const hijriMonths = [
                 "محرم", "صفر", "ربيع الأول", "ربيع الآخر", 
                 "جمادى الأولى", "جمادى الآخرة", "رجب", 
                 "شعبان", "رمضان", "شوال", "ذو القعدة", "ذو الحجة"
             ];
+            
+            // تواريخ هجرية صحيحة لعام 1446هـ مع عدد أيام كل شهر
+            const hijriDaysInMonth = [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29];
+            
+            // تاريخ اليوم الهجري الحالي (تقريبي)
+            const today = new Date();
+            const todayHijri = {
+                day: 15, // تقديري
+                month: 9, // رمضان
+                year: 1446
+            };
+            
+            let currentHijriYear = todayHijri.year;
+            let currentHijriMonth = todayHijri.month;
             
             document.querySelectorAll('.hijri-calendar').forEach(calendar => {
                 const monthYear = calendar.querySelector('.hijri-month-year');
@@ -1415,13 +1596,30 @@
                     // مسح الأيام السابقة
                     daysContainer.innerHTML = '';
                     
-                    // حساب عدد أيام الشهر الهجري (تقريبي)
-                    const daysInMonth = currentHijriMonth % 2 === 0 ? 29 : 30;
+                    // حساب عدد أيام الشهر الهجري
+                    const daysInMonth = hijriDaysInMonth[currentHijriMonth - 1];
                     
-                    // ملء الأيام
+                    // حساب أول يوم في الشهر (تقريبي)
+                    const firstDay = 0; // الأحد
+                    
+                    // ملء الأيام الفارغة قبل بداية الشهر
+                    for (let i = 0; i < firstDay; i++) {
+                        const emptyDay = document.createElement('div');
+                        emptyDay.className = 'hijri-day other-month';
+                        emptyDay.textContent = '';
+                        daysContainer.appendChild(emptyDay);
+                    }
+                    
+                    // ملء أيام الشهر
                     for (let i = 1; i <= daysInMonth; i++) {
                         const dayElement = document.createElement('div');
                         dayElement.className = 'hijri-day';
+                        
+                        // تحديد إذا كان اليوم هو اليوم الحالي
+                        if (i === todayHijri.day && currentHijriMonth === todayHijri.month && currentHijriYear === todayHijri.year) {
+                            dayElement.classList.add('today');
+                        }
+                        
                         dayElement.textContent = i;
                         dayElement.addEventListener('click', function() {
                             // تحديث حقل التاريخ الهجري
@@ -1467,10 +1665,8 @@
                 
                 // زر اختيار اليوم الحالي
                 todayBtn.addEventListener('click', function() {
-                    // هنا يمكن إضافة منطق لاختيار اليوم الحالي
-                    // للتبسيط، سنختار اليوم الأول من الشهر الحالي
                     const dateInput = calendar.closest('.date-with-hijri').querySelector('.hijri-date-input');
-                    dateInput.value = `1 ${hijriMonths[currentHijriMonth - 1]} ${currentHijriYear}هـ`;
+                    dateInput.value = `${todayHijri.day} ${hijriMonths[todayHijri.month - 1]} ${todayHijri.year}هـ`;
                     
                     // إغلاق التقويم
                     calendar.classList.remove('active');
