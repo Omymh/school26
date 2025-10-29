@@ -86,7 +86,7 @@
     /* التقويم الهجري */
     .date-with-hijri{position:relative}
     .date-input-container{position:relative;display:flex;align-items:center}
-    .date-input-container .input{padding-right:50px;cursor:pointer}
+    .date-input-container .input{padding-right:50px;cursor:text}
     .hijri-toggle{position:absolute;left:10px;top:50%;transform:translateY(-50%);background:var(--light);border:none;border-radius:8px;cursor:pointer;padding:8px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;transition:all .3s;box-shadow:0 2px 6px rgba(16,185,129,.2)}
     .hijri-toggle:hover{background:var(--primary);transform:translateY(-50%) scale(1.05)}
     .hijri-toggle:hover .hijri-icon{fill:#fff}
@@ -189,7 +189,7 @@
 
           <label class="date-with-hijri">التاريخ *
             <div class="date-input-container">
-              <input class="input hijri-date-input" name="date" required placeholder="اختر التاريخ الهجري">
+              <input class="input hijri-date-input" name="date" required placeholder="اكتب التاريخ يدويًا أو انقر لاختياره">
               <button type="button" class="hijri-toggle" aria-label="فتح التقويم">
                 <svg class="hijri-icon" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V9h14v10zM5 7V5h14v2H5zm2 4h10v2H7v-2zm0 4h7v2H7v-2z"/></svg>
               </button>
@@ -206,7 +206,10 @@
               </div>
               <div class="hijri-weekdays"><span>ح</span><span>ن</span><span>ث</span><span>ر</span><span>خ</span><span>ج</span><span>س</span></div>
               <div class="hijri-days"></div>
-              <div class="calendar-actions"><button type="button" class="today-btn">اختر اليوم</button></div>
+              <div class="calendar-actions">
+                <button type="button" class="today-btn">اختر اليوم</button>
+                <button type="button" class="btn danger" id="closeCalendar">إغلاق</button>
+              </div>
             </div>
           </label>
 
@@ -254,7 +257,7 @@
 
           <label class="date-with-hijri">التاريخ *
             <div class="date-input-container">
-              <input class="input hijri-date-input" id="sessionDate" required placeholder="اختر التاريخ الهجري">
+              <input class="input hijri-date-input" id="sessionDate" required placeholder="اكتب التاريخ يدويًا أو انقر لاختياره">
               <button type="button" class="hijri-toggle" aria-label="فتح التقويم">
                 <svg class="hijri-icon" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V9h14v10zM5 7V5h14v2H5zm2 4h10v2H7v-2zm0 4h7v2H7v-2z"/></svg>
               </button>
@@ -271,7 +274,10 @@
               </div>
               <div class="hijri-weekdays"><span>ح</span><span>ن</span><span>ث</span><span>ر</span><span>خ</span><span>ج</span><span>س</span></div>
               <div class="hijri-days"></div>
-              <div class="calendar-actions"><button type="button" class="today-btn">اختر اليوم</button></div>
+              <div class="calendar-actions">
+                <button type="button" class="today-btn">اختر اليوم</button>
+                <button type="button" class="btn danger" id="closeCalendar">إغلاق</button>
+              </div>
             </div>
           </label>
 
@@ -345,7 +351,7 @@
       initializeReportExport();
       initializeSessionManagement();
       initializeSessionsExport();
-      initializeHijriCalendar(); // المهم: تفعيل التقويم الهجري
+      initializeHijriCalendar(); // تفعيل التقويم الهجري
     });
 
     function loadSessions(){
@@ -662,251 +668,123 @@
       });
     }
 
-    // ============== التقويم الهجري (الحل الجديد) ==============
-    
-    // تحويل الأرقام العربية/الفارسية إلى إنجليزية للتعامل الآمن
-    function toAsciiDigits(str){
-      return String(str).replace(/[٠-٩۰-۹]/g, d => '٠١٢٣٤٥٦٧٨٩۰۱۲۳۴۵۶۷۸۹'.indexOf(d)%10);
-    }
-
+    // ============== التقويم الهجري (مبسط وسهل الاستخدام) ==============
     const HIJRI_MONTHS = [
       "محرم","صفر","ربيع الأول","ربيع الآخر",
       "جمادى الأولى","جمادى الآخرة","رجب",
       "شعبان","رمضان","شوال","ذو القعدة","ذو الحجة"
     ];
 
-    // فورماترات أرقام للهجري (أكثر ثباتًا على iOS)
-    const hijriNumFmt = new Intl.DateTimeFormat('en-u-ca-islamic', {
-      year:'numeric', month:'numeric', day:'numeric'
-    });
-
-    // تجيب رقم الشهر والسنة الهجرية بشكل مضمون حتى على iOS
-    function getHijriMonthYear(date){
-      // مثال ناتج: "10/15/1447" لكن بترتيب محلي، لذلك نفكّه بـ formatToParts
-      const parts = hijriNumFmt.formatToParts(date);
-      const y = Number(toAsciiDigits((parts.find(p=>p.type==='year')||{}).value || ''));
-      const m = Number(toAsciiDigits((parts.find(p=>p.type==='month')||{}).value || ''));
-      const d = Number(toAsciiDigits((parts.find(p=>p.type==='day')||{}).value || ''));
-      return { y, m, d };
-    }
-
-    // تنسيق نهائي للحقل مع "هـ" مرة واحدة فقط
-    function formatHijriOnce(date){
-      const {y, m, d} = getHijriMonthYear(date);
-      const name = HIJRI_MONTHS[(m||1)-1] || '';
-      return `${d} ${name} ${y} هـ`;
-    }
-
-    function seekToMonthStart(anchor){
-      const d=new Date(anchor); let guard=90;
-      while(guard-- > 0){ 
-        try {
-          if(getHijriMonthYear(d).d===1) break; 
-        } catch (e) {
-          break;
-        }
-        d.setDate(d.getDate()-1); 
-      }
-      return d;
-    }
-    
-    function nextHijriMonthStart(anchor){
-      const d=new Date(anchor); 
-      try {
-        const {m,y}=getHijriMonthYear(d); 
-        let guard=90;
-        while(guard-- > 0){ 
-          d.setDate(d.getDate()+1); 
-          const p=getHijriMonthYear(d); 
-          if(p.d===1 && (p.m!==m || p.y!==y)) return d; 
-        }
-      } catch (e) {
-        // في حالة الخطأ، إضافة 30 يومًا كقيمة افتراضية
-        d.setDate(d.getDate() + 30);
-      }
-      return d;
-    }
-    
-    function prevHijriMonthStart(anchor){
-      const d=new Date(anchor); 
-      try {
-        const {m,y}=getHijriMonthYear(d); 
-        let guard=90;
-        while(guard-- > 0){ 
-          d.setDate(d.getDate()-1); 
-          const p=getHijriMonthYear(d); 
-          if(p.d===1 && (p.m!==m || p.y!==y)) return d; 
-        }
-      } catch (e) {
-        // في حالة الخطأ، طرح 30 يومًا كقيمة افتراضية
-        d.setDate(d.getDate() - 30);
-      }
-      return d;
-    }
-    
-    function buildMonthDays(anchor){
-      const days=[]; const start=new Date(anchor);
-      try {
-        const {m,y}=getHijriMonthYear(start); 
-        const d=new Date(start);
-        do{ 
-          days.push(new Date(d)); 
-          d.setDate(d.getDate()+1); 
-        }while(getHijriMonthYear(d).m===m && getHijriMonthYear(d).y===y);
-      } catch (e) {
-        // في حالة الخطأ، إنشاء شهر افتراضي بـ 30 يومًا
-        for (let i = 0; i < 30; i++) {
-          const day = new Date(anchor);
-          day.setDate(day.getDate() + i);
-          days.push(day);
-        }
-      }
-      return days;
-    }
-    
-    function renderHijriCalendar(calendarEl,state){
-      const monthYearEl = calendarEl.querySelector('.hijri-month-year');
-      const daysWrap = calendarEl.querySelector('.hijri-days');
-      
-      try {
-        const { y, m } = getHijriMonthYear(state.anchorStart);
-        monthYearEl.textContent = `${HIJRI_MONTHS[(m||1)-1]} ${y} هـ`;
-        const monthDays = buildMonthDays(state.anchorStart);
-        const firstOffset = monthDays[0].getDay(); // 0..6 (Sun..Sat)
-        daysWrap.innerHTML='';
-        
-        for(let i=0;i<firstOffset;i++){ 
-          const empty=document.createElement('div'); 
-          empty.className='hijri-day other-month'; 
-          daysWrap.appendChild(empty); 
-        }
-        
-        const today=new Date(); 
-        const todayHijri = getHijriMonthYear(today);
-        
-        monthDays.forEach(gDate=>{
-          const div=document.createElement('div'); 
-          div.className='hijri-day';
-          const parts=getHijriMonthYear(gDate); 
-          div.textContent=parts.d;
-          
-          if(parts.d===todayHijri.d && parts.m===todayHijri.m && parts.y===todayHijri.y){ 
-            div.classList.add('today'); 
-          }
-          
-          div.addEventListener('click',()=>{
-            // استخدام الدالة المحسنة لتنسيق التاريخ
-            state.input.value = formatHijriOnce(gDate);
-            state.input.dataset.iso = gDate.toISOString().slice(0,10);
-            calendarEl.classList.remove('active');
-          });
-          
-          daysWrap.appendChild(div);
-        });
-      } catch (error) {
-        console.log('خطأ في عرض التقويم الهجري:', error);
-        monthYearEl.textContent = 'خطأ في التقويم';
-        daysWrap.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 20px;">حدث خطأ في تحميل التقويم</div>';
-      }
-    }
-    
     function initializeHijriCalendar(){
       document.querySelectorAll('.date-with-hijri').forEach(wrapper=>{
         const input = wrapper.querySelector('.hijri-date-input');
         const calendar = wrapper.querySelector('.hijri-calendar');
-        const prevM = calendar.querySelector('.prev-month');
-        const nextM = calendar.querySelector('.next-month');
-        const prevY = calendar.querySelector('.prev-year');
-        const nextY = calendar.querySelector('.next-year');
-        const todayBtn = calendar.querySelector('.today-btn');
         const toggleBtn = wrapper.querySelector('.hijri-toggle');
+        const closeBtn = calendar.querySelector('#closeCalendar');
+        const todayBtn = calendar.querySelector('.today-btn');
+        const prevMonthBtn = calendar.querySelector('.prev-month');
+        const nextMonthBtn = calendar.querySelector('.next-month');
+        const prevYearBtn = calendar.querySelector('.prev-year');
+        const nextYearBtn = calendar.querySelector('.next-year');
+        const monthYearEl = calendar.querySelector('.hijri-month-year');
+        const daysContainer = calendar.querySelector('.hijri-days');
 
-        let anchorStart = seekToMonthStart(new Date());
-        const state = { input, anchorStart };
+        // حالة التقويم الحالية
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
 
-        function openCal(){
+        function openCalendar(){
           document.querySelectorAll('.hijri-calendar').forEach(c=>c.classList.remove('active'));
           calendar.classList.add('active');
-          renderHijriCalendar(calendar,state);
-        }
-        
-        function closeCal(){ 
-          calendar.classList.remove('active'); 
+          renderCalendar();
         }
 
-        // إزالة السمة readonly للسماح بالتعديل اليدوي
-        input.placeholder='أدخل التاريخ الهجري (مثال: 15 رمضان 1447 هـ)';
-        input.addEventListener('click', openCal);
-        
-        // إضافة معالجة الإدخال اليدوي
-        input.addEventListener('blur', () => {
-          // أزل أي تكرارات لـ هـ ثم أضفها مرة واحدة
-          input.value = (input.value || '').replace(/\s*هـ+$/u,'').trim();
-          if (input.value) input.value += ' هـ';
-        });
-        
-        if(toggleBtn) {
-          toggleBtn.addEventListener('click', (e)=>{
-            e.preventDefault(); 
-            openCal();
-          });
+        function closeCalendar(){
+          calendar.classList.remove('active');
         }
+
+        function renderCalendar(){
+          // حساب التاريخ الهجري الحالي (تقريبي)
+          const hijriYear = Math.round((currentYear - 622) * (33/32));
+          const hijriMonth = (currentMonth + 9) % 12;
+          
+          monthYearEl.textContent = `${HIJRI_MONTHS[hijriMonth]} ${hijriYear} هـ`;
+          
+          // إنشاء أيام الشهر الهجري (تقريبي)
+          const daysInMonth = 30; // معظم الأشهر الهجرية 29 أو 30 يوم
+          daysContainer.innerHTML = '';
+          
+          // إضافة أيام الشهر
+          for (let i = 1; i <= daysInMonth; i++) {
+            const dayElement = document.createElement('div');
+            dayElement.className = 'hijri-day';
+            dayElement.textContent = i;
+            
+            dayElement.addEventListener('click', () => {
+              input.value = `${i} ${HIJRI_MONTHS[hijriMonth]} ${hijriYear} هـ`;
+              closeCalendar();
+            });
+            
+            daysContainer.appendChild(dayElement);
+          }
+        }
+
+        // أحداث الأزرار
+        toggleBtn.addEventListener('click', openCalendar);
+        closeBtn.addEventListener('click', closeCalendar);
         
-        document.addEventListener('click', (e)=>{
-          if(!e.target.closest('.hijri-calendar') && !e.target.closest('.date-with-hijri')) {
-            closeCal();
+        todayBtn.addEventListener('click', () => {
+          currentDate = new Date();
+          currentMonth = currentDate.getMonth();
+          currentYear = currentDate.getFullYear();
+          renderCalendar();
+          
+          // تعيين تاريخ اليوم
+          const hijriYear = Math.round((currentYear - 622) * (33/32));
+          const hijriMonth = (currentMonth + 9) % 12;
+          const day = currentDate.getDate();
+          input.value = `${day} ${HIJRI_MONTHS[hijriMonth]} ${hijriYear} هـ`;
+          closeCalendar();
+        });
+
+        prevMonthBtn.addEventListener('click', () => {
+          currentMonth--;
+          if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+          }
+          renderCalendar();
+        });
+
+        nextMonthBtn.addEventListener('click', () => {
+          currentMonth++;
+          if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+          }
+          renderCalendar();
+        });
+
+        prevYearBtn.addEventListener('click', () => {
+          currentYear--;
+          renderCalendar();
+        });
+
+        nextYearBtn.addEventListener('click', () => {
+          currentYear++;
+          renderCalendar();
+        });
+
+        // إغلاق التقويم عند النقر خارجها
+        document.addEventListener('click', (e) => {
+          if (!wrapper.contains(e.target) && !calendar.contains(e.target)) {
+            closeCalendar();
           }
         });
 
-        prevM.addEventListener('click',(e)=>{
-          e.preventDefault(); 
-          state.anchorStart = prevHijriMonthStart(state.anchorStart); 
-          renderHijriCalendar(calendar,state);
-        });
-        
-        nextM.addEventListener('click',(e)=>{
-          e.preventDefault(); 
-          state.anchorStart = nextHijriMonthStart(state.anchorStart); 
-          renderHijriCalendar(calendar,state);
-        });
-        
-        prevY.addEventListener('click',(e)=>{
-          e.preventDefault(); 
-          for(let i=0;i<12;i++) {
-            state.anchorStart = prevHijriMonthStart(state.anchorStart);
-          }
-          renderHijriCalendar(calendar,state);
-        });
-        
-        nextY.addEventListener('click',(e)=>{
-          e.preventDefault(); 
-          for(let i=0;i<12;i++) {
-            state.anchorStart = nextHijriMonthStart(state.anchorStart);
-          }
-          renderHijriCalendar(calendar,state);
-        });
-        
-        todayBtn.addEventListener('click',(e)=>{
-          e.preventDefault();
-          state.anchorStart = seekToMonthStart(new Date());
-          const today = new Date();
-          // استخدام الدالة المحسنة لتنسيق التاريخ
-          input.value = formatHijriOnce(today);
-          input.dataset.iso = today.toISOString().slice(0,10);
-          closeCal();
-        });
-
-        // قيمة ابتدائية باستخدام الدالة المحسنة
-        const today = new Date();
-        input.value = formatHijriOnce(today);
-        input.dataset.iso = today.toISOString().slice(0,10);
-        
-        // محاولة عرض التقويم (قد تفشل على بعض المتصفحات)
-        try {
-          renderHijriCalendar(calendar,state);
-        } catch (error) {
-          console.log('خطأ في تهيئة التقويم:', error);
-        }
+        // تهيئة التقويم
+        renderCalendar();
       });
     }
   </script>
