@@ -61,7 +61,7 @@
 
     /* معاينة الصور */
     .witness-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
-    .witness-grid img{width:100%;height:140px;object-fit:contain;border-radius:10px;border:2px solid var(--light);box-shadow:0 4px 12px rgba(0,0,0,.1);background:#f8fafc}
+    .witness-grid img{width:100%;height:auto;object-fit:scale-down;border:none;box-shadow:none;background:transparent}
     .hint{text-align:center;color:var(--secondary);font-weight:600;margin-top:8px;font-size:13px}
 
     /* الجدول */
@@ -149,14 +149,14 @@
       .btn{padding:14px 24px;width:auto}
       .actions{flex-direction:row}
       .witness-grid{grid-template-columns:repeat(4,1fr)}
-      .witness-grid img{height:160px}
+      .witness-grid img{height:auto}
       .hijri-calendar{position:absolute;top:100%;right:0;left:auto;transform:none;width:340px;max-width:none}
     }
     @media (max-width:480px){
       .header-logo img{height:60px}
       .nav{gap:6px;padding:10px}
       .nav-btn{min-width:100px;padding:8px 12px;font-size:12px}
-      .witness-grid img{height:120px}
+      .witness-grid img{height:auto}
     }
   </style>
 </head>
@@ -189,26 +189,32 @@
 
           <label class="date-with-hijri">التاريخ *
             <div class="date-input-container">
-              <input class="input hijri-date-input" name="date" required placeholder="اكتب التاريخ يدويًا أو انقر لاختياره">
+              <input class="input hijri-date-input" name="date" required placeholder="اختر التاريخ" readonly>
               <button type="button" class="hijri-toggle" aria-label="فتح التقويم">
-                <svg class="hijri-icon" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V9h14v10zM5 7V5h14v2H5zm2 4h10v2H7v-2zm0 4h7v2H7v-2z"/></svg>
+                <svg class="hijri-icon" viewBox="0 0 24 24">
+                  <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-2 .89-2 2v14c0 1.11.89 2 2 2h14c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zM7 12h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zm-8 4h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/>
+                </svg>
               </button>
             </div>
             <div class="hijri-calendar">
               <div class="hijri-header">
+                <div class="hijri-nav">
+                  <button type="button" class="prev-year">«</button>
+                  <button type="button" class="prev-month">‹</button>
+                </div>
                 <div class="hijri-month-year"></div>
                 <div class="hijri-nav">
-                  <button type="button" class="prev-year" aria-label="السنة السابقة">«</button>
-                  <button type="button" class="prev-month" aria-label="الشهر السابق">‹</button>
-                  <button type="button" class="next-month" aria-label="الشهر التالي">›</button>
-                  <button type="button" class="next-year" aria-label="السنة التالية">»</button>
+                  <button type="button" class="next-month">›</button>
+                  <button type="button" class="next-year">»</button>
                 </div>
               </div>
-              <div class="hijri-weekdays"><span>ح</span><span>ن</span><span>ث</span><span>ر</span><span>خ</span><span>ج</span><span>س</span></div>
+              <div class="hijri-weekdays">
+                <span>س</span><span>ح</span><span>ن</span><span>ث</span><span>ر</span><span>خ</span><span>ج</span>
+              </div>
               <div class="hijri-days"></div>
               <div class="calendar-actions">
-                <button type="button" class="today-btn">اختر اليوم</button>
-                <button type="button" class="btn danger" id="closeCalendar">إغلاق</button>
+                <button type="button" class="today-btn">اليوم</button>
+                <button type="button" class="btn danger" id="closeCalendar" style="flex:1">إغلاق</button>
               </div>
             </div>
           </label>
@@ -257,26 +263,32 @@
 
           <label class="date-with-hijri">التاريخ *
             <div class="date-input-container">
-              <input class="input hijri-date-input" id="sessionDate" required placeholder="اكتب التاريخ يدويًا أو انقر لاختياره">
+              <input class="input hijri-date-input" id="sessionDate" required placeholder="اختر التاريخ" readonly>
               <button type="button" class="hijri-toggle" aria-label="فتح التقويم">
-                <svg class="hijri-icon" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V9h14v10zM5 7V5h14v2H5zm2 4h10v2H7v-2zm0 4h7v2H7v-2z"/></svg>
+                <svg class="hijri-icon" viewBox="0 0 24 24">
+                  <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-2 .89-2 2v14c0 1.11.89 2 2 2h14c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zM7 12h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zm-8 4h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/>
+                </svg>
               </button>
             </div>
             <div class="hijri-calendar">
               <div class="hijri-header">
-                <div class="hijri-month-year"></div>
                 <div class="hijri-nav">
                   <button type="button" class="prev-year">«</button>
                   <button type="button" class="prev-month">‹</button>
+                </div>
+                <div class="hijri-month-year"></div>
+                <div class="hijri-nav">
                   <button type="button" class="next-month">›</button>
                   <button type="button" class="next-year">»</button>
                 </div>
               </div>
-              <div class="hijri-weekdays"><span>ح</span><span>ن</span><span>ث</span><span>ر</span><span>خ</span><span>ج</span><span>س</span></div>
+              <div class="hijri-weekdays">
+                <span>س</span><span>ح</span><span>ن</span><span>ث</span><span>ر</span><span>خ</span><span>ج</span>
+              </div>
               <div class="hijri-days"></div>
               <div class="calendar-actions">
-                <button type="button" class="today-btn">اختر اليوم</button>
-                <button type="button" class="btn danger" id="closeCalendar">إغلاق</button>
+                <button type="button" class="today-btn">اليوم</button>
+                <button type="button" class="btn danger" id="closeCalendar" style="flex:1">إغلاق</button>
               </div>
             </div>
           </label>
@@ -343,6 +355,68 @@
     let sessionWitness = [];
     let sessions = [];
 
+    // ============== دالة تحويل التاريخ الميلادي إلى هجري (خوارزمية دقيقة) ==============
+    function gregorianToHijri(gregorianDate) {
+      const gd = gregorianDate.getDate();
+      const gm = gregorianDate.getMonth() + 1;
+      const gy = gregorianDate.getFullYear();
+
+      let a = Math.floor((14 - gm) / 12);
+      let y = gy + 4800 - a;
+      let m = gm + 12 * a - 3;
+
+      let jdn = gd + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+
+      let l = jdn - 1948440 + 10632;
+      let n = Math.floor((l - 1) / 10631);
+      l = (l - 1) % 10631;
+
+      let j = Math.floor((10985 * l) / 5316);
+      let i = Math.floor((50 * j) / 17111);
+
+      let hd = (l - Math.floor((5014 - j) / 1474) - Math.floor((24417 * i) / 15684)) % 30 + 1;
+      let hm = (i + 1) % 12 + 1;
+      let hy = Math.floor(n * 30 + j / 1474 + i / 12 + 1);
+
+      if (hd === 0) hd = 30;
+      if (hm === 0) hm = 12;
+
+      return { day: hd, month: hm, year: hy };
+    }
+
+    function hijriToGregorian(hd, hm, hy) {
+      let n = hd + Math.ceil(29.5001 * (hm - 1)) + (hy - 1) * 354 + Math.floor((3 + 11 * hy) / 30) + 1948440 - 385;
+
+      let q = Math.floor(n / 146097);
+      n = n % 146097;
+
+      let r = Math.floor(n / 36524);
+      if (r === 4) r = 3;
+      n = n - r * 36524;
+
+      let s = Math.floor(n / 1461);
+      n = n - s * 1461;
+
+      let t = Math.floor(n / 365);
+      if (t === 4) t = 3;
+      n = n - t * 365;
+
+      let u = Math.floor((5 * n + 2) / 153);
+
+      let gd = n - Math.floor((153 * u + 2) / 5) + 1;
+      let gm = u + 3 - 12 * Math.floor(u / 10);
+      let gy = 400 * q + 100 * r + 4 * s + t - 4800 + Math.floor(u / 10);
+
+      return new Date(gy, gm - 1, gd);
+    }
+
+    // أسماء الأشهر الهجرية
+    const HIJRI_MONTHS = [
+      "محرم","صفر","ربيع الأول","ربيع الآخر",
+      "جمادى الأولى","جمادى الآخرة","رجب",
+      "شعبان","رمضان","شوال","ذو القعدة","ذو الحجة"
+    ];
+
     document.addEventListener('DOMContentLoaded', () => {
       loadSessions();
       initializeNavigation();
@@ -351,7 +425,7 @@
       initializeReportExport();
       initializeSessionManagement();
       initializeSessionsExport();
-      initializeHijriCalendar(); // تفعيل التقويم الهجري
+      initializeHijriCalendar(); // تفعيل التقويم الهجري المحسن
     });
 
     function loadSessions(){
@@ -480,6 +554,32 @@
 
           const printElement = document.createElement('div');
           printElement.style.cssText = "position:fixed;top:0;left:0;width:800px;background:#fff;padding:40px;z-index:10000;box-shadow:0 0 20px rgba(0,0,0,.3);font-family:'Tajawal',sans-serif;direction:rtl;";
+          
+          let witnessHTML = '';
+          if(witness.length > 0){
+            witnessHTML = `
+              <div style="page-break-before:always;margin-top:30px;">
+                <h4 style="color:#047857;font-size:18px;margin-bottom:15px;border-right:4px solid #10b981;padding-right:10px;">صور الشواهد</h4>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+            `;
+            
+            witness.forEach((w, index) => {
+              witnessHTML += `
+                <div style="text-align:center;padding:10px;page-break-inside:avoid;">
+                  <img src="${w.url}" style="max-width:100%;max-height:300px;width:auto;height:auto;object-fit:contain;display:block;margin:0 auto;">
+                  <p style="margin-top:8px;font-size:13px;color:#64748b;">شاهد التقرير ${index + 1}</p>
+                </div>
+              `;
+              
+              // إضافة صفحة جديدة بعد كل صورتين
+              if ((index + 1) % 2 === 0 && index < witness.length - 1) {
+                witnessHTML += `</div></div><div style="page-break-before:always;margin-top:30px;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">`;
+              }
+            });
+            
+            witnessHTML += `</div></div>`;
+          }
+
           printElement.innerHTML = `
             <div style="text-align:center;margin-bottom:30px;">
               <img src="https://omymh.github.io/school26/26.png" alt="شعار المدرسة" style="width:100%;height:120px;object-fit:cover;object-position:center;margin-bottom:25px;">
@@ -494,11 +594,28 @@
             </table>
             ${data.goals?`<div style="margin-bottom:25px;"><h4 style="color:#047857;font-size:18px;margin-bottom:10px;border-right:4px solid #10b981;padding-right:10px;">الأهداف</h4><div style="padding:15px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">${data.goals}</div></div>`:''}
             ${data.desc?`<div style="margin-bottom:25px;"><h4 style="color:#047857;font-size:18px;margin-bottom:10px;border-right:4px solid #10b981;padding-right:10px;">وصف التقرير</h4><div style="padding:15px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">${data.desc}</div></div>`:''}
-            ${witness.length>0?`<div style="margin-bottom:25px;page-break-inside:avoid;"><h4 style="color:#047857;font-size:18px;margin-bottom:15px;border-right:4px solid #10b981;padding-right:10px;">صور الشواهد</h4><div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">${witness.map(w=>`<div style="text-align:center;border:1px solid #e2e8f0;border-radius:8px;padding:10px;background:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:250px;"><img src="${w.url}" style="max-width:100%;max-height:200px;object-fit:contain;display:block;margin:0 auto;"><p style="margin-top:10px;font-size:14px;color:#64748b;">شاهد التقرير</p></div>`).join('')}</div></div>`:''}
+            ${witnessHTML}
           `;
           document.body.appendChild(printElement);
 
-          const canvas = await html2canvas(printElement,{scale:2,backgroundColor:'#fff',useCORS:true,logging:false,allowTaint:true});
+          const canvas = await html2canvas(printElement,{
+            scale: 2,
+            backgroundColor:'#fff',
+            useCORS:true,
+            logging:false,
+            allowTaint:true,
+            onclone: function(clonedDoc) {
+              // ضمان تحميل الصور بشكل كامل قبل الالتقاط
+              const images = clonedDoc.querySelectorAll('img');
+              images.forEach(img => {
+                img.style.width = 'auto';
+                img.style.height = 'auto';
+                img.style.maxWidth = '100%';
+                img.style.maxHeight = '100%';
+                img.style.objectFit = 'contain';
+              });
+            }
+          });
           document.body.removeChild(printElement);
           const imgData = canvas.toDataURL('image/jpeg',0.95);
           const { jsPDF } = window.jspdf;
@@ -604,6 +721,39 @@
             </tr>`;
           });
 
+          let witnessHTML = '';
+          const sessionsWithWitness = sessions.filter(s => s.witness && s.witness.length > 0);
+          if(sessionsWithWitness.length > 0){
+            witnessHTML = `<div style="page-break-before:always;margin-top:30px;">
+              <h2 style="color:#047857;font-size:24px;font-weight:900;border-bottom:2px solid #10b981;padding-bottom:10px;">صور الشواهد</h2>`;
+            
+            sessionsWithWitness.forEach((s,i)=>{
+              witnessHTML += `<div style="margin:20px 0;page-break-inside:avoid;">
+                <h3 style="color:#059669;font-size:18px;margin-bottom:10px;">الحصة ${i+1}: ${s.className||''} - ${s.date||''}</h3>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">`;
+              
+              s.witness.forEach((w, index) => {
+                witnessHTML += `
+                  <div style="text-align:center;border:1px solid #ddd;border-radius:8px;padding:15px;background:#f8fafc;min-height:350px;height:350px;overflow:hidden;page-break-inside:avoid;">
+                    <div style="flex:1;display:flex;align-items:center;justify-content:center;width:100%;height:250px;overflow:hidden;">
+                      <img src="${w.url}" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;">
+                    </div>
+                    <p style="margin-top:8px;font-size:12px;color:#64748b;">شاهد الحصة ${index + 1}</p>
+                  </div>
+                `;
+                
+                // إضافة صفحة جديدة بعد كل صورتين
+                if ((index + 1) % 2 === 0 && index < s.witness.length - 1) {
+                  witnessHTML += `</div></div><div style="page-break-before:always;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">`;
+                }
+              });
+              
+              witnessHTML += `</div></div>`;
+            });
+            
+            witnessHTML += `</div>`;
+          }
+
           printElement.innerHTML=`
             <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
               <img src="https://omymh.github.io/school26/26.png" alt="شعار المدرسة" style="width:100%;height:120px;object-fit:cover;object-position:center;border-radius:6px;">
@@ -625,33 +775,26 @@
               </thead>
               <tbody>${rows}</tbody>
             </table>
+            ${witnessHTML}
           `;
 
-          // صور الشواهد للحصص
-          const hasWitness = sessions.some(s=>s.witness && s.witness.length>0);
-          if(hasWitness){
-            let section = `<div style="margin-top:30px;page-break-before:always;">
-              <h2 style="color:#047857;font-size:24px;font-weight:900;border-bottom:2px solid #10b981;padding-bottom:10px;">صور الشواهد</h2>`;
-            sessions.forEach((s,i)=>{
-              if(s.witness && s.witness.length>0){
-                section += `<div style="margin:20px 0;">
-                  <h3 style="color:#059669;font-size:18px;margin-bottom:10px;">الحصة ${i+1}: ${s.className||''} - ${s.date||''}</h3>
-                  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:15px;">${
-                    s.witness.map(w=>`
-                      <div style="text-align:center;border:1px solid #ddd;border-radius:8px;padding:10px;background:#f8fafc;">
-                        <img src="${w.url}" style="max-width:100%;max-height:150px;object-fit:contain;display:block;margin:0 auto;">
-                        <p style="margin-top:8px;font-size:12px;color:#64748b;">شاهد الحصة</p>
-                      </div>
-                    `).join('')
-                  }</div></div>`;
-              }
-            });
-            section += `</div>`;
-            printElement.innerHTML += section;
-          }
-
           document.body.appendChild(printElement);
-          const canvas = await html2canvas(printElement,{scale:2,backgroundColor:'#fff',useCORS:true});
+          const canvas = await html2canvas(printElement,{
+            scale: 2,
+            backgroundColor:'#fff',
+            useCORS:true,
+            onclone: function(clonedDoc) {
+              // ضمان تحميل الصور بشكل كامل قبل الالتقاط
+              const images = clonedDoc.querySelectorAll('img');
+              images.forEach(img => {
+                img.style.width = 'auto';
+                img.style.height = 'auto';
+                img.style.maxWidth = '100%';
+                img.style.maxHeight = '100%';
+                img.style.objectFit = 'contain';
+              });
+            }
+          });
           const imgData = canvas.toDataURL('image/jpeg',0.95);
           const { jsPDF } = window.jspdf;
           const pdf = new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
@@ -668,13 +811,7 @@
       });
     }
 
-    // ============== التقويم الهجري (مبسط وسهل الاستخدام) ==============
-    const HIJRI_MONTHS = [
-      "محرم","صفر","ربيع الأول","ربيع الآخر",
-      "جمادى الأولى","جمادى الآخرة","رجب",
-      "شعبان","رمضان","شوال","ذو القعدة","ذو الحجة"
-    ];
-
+    // ============== التقويم الهجري (خوارزمية دقيقة) ==============
     function initializeHijriCalendar(){
       document.querySelectorAll('.date-with-hijri').forEach(wrapper=>{
         const input = wrapper.querySelector('.hijri-date-input');
@@ -688,11 +825,10 @@
         const nextYearBtn = calendar.querySelector('.next-year');
         const monthYearEl = calendar.querySelector('.hijri-month-year');
         const daysContainer = calendar.querySelector('.hijri-days');
-
+        
         // حالة التقويم الحالية
-        let currentDate = new Date();
-        let currentMonth = currentDate.getMonth();
-        let currentYear = currentDate.getFullYear();
+        let currentGregorianDate = new Date();
+        let currentHijri = gregorianToHijri(currentGregorianDate);
 
         function openCalendar(){
           document.querySelectorAll('.hijri-calendar').forEach(c=>c.classList.remove('active'));
@@ -705,15 +841,24 @@
         }
 
         function renderCalendar(){
-          // حساب التاريخ الهجري الحالي (تقريبي)
-          const hijriYear = Math.round((currentYear - 622) * (33/32));
-          const hijriMonth = (currentMonth + 9) % 12;
+          // عرض الشهر والسنة الهجرية
+          monthYearEl.textContent = `${HIJRI_MONTHS[currentHijri.month-1]} ${currentHijri.year} هـ`;
           
-          monthYearEl.textContent = `${HIJRI_MONTHS[hijriMonth]} ${hijriYear} هـ`;
-          
-          // إنشاء أيام الشهر الهجري (تقريبي)
-          const daysInMonth = 30; // معظم الأشهر الهجرية 29 أو 30 يوم
           daysContainer.innerHTML = '';
+          
+          // حساب أول يوم في الشهر الهجري
+          const firstDayGregorian = hijriToGregorian(1, currentHijri.month, currentHijri.year);
+          const startDayOfWeek = firstDayGregorian.getDay();
+          
+          // إضافة أيام فارغة
+          for (let i = 0; i < startDayOfWeek; i++) {
+            const emptyDay = document.createElement('div');
+            emptyDay.className = 'hijri-day disabled';
+            daysContainer.appendChild(emptyDay);
+          }
+          
+          // حساب عدد أيام الشهر الهجري (29 أو 30)
+          const daysInMonth = currentHijri.month % 2 === 1 ? 30 : 29;
           
           // إضافة أيام الشهر
           for (let i = 1; i <= daysInMonth; i++) {
@@ -721,8 +866,28 @@
             dayElement.className = 'hijri-day';
             dayElement.textContent = i;
             
+            // التحقق من اليوم الحالي
+            const dayGregorian = hijriToGregorian(i, currentHijri.month, currentHijri.year);
+            const today = new Date();
+            
+            if (dayGregorian.toDateString() === today.toDateString()) {
+              dayElement.classList.add('today');
+            }
+            
+            // التحقق من اليوم المختار
+            if (input.value) {
+              const parts = input.value.split(' ');
+              const selectedDay = parseInt(parts[0]);
+              const selectedMonth = HIJRI_MONTHS.indexOf(parts[1]) + 1;
+              const selectedYear = parseInt(parts[2]);
+              
+              if (i === selectedDay && currentHijri.month === selectedMonth && currentHijri.year === selectedYear) {
+                dayElement.classList.add('selected');
+              }
+            }
+            
             dayElement.addEventListener('click', () => {
-              input.value = `${i} ${HIJRI_MONTHS[hijriMonth]} ${hijriYear} هـ`;
+              input.value = `${i} ${HIJRI_MONTHS[currentHijri.month-1]} ${currentHijri.year} هـ`;
               closeCalendar();
             });
             
@@ -734,57 +899,55 @@
         toggleBtn.addEventListener('click', openCalendar);
         closeBtn.addEventListener('click', closeCalendar);
         
+        // الانتقال إلى اليوم
         todayBtn.addEventListener('click', () => {
-          currentDate = new Date();
-          currentMonth = currentDate.getMonth();
-          currentYear = currentDate.getFullYear();
+          currentGregorianDate = new Date();
+          currentHijri = gregorianToHijri(currentGregorianDate);
+          input.value = `${currentHijri.day} ${HIJRI_MONTHS[currentHijri.month-1]} ${currentHijri.year} هـ`;
           renderCalendar();
-          
-          // تعيين تاريخ اليوم
-          const hijriYear = Math.round((currentYear - 622) * (33/32));
-          const hijriMonth = (currentMonth + 9) % 12;
-          const day = currentDate.getDate();
-          input.value = `${day} ${HIJRI_MONTHS[hijriMonth]} ${hijriYear} هـ`;
-          closeCalendar();
         });
 
+        // التنقل بين الأشهر
         prevMonthBtn.addEventListener('click', () => {
-          currentMonth--;
-          if (currentMonth < 0) {
-            currentMonth = 11;
-            currentYear--;
+          currentHijri.month--;
+          if (currentHijri.month < 1) {
+            currentHijri.month = 12;
+            currentHijri.year--;
           }
           renderCalendar();
         });
 
         nextMonthBtn.addEventListener('click', () => {
-          currentMonth++;
-          if (currentMonth > 11) {
-            currentMonth = 0;
-            currentYear++;
+          currentHijri.month++;
+          if (currentHijri.month > 12) {
+            currentHijri.month = 1;
+            currentHijri.year++;
           }
           renderCalendar();
         });
 
+        // التنقل بين السنوات
         prevYearBtn.addEventListener('click', () => {
-          currentYear--;
+          currentHijri.year--;
           renderCalendar();
         });
 
         nextYearBtn.addEventListener('click', () => {
-          currentYear++;
+          currentHijri.year++;
           renderCalendar();
         });
 
         // إغلاق التقويم عند النقر خارجها
         document.addEventListener('click', (e) => {
-          if (!wrapper.contains(e.target) && !calendar.contains(e.target)) {
+          if (calendar.classList.contains('active') && !wrapper.contains(e.target) && !calendar.contains(e.target)) {
             closeCalendar();
           }
         });
-
-        // تهيئة التقويم
-        renderCalendar();
+        
+        // تهيئة التقويم بالتاريخ الحالي
+        if (!input.value) {
+          input.value = `${currentHijri.day} ${HIJRI_MONTHS[currentHijri.month-1]} ${currentHijri.year} هـ`;
+        }
       });
     }
   </script>
