@@ -350,8 +350,9 @@
     <p><strong>تصميم الهيئة الإدارية:</strong> عيدة صلاح، منيرة العمراني</p>
   </footer>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- إضافة مكتبات PDF مع دعم اللغة العربية -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/hijri-date/lib/hijri-date.min.js"></script>
 
   <script>
@@ -360,10 +361,118 @@
     let sessionWitness = [];
     let sessions = [];
 
-    // ============== دالة تحويل التاريخ الميلادي إلى هجري باستخدام مكتبة Hijri-Date ==============
+    // ============== دوال معالجة النصوص العربية ==============
+    
+    // دالة لإزالة التشكيل من النص العربي
+    function removeDiacritics(text) {
+      if (!text) return '';
+      
+      // نطاقات الحروف المشكّلة في Unicode
+      const diacriticsRanges = [
+        [0x064B, 0x065F], // التشكيل الأساسي
+        [0x0670, 0x0670], // السكون الخاص
+        [0x0610, 0x061A], // تشكيل إضافي
+        [0x06D6, 0x06DC], // تشكيل ممتد
+        [0x06DF, 0x06E8], // تشكيل ممتد
+        [0x06EA, 0x06ED]  // تشكيل ممتد
+      ];
+      
+      let result = '';
+      for (let i = 0; i < text.length; i++) {
+        const charCode = text.charCodeAt(i);
+        let isDiacritic = false;
+        
+        for (const [start, end] of diacriticsRanges) {
+          if (charCode >= start && charCode <= end) {
+            isDiacritic = true;
+            break;
+          }
+        }
+        
+        if (!isDiacritic) {
+          result += text[i];
+        }
+      }
+      
+      return result;
+    }
+    
+    // دالة لعكس النص العربي ليظهر بشكل صحيح
+    function reverseArabicText(text) {
+      if (!text) return '';
+      
+      // فصل النص إلى كلمات
+      const words = text.split(' ');
+      const reversedWords = [];
+      
+      for (const word of words) {
+        // فصل الحروف والأرقام والرموز
+        const characters = [];
+        let currentSegment = '';
+        let isNumber = false;
+        
+        for (let i = 0; i < word.length; i++) {
+          const char = word[i];
+          const charCode = word.charCodeAt(i);
+          
+          // التحقق إذا كان الحرف رقمًا أو رمزًا إنجليزيًا
+          const isEnglishOrNumber = (charCode >= 48 && charCode <= 57) || // 0-9
+                                   (charCode >= 65 && charCode <= 90) || // A-Z
+                                   (charCode >= 97 && charCode <= 122);  // a-z
+          
+          if (i === 0) {
+            isNumber = isEnglishOrNumber;
+            currentSegment += char;
+          } else {
+            if (isEnglishOrNumber === isNumber) {
+              currentSegment += char;
+            } else {
+              characters.push(currentSegment);
+              currentSegment = char;
+              isNumber = isEnglishOrNumber;
+            }
+          }
+        }
+        
+        if (currentSegment) {
+          characters.push(currentSegment);
+        }
+        
+        // عكس ترتيب المقاطع مع الحفاظ على اتجاه الأرقام والإنجليزية
+        const reversedCharacters = [];
+        for (const segment of characters) {
+          const firstCharCode = segment.charCodeAt(0);
+          const isEnglishOrNumber = (firstCharCode >= 48 && firstCharCode <= 57) ||
+                                   (firstCharCode >= 65 && firstCharCode <= 90) ||
+                                   (firstCharCode >= 97 && firstCharCode <= 122);
+          
+          if (isEnglishOrNumber) {
+            reversedCharacters.push(segment);
+          } else {
+            reversedCharacters.push(segment.split('').reverse().join(''));
+          }
+        }
+        
+        reversedWords.push(reversedCharacters.reverse().join(''));
+      }
+      
+      return reversedWords.reverse().join(' ');
+    }
+    
+    // الدالة الرئيسية لتحضير النص العربي
+    function prepareArabicText(text) {
+      if (!text) return '';
+      
+      // إزالة التشكيل أولاً
+      const cleanText = removeDiacritics(text);
+      
+      // ثم عكس النص
+      return reverseArabicText(cleanText);
+    }
+
+    // ============== دالة تحويل التاريخ الميلادي إلى هجري ==============
     function gregorianToHijri(gregorianDate) {
       try {
-        // استخدام مكتبة Hijri-Date إذا كانت متاحة
         if (typeof HijriDate !== 'undefined') {
           const hijriDate = new HijriDate(gregorianDate);
           return {
@@ -376,12 +485,11 @@
         console.log('مكتبة Hijri-Date غير متاحة، استخدام الخوارزمية المحلية');
       }
       
-      // خوارزمية احتياطية دقيقة
+      // خوارزمية احتياطية
       const gd = gregorianDate.getDate();
       const gm = gregorianDate.getMonth() + 1;
       const gy = gregorianDate.getFullYear();
 
-      // تحويل دقيق من الميلادي إلى الهجري
       const jd = Math.floor((1461 * (gy + 4800 + Math.floor((gm - 14) / 12))) / 4) +
                  Math.floor((367 * (gm - 2 - 12 * Math.floor((gm - 14) / 12))) / 12) -
                  Math.floor((3 * Math.floor((gy + 4900 + Math.floor((gm - 14) / 12)) / 100)) / 4) +
@@ -404,7 +512,6 @@
 
     function hijriToGregorian(hd, hm, hy) {
       try {
-        // استخدام مكتبة Hijri-Date إذا كانت متاحة
         if (typeof HijriDate !== 'undefined') {
           const hijriDate = new HijriDate(hy, hm - 1, hd);
           return hijriDate.toGregorian();
@@ -413,7 +520,7 @@
         console.log('مكتبة Hijri-Date غير متاحة، استخدام الخوارزمية المحلية');
       }
       
-      // خوارزمية احتياطية دقيقة
+      // خوارزمية احتياطية
       const jd = Math.floor((11 * hy + 3) / 30) + 
                  Math.floor(354 * hy) + 
                  Math.floor(30 * hm) - 
@@ -576,77 +683,216 @@
         try{
           showToast('جاري التصدير...','warn');
 
-          const printElement = document.createElement('div');
-          printElement.style.cssText = "position:fixed;top:0;left:0;width:800px;background:#fff;padding:40px;z-index:10000;font-family:'Tajawal',sans-serif;direction:rtl;";
-          
-          let witnessHTML = '';
-          if(witness.length > 0){
-            witnessHTML = `
-              <div style="page-break-before:always;margin-top:30px;">
-                <h4 style="color:#047857;font-size:18px;margin-bottom:15px;border-right:4px solid #10b981;padding-right:10px;">صور الشواهد</h4>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-            `;
-            
-            witness.forEach((w, index) => {
-              witnessHTML += `
-                <div style="text-align:center;padding:10px;page-break-inside:avoid;height:320px;display:flex;flex-direction:column;justify-content:center;">
-                  <div style="height:280px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-                    <img src="${w.url}" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;">
-                  </div>
-                  <p style="margin-top:8px;font-size:13px;color:#64748b;">شاهد التقرير ${index + 1}</p>
-                </div>
-              `;
-              
-              // إضافة صفحة جديدة بعد كل صورتين
-              if ((index + 1) % 2 === 0 && index < witness.length - 1) {
-                witnessHTML += `</div></div><div style="page-break-before:always;margin-top:30px;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">`;
-              }
-            });
-            
-            witnessHTML += `</div></div>`;
-          }
-
-          printElement.innerHTML = `
-            <div style="text-align:center;margin-bottom:30px;">
-              <div style="width:100%;height:120px;display:flex;align-items:center;justify-content:center;margin-bottom:25px;">
-                <img src="https://raw.githubusercontent.com/omymh/school26/main/26.png" alt="شعار المدرسة" style="max-width:100%;max-height:100%;object-fit:contain;">
-              </div>
-              <h1 style="color:#047857;font-size:32px;margin:0;font-weight:900;border-bottom:3px solid #10b981;padding-bottom:15px;">التقرير</h1>
-            </div>
-            <table style="width:100%;border-collapse:collapse;margin-bottom:30px;">
-              <tr><td style="padding:12px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:bold;width:30%;">اسم البرنامج</td><td style="padding:12px;border:1px solid #e2e8f0;">${data.title}</td></tr>
-              <tr><td style="padding:12px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:bold;">المنفذ</td><td style="padding:12px;border:1px solid #e2e8f0;">${data.owner}</td></tr>
-              <tr><td style="padding:12px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:bold;">عدد المستفيدين</td><td style="padding:12px;border:1px solid #e2e8f0;">${data.count||'غير محدد'}</td></tr>
-              <tr><td style="padding:12px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:bold;">التاريخ</td><td style="padding:12px;border:1px solid #e2e8f0;">${data.date}</td></tr>
-              <tr><td style="padding:12px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:bold;">المكان</td><td style="padding:12px;border:1px solid #e2e8f0;">${data.place||'غير محدد'}</td></tr>
-            </table>
-            ${data.goals?`<div style="margin-bottom:25px;"><h4 style="color:#047857;font-size:18px;margin-bottom:10px;border-right:4px solid #10b981;padding-right:10px;">الأهداف</h4><div style="padding:15px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">${data.goals}</div></div>`:''}
-            ${data.desc?`<div style="margin-bottom:25px;"><h4 style="color:#047857;font-size:18px;margin-bottom:10px;border-right:4px solid #10b981;padding-right:10px;">وصف التقرير</h4><div style="padding:15px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">${data.desc}</div></div>`:''}
-            ${witnessHTML}
-          `;
-          document.body.appendChild(printElement);
-
-          // انتظار تحميل جميع الصور
-          await waitForImages(printElement);
-
-          const canvas = await html2canvas(printElement,{
-            scale: 3, // زيادة الدقة
-            backgroundColor:'#fff',
-            useCORS:true,
-            logging:false,
-            allowTaint:true
-          });
-          document.body.removeChild(printElement);
-          const imgData = canvas.toDataURL('image/jpeg',0.95);
           const { jsPDF } = window.jspdf;
-          const pdf = new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+          const pdf = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'a4',
+            compress: true
+          });
+          
+          // إعدادات الصفحة
           const pageWidth = pdf.internal.pageSize.getWidth();
-          const imgHeight = (canvas.height * pageWidth) / canvas.width;
-          pdf.addImage(imgData,'JPEG',0,0,pageWidth,imgHeight);
-          pdf.save('التقرير - ' + (data.title||'المدرسة') + '.pdf');
+          const pageHeight = pdf.internal.pageSize.getHeight();
+          const margin = 20;
+          const contentWidth = pageWidth - 2 * margin;
+          
+          let yPosition = margin;
+          
+          // دالة لإضافة صفحة جديدة
+          const addNewPage = () => {
+            pdf.addPage();
+            yPosition = margin;
+          };
+          
+          // دالة للتحقق من المساحة وإضافة صفحة جديدة إذا لزم الأمر
+          const checkSpace = (neededHeight) => {
+            if (yPosition + neededHeight > pageHeight - margin) {
+              addNewPage();
+              return true;
+            }
+            return false;
+          };
+          
+          // العنوان الرئيسي - استخدام النص العربي المعالج
+          pdf.setFontSize(16);
+          pdf.setFont('helvetica', 'bold');
+          pdf.text(prepareArabicText('المملكة العربية السعودية'), pageWidth / 2, yPosition, { align: 'center' });
+          yPosition += 8;
+          pdf.text(prepareArabicText('وزارة التعليم'), pageWidth / 2, yPosition, { align: 'center' });
+          yPosition += 8;
+          pdf.text(prepareArabicText('الإدارة العامة للتعليم بمنطقة تبوك'), pageWidth / 2, yPosition, { align: 'center' });
+          yPosition += 8;
+          pdf.text(prepareArabicText('المدرسة السادسة والعشرون'), pageWidth / 2, yPosition, { align: 'center' });
+          yPosition += 15;
+          
+          // عنوان التقرير
+          pdf.setFontSize(20);
+          pdf.setTextColor(4, 120, 87);
+          pdf.text(prepareArabicText('التقرير'), pageWidth / 2, yPosition, { align: 'center' });
+          yPosition += 20;
+          
+          // جدول المعلومات باستخدام AutoTable
+          const tableData = [
+            [prepareArabicText('اسم البرنامج'), prepareArabicText(data.title || '')],
+            [prepareArabicText('المنفذ'), prepareArabicText(data.owner || '')],
+            [prepareArabicText('عدد المستفيدين'), prepareArabicText(data.count || 'غير محدد')],
+            [prepareArabicText('التاريخ'), prepareArabicText(data.date || '')],
+            [prepareArabicText('المكان'), prepareArabicText(data.place || 'غير محدد')]
+          ];
+          
+          pdf.autoTable({
+            startY: yPosition,
+            head: [[prepareArabicText('المعلومة'), prepareArabicText('القيمة')]],
+            body: tableData,
+            theme: 'grid',
+            styles: {
+              font: 'helvetica',
+              fontSize: 12,
+              cellPadding: 5,
+              lineColor: [200, 200, 200],
+              lineWidth: 0.1,
+            },
+            headStyles: {
+              fillColor: [16, 185, 129],
+              textColor: [255, 255, 255],
+              fontStyle: 'bold',
+            },
+            alternateRowStyles: {
+              fillColor: [240, 253, 244]
+            }
+          });
+          
+          yPosition = pdf.lastAutoTable.finalY + 15;
+          
+          // الأهداف
+          if (data.goals) {
+            checkSpace(30);
+            pdf.setFontSize(14);
+            pdf.setTextColor(4, 120, 87);
+            pdf.text(prepareArabicText('الأهداف'), margin, yPosition);
+            yPosition += 8;
+            
+            pdf.setFontSize(11);
+            pdf.setTextColor(0, 0, 0);
+            const goalsLines = pdf.splitTextToSize(prepareArabicText(data.goals), contentWidth - 10);
+            goalsLines.forEach(line => {
+              checkSpace(6);
+              pdf.text(line, margin + 5, yPosition);
+              yPosition += 6;
+            });
+            yPosition += 10;
+          }
+          
+          // وصف التقرير
+          if (data.desc) {
+            checkSpace(30);
+            pdf.setFontSize(14);
+            pdf.setTextColor(4, 120, 87);
+            pdf.text(prepareArabicText('وصف التقرير'), margin, yPosition);
+            yPosition += 8;
+            
+            pdf.setFontSize(11);
+            pdf.setTextColor(0, 0, 0);
+            const descLines = pdf.splitTextToSize(prepareArabicText(data.desc), contentWidth - 10);
+            descLines.forEach(line => {
+              checkSpace(6);
+              pdf.text(line, margin + 5, yPosition);
+              yPosition += 6;
+            });
+            yPosition += 10;
+          }
+          
+          // صور الشواهد
+          if (witness.length > 0) {
+            checkSpace(30);
+            pdf.setFontSize(16);
+            pdf.setTextColor(4, 120, 87);
+            pdf.text(prepareArabicText('صور الشواهد'), pageWidth / 2, yPosition, { align: 'center' });
+            yPosition += 15;
+            
+            // معالجة الصور
+            for (let i = 0; i < witness.length; i++) {
+              const img = new Image();
+              img.src = witness[i].url;
+              
+              await new Promise((resolve) => {
+                img.onload = () => {
+                  // التحقق من المساحة وإضافة صفحة جديدة إذا لزم الأمر
+                  if (i % 2 === 0 && i > 0) {
+                    addNewPage();
+                    pdf.setFontSize(14);
+                    pdf.setTextColor(4, 120, 87);
+                    pdf.text(prepareArabicText('صور الشواهد (تابع)'), pageWidth / 2, yPosition, { align: 'center' });
+                    yPosition += 15;
+                  }
+                  
+                  // حجم الصورة الموحد 80x80 مم
+                  const imgWidth = 80;
+                  const imgHeight = 80;
+                  const xPosition = (i % 2 === 0) ? margin + 10 : margin + contentWidth / 2 + 10;
+                  
+                  // التحقق من المساحة للصورة
+                  if (checkSpace(imgHeight + 20)) {
+                    pdf.setFontSize(14);
+                    pdf.setTextColor(4, 120, 87);
+                    pdf.text(prepareArabicText('صور الشواهد (تابع)'), pageWidth / 2, yPosition, { align: 'center' });
+                    yPosition += 15;
+                  }
+                  
+                  // رسم إطار للصورة
+                  pdf.setDrawColor(200, 200, 200);
+                  pdf.setLineWidth(0.5);
+                  pdf.rect(xPosition - 2, yPosition - 2, imgWidth + 4, imgHeight + 4);
+                  
+                  // حساب أبعاد الصورة مع الحفاظ على التناسب
+                  const aspectRatio = img.width / img.height;
+                  let finalWidth = imgWidth;
+                  let finalHeight = imgHeight;
+                  let xOffset = 0;
+                  let yOffset = 0;
+                  
+                  if (aspectRatio > 1) {
+                    // صورة أفقية
+                    finalHeight = imgWidth / aspectRatio;
+                    yOffset = (imgHeight - finalHeight) / 2;
+                  } else {
+                    // صورة رأسية
+                    finalWidth = imgHeight * aspectRatio;
+                    xOffset = (imgWidth - finalWidth) / 2;
+                  }
+                  
+                  // إضافة الصورة في وسط الإطار
+                  pdf.addImage(img, 'JPEG', xPosition + xOffset, yPosition + yOffset, finalWidth, finalHeight);
+                  
+                  // نص تحت الصورة
+                  pdf.setFontSize(10);
+                  pdf.setTextColor(100, 116, 139);
+                  pdf.text(prepareArabicText(`شاهد ${i + 1}`), xPosition + imgWidth / 2, yPosition + imgHeight + 8, { align: 'center' });
+                  
+                  // إذا كانت هذه الصورة الثانية في الصف، ننتقل للسطر التالي
+                  if (i % 2 === 1) {
+                    yPosition += imgHeight + 25;
+                  }
+                  
+                  resolve();
+                };
+                
+                img.onerror = () => {
+                  console.log('فشل تحميل الصورة:', witness[i].name);
+                  resolve();
+                };
+              });
+            }
+          }
+          
+          // حفظ الملف
+          const fileName = `report_${data.title || 'school'}.pdf`;
+          pdf.save(fileName);
           showToast('تم التصدير بنجاح');
         }catch(err){
-          console.error(err); showToast('حدث خطأ أثناء التصدير','err');
+          console.error(err); 
+          showToast('حدث خطأ أثناء التصدير','err');
         }
       });
     }
@@ -724,100 +970,220 @@
         try{
           showToast('جاري التصدير...','warn');
 
-          const printElement=document.createElement('div');
-          printElement.style.cssText="position:fixed;top:0;left:0;width:1000px;background:#fff;padding:40px;z-index:10000;font-family:'Tajawal',sans-serif;direction:rtl;";
-          let rows='';
-          sessions.forEach((s,i)=>{
-            rows+=`<tr>
-              <td style="padding:10px;border:1px solid #ddd;text-align:center;">${i+1}</td>
-              <td style="padding:10px;border:1px solid #ddd;text-align:center;">${s.week||''}</td>
-              <td style="padding:10px;border:1px solid #ddd;text-align:center;">${s.day||''}</td>
-              <td style="padding:10px;border:1px solid #ddd;text-align:center;">${s.date||''}</td>
-              <td style="padding:10px;border:1px solid #ddd;text-align:center;">${s.className||''}</td>
-              <td style="padding:10px;border:1px solid #ddd;text-align:center;">${s.number||''}</td>
-              <td style="padding:10px;border:1px solid #ddd;text-align:center;">${s.teacher||''}</td>
-              <td style="padding:10px;border:1px solid #ddd;text-align:right;">${s.activities||''}</td>
-              <td style="padding:10px;border:1px solid #ddd;text-align:right;">${s.fields||''}</td>
-            </tr>`;
-          });
-
-          let witnessHTML = '';
-          const sessionsWithWitness = sessions.filter(s => s.witness && s.witness.length > 0);
-          if(sessionsWithWitness.length > 0){
-            witnessHTML = `<div style="page-break-before:always;margin-top:30px;">
-              <h2 style="color:#047857;font-size:24px;font-weight:900;border-bottom:2px solid #10b981;padding-bottom:10px;">صور الشواهد</h2>`;
-            
-            sessionsWithWitness.forEach((s,i)=>{
-              witnessHTML += `<div style="margin:20px 0;page-break-inside:avoid;">
-                <h3 style="color:#059669;font-size:18px;margin-bottom:10px;">الحصة ${i+1}: ${s.className||''} - ${s.date||''}</h3>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">`;
-              
-              s.witness.forEach((w, index) => {
-                witnessHTML += `
-                  <div style="text-align:center;border:1px solid #ddd;border-radius:8px;padding:15px;background:#f8fafc;height:320px;display:flex;flex-direction:column;justify-content:center;page-break-inside:avoid;">
-                    <div style="height:280px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-                      <img src="${w.url}" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;">
-                    </div>
-                    <p style="margin-top:8px;font-size:12px;color:#64748b;">شاهد الحصة ${index + 1}</p>
-                  </div>
-                `;
-                
-                // إضافة صفحة جديدة بعد كل صورتين
-                if ((index + 1) % 2 === 0 && index < s.witness.length - 1) {
-                  witnessHTML += `</div></div><div style="page-break-before:always;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">`;
-                }
-              });
-              
-              witnessHTML += `</div></div>`;
-            });
-            
-            witnessHTML += `</div>`;
-          }
-
-          printElement.innerHTML=`
-            <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
-              <div style="width:100%;height:120px;display:flex;align-items:center;justify-content:center;">
-                <img src="https://raw.githubusercontent.com/omymh/school26/main/26.png" alt="شعار المدرسة" style="max-width:100%;max-height:100%;object-fit:contain;">
-              </div>
-            </div>
-            <h1 style="color:#047857;font-size:32px;font-weight:900;border-bottom:3px solid #10b981;padding-bottom:12px;margin:0 0 16px 0;">تقرير حصص الانتظار</h1>
-            <table style="width:100%;border-collapse:collapse;margin-top:10px;">
-              <thead>
-                <tr style="background:#10b981;color:#fff;">
-                  <th style="padding:12px;border:1px solid #ddd;">م</th>
-                  <th style="padding:12px;border:1px solid #ddd;">الأسبوع</th>
-                  <th style="padding:12px;border:1px solid #ddd;">اليوم</th>
-                  <th style="padding:12px;border:1px solid #ddd;">التاريخ</th>
-                  <th style="padding:12px;border:1px solid #ddd;">الصف</th>
-                  <th style="padding:12px;border:1px solid #ddd;">الحصة</th>
-                  <th style="padding:12px;border:1px solid #ddd;">المعلمة الغائبة</th>
-                  <th style="padding:12px;border:1px solid #ddd;">ما تم تنفيذه</th>
-                  <th style="padding:12px;border:1px solid #ddd;">المجال</th>
-                </tr>
-              </thead>
-              <tbody>${rows}</tbody>
-            </table>
-            ${witnessHTML}
-          `;
-
-          document.body.appendChild(printElement);
-          
-          // انتظار تحميل جميع الصور
-          await waitForImages(printElement);
-
-          const canvas = await html2canvas(printElement,{
-            scale: 3, // زيادة الدقة
-            backgroundColor:'#fff',
-            useCORS:true
-          });
-          const imgData = canvas.toDataURL('image/jpeg',0.95);
           const { jsPDF } = window.jspdf;
-          const pdf = new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+          const pdf = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'a4',
+            compress: true
+          });
+          
+          // إعدادات الصفحة
           const pageWidth = pdf.internal.pageSize.getWidth();
-          const imgHeight = (canvas.height * pageWidth) / canvas.width;
-          pdf.addImage(imgData,'JPEG',0,0,pageWidth,imgHeight);
-          pdf.save('تقرير حصص الانتظار.pdf');
-          document.body.removeChild(printElement);
+          const pageHeight = pdf.internal.pageSize.getHeight();
+          const margin = 15;
+          const contentWidth = pageWidth - 2 * margin;
+          
+          let yPosition = margin;
+          
+          // دالة لإضافة صفحة جديدة
+          const addNewPage = () => {
+            pdf.addPage();
+            yPosition = margin;
+          };
+          
+          // دالة للتحقق من المساحة وإضافة صفحة جديدة إذا لزم الأمر
+          const checkSpace = (neededHeight) => {
+            if (yPosition + neededHeight > pageHeight - margin) {
+              addNewPage();
+              return true;
+            }
+            return false;
+          };
+          
+          // العنوان الرئيسي
+          pdf.setFontSize(16);
+          pdf.setFont('helvetica', 'bold');
+          pdf.text(prepareArabicText('المملكة العربية السعودية'), pageWidth / 2, yPosition, { align: 'center' });
+          yPosition += 8;
+          pdf.text(prepareArabicText('وزارة التعليم'), pageWidth / 2, yPosition, { align: 'center' });
+          yPosition += 8;
+          pdf.text(prepareArabicText('الإدارة العامة للتعليم بمنطقة تبوك'), pageWidth / 2, yPosition, { align: 'center' });
+          yPosition += 8;
+          pdf.text(prepareArabicText('المدرسة السادسة والعشرون'), pageWidth / 2, yPosition, { align: 'center' });
+          yPosition += 15;
+          
+          // عنوان التقرير
+          pdf.setFontSize(20);
+          pdf.setTextColor(4, 120, 87);
+          pdf.text(prepareArabicText('تقرير حصص الانتظار'), pageWidth / 2, yPosition, { align: 'center' });
+          yPosition += 20;
+          
+          // جدول الحصص باستخدام AutoTable
+          const tableData = sessions.map((session, index) => [
+            (index + 1).toString(),
+            prepareArabicText(session.week || ''),
+            prepareArabicText(session.day || ''),
+            prepareArabicText(session.date || ''),
+            prepareArabicText(session.className || ''),
+            prepareArabicText(session.number || ''),
+            prepareArabicText(session.teacher || ''),
+            prepareArabicText(session.activities || ''),
+            prepareArabicText(session.fields || '')
+          ]);
+          
+          pdf.autoTable({
+            startY: yPosition,
+            head: [[
+              prepareArabicText('م'),
+              prepareArabicText('الأسبوع'),
+              prepareArabicText('اليوم'),
+              prepareArabicText('التاريخ'),
+              prepareArabicText('الصف'),
+              prepareArabicText('الحصة'),
+              prepareArabicText('المعلمة الغائبة'),
+              prepareArabicText('ما تم تنفيذه'),
+              prepareArabicText('المجال')
+            ]],
+            body: tableData,
+            theme: 'grid',
+            styles: {
+              font: 'helvetica',
+              fontSize: 8,
+              cellPadding: 3,
+              lineColor: [200, 200, 200],
+              lineWidth: 0.1,
+            },
+            headStyles: {
+              fillColor: [16, 185, 129],
+              textColor: [255, 255, 255],
+              fontStyle: 'bold',
+            },
+            alternateRowStyles: {
+              fillColor: [240, 253, 244]
+            },
+            columnStyles: {
+              0: { cellWidth: 10 },
+              1: { cellWidth: 25 },
+              2: { cellWidth: 25 },
+              3: { cellWidth: 25 },
+              4: { cellWidth: 25 },
+              5: { cellWidth: 15 },
+              6: { cellWidth: 35 },
+              7: { cellWidth: 60 },
+              8: { cellWidth: 35 }
+            }
+          });
+          
+          yPosition = pdf.lastAutoTable.finalY + 10;
+          
+          // صور الشواهد للحصص
+          const sessionsWithWitness = sessions.filter(s => s.witness && s.witness.length > 0);
+          if (sessionsWithWitness.length > 0) {
+            checkSpace(30);
+            pdf.setFontSize(16);
+            pdf.setTextColor(4, 120, 87);
+            pdf.text(prepareArabicText('صور الشواهد للحصص'), pageWidth / 2, yPosition, { align: 'center' });
+            yPosition += 15;
+            
+            // معالجة الصور لكل حصة
+            for (let sIndex = 0; sIndex < sessionsWithWitness.length; sIndex++) {
+              const session = sessionsWithWitness[sIndex];
+              
+              // عنوان الحصة
+              checkSpace(20);
+              pdf.setFontSize(12);
+              pdf.setTextColor(5, 150, 105);
+              pdf.text(prepareArabicText(`الحصة ${sIndex + 1}: ${session.className || ''} - ${session.date || ''}`), margin, yPosition);
+              yPosition += 10;
+              
+              // معالجة صور هذه الحصة
+              for (let i = 0; i < session.witness.length; i++) {
+                const img = new Image();
+                img.src = session.witness[i].url;
+                
+                await new Promise((resolve) => {
+                  img.onload = () => {
+                    // التحقق من المساحة وإضافة صفحة جديدة إذا لزم الأمر
+                    if (i % 3 === 0 && i > 0) {
+                      addNewPage();
+                      pdf.setFontSize(12);
+                      pdf.setTextColor(5, 150, 105);
+                      pdf.text(prepareArabicText(`الحصة ${sIndex + 1}: ${session.className || ''} - ${session.date || ''} (تابع)`), margin, yPosition);
+                      yPosition += 10;
+                    }
+                    
+                    // حجم الصورة الموحد 70x70 مم للحصص
+                    const imgWidth = 70;
+                    const imgHeight = 70;
+                    const imagesPerRow = 3;
+                    const xSpacing = (contentWidth - (imgWidth * imagesPerRow)) / (imagesPerRow - 1);
+                    const xPosition = margin + (i % imagesPerRow) * (imgWidth + xSpacing);
+                    
+                    // التحقق من المساحة للصورة
+                    if (checkSpace(imgHeight + 25)) {
+                      pdf.setFontSize(12);
+                      pdf.setTextColor(5, 150, 105);
+                      pdf.text(prepareArabicText(`الحصة ${sIndex + 1}: ${session.className || ''} - ${session.date || ''} (تابع)`), margin, yPosition);
+                      yPosition += 10;
+                    }
+                    
+                    // رسم إطار للصورة
+                    pdf.setDrawColor(200, 200, 200);
+                    pdf.setLineWidth(0.5);
+                    pdf.rect(xPosition - 2, yPosition - 2, imgWidth + 4, imgHeight + 4);
+                    
+                    // حساب أبعاد الصورة مع الحفاظ على التناسب
+                    const aspectRatio = img.width / img.height;
+                    let finalWidth = imgWidth;
+                    let finalHeight = imgHeight;
+                    let xOffset = 0;
+                    let yOffset = 0;
+                    
+                    if (aspectRatio > 1) {
+                      // صورة أفقية
+                      finalHeight = imgWidth / aspectRatio;
+                      yOffset = (imgHeight - finalHeight) / 2;
+                    } else {
+                      // صورة رأسية
+                      finalWidth = imgHeight * aspectRatio;
+                      xOffset = (imgWidth - finalWidth) / 2;
+                    }
+                    
+                    // إضافة الصورة في وسط الإطار
+                    pdf.addImage(img, 'JPEG', xPosition + xOffset, yPosition + yOffset, finalWidth, finalHeight);
+                    
+                    // نص تحت الصورة
+                    pdf.setFontSize(9);
+                    pdf.setTextColor(100, 116, 139);
+                    pdf.text(prepareArabicText(`شاهد ${i + 1}`), xPosition + imgWidth / 2, yPosition + imgHeight + 8, { align: 'center' });
+                    
+                    // إذا كانت هذه الصورة الثالثة في الصف، ننتقل للسطر التالي
+                    if (i % 3 === 2) {
+                      yPosition += imgHeight + 25;
+                    }
+                    
+                    resolve();
+                  };
+                  
+                  img.onerror = () => {
+                    console.log('فشل تحميل الصورة:', session.witness[i].name);
+                    resolve();
+                  };
+                });
+              }
+              
+              // إذا لم تكن الصور من مضاعفات 3، ننتقل للسطر التالي
+              if (session.witness.length % 3 !== 0) {
+                yPosition += 70 + 25;
+              }
+              
+              yPosition += 10;
+            }
+          }
+          
+          // حفظ الملف
+          pdf.save('sessions_report.pdf');
           showToast('تم التصدير بنجاح');
         }catch(err){
           console.error('خطأ في التصدير:',err);
@@ -826,7 +1192,7 @@
       });
     }
 
-    // ============== التقويم الهجري (خوارزمية دقيقة) ==============
+    // ============== التقويم الهجري ==============
     function initializeHijriCalendar(){
       document.querySelectorAll('.date-with-hijri').forEach(wrapper=>{
         const input = wrapper.querySelector('.hijri-date-input');
@@ -964,22 +1330,6 @@
           input.value = `${currentHijri.day} ${HIJRI_MONTHS[currentHijri.month-1]} ${currentHijri.year} هـ`;
         }
       });
-    }
-
-    // ============== دالة مساعدة لانتظار تحميل الصور ==============
-    function waitForImages(element) {
-      const images = Array.from(element.querySelectorAll('img'));
-      const promises = images.map(img => {
-        if (img.complete) {
-          return Promise.resolve();
-        } else {
-          return new Promise((resolve, reject) => {
-            img.addEventListener('load', resolve);
-            img.addEventListener('error', resolve); // نستمر حتى لو فشلت صورة
-          });
-        }
-      });
-      return Promise.all(promises);
     }
   </script>
 </body>
