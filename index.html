@@ -441,7 +441,7 @@
       "شعبان","رمضان","شوال","ذو القعدة","ذو الحجة"
     ];
 
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', function() {
       loadSessions();
       initializeNavigation();
       initializeWitnessManagement();
@@ -459,13 +459,18 @@
       }catch(e){ console.log('لا توجد بيانات محفوظة'); }
     }
 
-    function showToast(message,type=''){
+    function showToast(message, type){
       const toast = document.createElement('div');
-      toast.className = toast ${type};
+      toast.className = 'toast ' + (type ? type : '');
       toast.textContent = message;
       document.body.appendChild(toast);
-      setTimeout(()=>{toast.style.opacity='0';toast.style.transition='opacity .3s ease';},1400);
-      setTimeout(()=>{toast.remove();},1900);
+      setTimeout(function(){
+        toast.style.opacity='0';
+        toast.style.transition='opacity .3s ease';
+      },1400);
+      setTimeout(function(){
+        toast.remove();
+      },1900);
     }
 
     // ============== التنقل بين الصفحات ==============
@@ -475,17 +480,23 @@
         report: document.getElementById('navReport'),
         sessions: document.getElementById('navSessions')
       };
-      btns.home.addEventListener('click', ()=>{showPage('home'); setActiveNav(btns.home);});
-      btns.report.addEventListener('click', ()=>{showPage('report'); setActiveNav(btns.report);});
-      btns.sessions.addEventListener('click', ()=>{showPage('sessions'); setActiveNav(btns.sessions);});
+      btns.home.addEventListener('click', function(){showPage('home'); setActiveNav(btns.home);});
+      btns.report.addEventListener('click', function(){showPage('report'); setActiveNav(btns.report);});
+      btns.sessions.addEventListener('click', function(){showPage('sessions'); setActiveNav(btns.sessions);});
     }
+    
     function showPage(id){
-      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+      document.querySelectorAll('.page').forEach(function(p){
+        p.classList.remove('active');
+      });
       const t = document.getElementById(id);
       if(t) t.classList.add('active');
     }
+    
     function setActiveNav(active){
-      document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(function(b){
+        b.classList.remove('active');
+      });
       active.classList.add('active');
     }
 
@@ -495,33 +506,49 @@
       const preview = document.getElementById('witnessPreview');
       const count = document.getElementById('wCount');
 
-      const openPicker = ()=>files.click();
+      const openPicker = function(){files.click();};
       document.getElementById('uploadBox').addEventListener('click', openPicker);
-      document.getElementById('addWitness').addEventListener('click', (e)=>{e.preventDefault();e.stopPropagation();openPicker();});
+      document.getElementById('addWitness').addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        openPicker();
+      });
 
-      files.addEventListener('change', (e)=>{
-        const list = Array.from(e.target.files||[]).filter(f=>f.type.startsWith('image/')).slice(0, 4 - witness.length);
+      files.addEventListener('change', function(e){
+        const list = Array.from(e.target.files || []).filter(function(f){
+          return f.type.startsWith('image/');
+        }).slice(0, 4 - witness.length);
+        
         if(list.length===0) return;
         let processed=0;
-        list.forEach(file=>{
+        list.forEach(function(file){
           if(witness.length>=4) return;
           const reader = new FileReader();
-          reader.onload = (ev)=>{
+          reader.onload = function(ev){
             witness.push({name:file.name,url:ev.target.result});
-            const img=document.createElement('img'); img.src=ev.target.result; img.alt='شاهد التقرير';
+            const img=document.createElement('img'); 
+            img.src=ev.target.result; 
+            img.alt='شاهد التقرير';
             preview.appendChild(img);
             processed++;
-            if(processed===list.length){ count.textContent=(${witness.length}/4); showToast('تم تحميل الشواهد'); }
+            if(processed===list.length){ 
+              count.textContent='(' + witness.length + '/4)'; 
+              showToast('تم تحميل الشواهد'); 
+            }
           };
           reader.readAsDataURL(file);
         });
       });
 
-      document.getElementById('clearWitness').addEventListener('click',(e)=>{
+      document.getElementById('clearWitness').addEventListener('click',function(e){
         e.preventDefault();
         if(witness.length===0){ showToast('لا توجد صور','warn'); return; }
         if(!confirm('حذف جميع صور الشواهد؟')) return;
-        witness=[]; files.value=''; preview.innerHTML=''; count.textContent='(0/4)'; showToast('تم الحذف');
+        witness=[]; 
+        files.value=''; 
+        preview.innerHTML=''; 
+        count.textContent='(0/4)'; 
+        showToast('تم الحذف');
       });
     }
 
@@ -531,23 +558,35 @@
       const preview = document.getElementById('sessionWitnessPreview');
       const count = document.getElementById('sessionWCount');
 
-      const openPicker = ()=>files.click();
+      const openPicker = function(){files.click();};
       document.getElementById('sessionUploadBox').addEventListener('click', openPicker);
-      document.getElementById('addSessionWitness').addEventListener('click', (e)=>{e.preventDefault();e.stopPropagation();openPicker();});
+      document.getElementById('addSessionWitness').addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        openPicker();
+      });
 
-      files.addEventListener('change', (e)=>{
-        const list = Array.from(e.target.files||[]).filter(f=>f.type.startsWith('image/')).slice(0, 4 - sessionWitness.length);
+      files.addEventListener('change', function(e){
+        const list = Array.from(e.target.files || []).filter(function(f){
+          return f.type.startsWith('image/');
+        }).slice(0, 4 - sessionWitness.length);
+        
         if(list.length===0) return;
         let processed=0;
-        list.forEach(file=>{
+        list.forEach(function(file){
           if(sessionWitness.length>=4) return;
           const reader = new FileReader();
-          reader.onload = (ev)=>{
+          reader.onload = function(ev){
             sessionWitness.push({name:file.name,url:ev.target.result});
-            const img=document.createElement('img'); img.src=ev.target.result; img.alt='شاهد الحصة';
+            const img=document.createElement('img'); 
+            img.src=ev.target.result; 
+            img.alt='شاهد الحصة';
             preview.appendChild(img);
             processed++;
-            if(processed===list.length){ count.textContent=(${sessionWitness.length}/4); showToast('تم تحميل الشواهد'); }
+            if(processed===list.length){ 
+              count.textContent='(' + sessionWitness.length + '/4)'; 
+              showToast('تم تحميل الشواهد'); 
+            }
           };
           reader.readAsDataURL(file);
         });
@@ -555,23 +594,32 @@
 
       // زر حذف
       const clearBtn=document.createElement('button');
-      clearBtn.className='btn danger'; clearBtn.type='button'; clearBtn.textContent='حذف الصور';
-      clearBtn.addEventListener('click',(e)=>{
+      clearBtn.className='btn danger'; 
+      clearBtn.type='button'; 
+      clearBtn.textContent='حذف الصور';
+      clearBtn.addEventListener('click',function(e){
         e.preventDefault();
         if(sessionWitness.length===0){ showToast('لا توجد صور','warn'); return; }
         if(!confirm('حذف جميع صور الشواهد؟')) return;
-        sessionWitness=[]; files.value=''; preview.innerHTML=''; count.textContent='(0/4)'; showToast('تم الحذف');
+        sessionWitness=[]; 
+        files.value=''; 
+        preview.innerHTML=''; 
+        count.textContent='(0/4)'; 
+        showToast('تم الحذف');
       });
       document.querySelector('#sessionUploadBox').parentNode.appendChild(clearBtn);
     }
 
     // ============== تصدير تقرير البرنامج ==============
     function initializeReportExport(){
-      document.getElementById('exportReport').addEventListener('click', async (e)=>{
+      document.getElementById('exportReport').addEventListener('click', async function(e){
         e.preventDefault();
         const form = document.getElementById('reportForm');
         const data = Object.fromEntries(new FormData(form));
-        if(!data.title || !data.owner || !data.date){ showToast('أكمل الحقول الأساسية (*)','warn'); return; }
+        if(!data.title || !data.owner || !data.date){ 
+          showToast('أكمل الحقول الأساسية (*)','warn'); 
+          return; 
+        }
 
         try{
           showToast('جاري التصدير...','warn');
@@ -581,49 +629,44 @@
           
           let witnessHTML = '';
           if(witness.length > 0){
-            witnessHTML = `
-              <div style="page-break-before:always;margin-top:30px;">
-                <h4 style="color:#047857;font-size:18px;margin-bottom:15px;border-right:4px solid #10b981;padding-right:10px;">صور الشواهد</h4>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-            `;
+            witnessHTML = '<div style="page-break-before:always;margin-top:30px;">' +
+              '<h4 style="color:#047857;font-size:18px;margin-bottom:15px;border-right:4px solid #10b981;padding-right:10px;">صور الشواهد</h4>' +
+              '<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">';
             
-            witness.forEach((w, index) => {
-              witnessHTML += `
-                <div style="text-align:center;padding:10px;page-break-inside:avoid;height:320px;display:flex;flex-direction:column;justify-content:center;">
-                  <div style="height:280px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-                    <img src="${w.url}" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;">
-                  </div>
-                  <p style="margin-top:8px;font-size:13px;color:#64748b;">شاهد التقرير ${index + 1}</p>
-                </div>
-              `;
+            witness.forEach(function(w, index) {
+              witnessHTML += '<div style="text-align:center;padding:10px;page-break-inside:avoid;height:320px;display:flex;flex-direction:column;justify-content:center;">' +
+                '<div style="height:280px;display:flex;align-items:center;justify-content:center;overflow:hidden;">' +
+                '<img src="' + w.url + '" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;">' +
+                '</div>' +
+                '<p style="margin-top:8px;font-size:13px;color:#64748b;">شاهد التقرير ' + (index + 1) + '</p>' +
+                '</div>';
               
               // إضافة صفحة جديدة بعد كل صورتين
               if ((index + 1) % 2 === 0 && index < witness.length - 1) {
-                witnessHTML += </div></div><div style="page-break-before:always;margin-top:30px;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">;
+                witnessHTML += '</div></div><div style="page-break-before:always;margin-top:30px;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">';
               }
             });
             
-            witnessHTML += </div></div>;
+            witnessHTML += '</div></div>';
           }
 
-          printElement.innerHTML = `
-            <div style="text-align:center;margin-bottom:30px;">
-              <div style="width:100%;height:120px;display:flex;align-items:center;justify-content:center;margin-bottom:25px;">
-                <img src="https://raw.githubusercontent.com/omymh/school26/main/26.png" alt="شعار المدرسة" style="max-width:100%;max-height:100%;object-fit:contain;">
-              </div>
-              <h1 style="color:#047857;font-size:32px;margin:0;font-weight:900;border-bottom:3px solid #10b981;padding-bottom:15px;">التقرير</h1>
-            </div>
-            <table style="width:100%;border-collapse:collapse;margin-bottom:30px;">
-              <tr><td style="padding:12px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:bold;width:30%;">اسم البرنامج</td><td style="padding:12px;border:1px solid #e2e8f0;">${data.title}</td></tr>
-              <tr><td style="padding:12px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:bold;">المنفذ</td><td style="padding:12px;border:1px solid #e2e8f0;">${data.owner}</td></tr>
-              <tr><td style="padding:12px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:bold;">عدد المستفيدين</td><td style="padding:12px;border:1px solid #e2e8f0;">${data.count||'غير محدد'}</td></tr>
-              <tr><td style="padding:12px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:bold;">التاريخ</td><td style="padding:12px;border:1px solid #e2e8f0;">${data.date}</td></tr>
-              <tr><td style="padding:12px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:bold;">المكان</td><td style="padding:12px;border:1px solid #e2e8f0;">${data.place||'غير محدد'}</td></tr>
-            </table>
-            ${data.goals?<div style="margin-bottom:25px;"><h4 style="color:#047857;font-size:18px;margin-bottom:10px;border-right:4px solid #10b981;padding-right:10px;">الأهداف</h4><div style="padding:15px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">${data.goals}</div></div>:''}
-            ${data.desc?<div style="margin-bottom:25px;"><h4 style="color:#047857;font-size:18px;margin-bottom:10px;border-right:4px solid #10b981;padding-right:10px;">وصف التقرير</h4><div style="padding:15px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">${data.desc}</div></div>:''}
-            ${witnessHTML}
-          `;
+          printElement.innerHTML = '<div style="text-align:center;margin-bottom:30px;">' +
+            '<div style="width:100%;height:120px;display:flex;align-items:center;justify-content:center;margin-bottom:25px;">' +
+            '<img src="https://raw.githubusercontent.com/omymh/school26/main/26.png" alt="شعار المدرسة" style="max-width:100%;max-height:100%;object-fit:contain;">' +
+            '</div>' +
+            '<h1 style="color:#047857;font-size:32px;margin:0;font-weight:900;border-bottom:3px solid #10b981;padding-bottom:15px;">التقرير</h1>' +
+            '</div>' +
+            '<table style="width:100%;border-collapse:collapse;margin-bottom:30px;">' +
+            '<tr><td style="padding:12px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:bold;width:30%;">اسم البرنامج</td><td style="padding:12px;border:1px solid #e2e8f0;">' + data.title + '</td></tr>' +
+            '<tr><td style="padding:12px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:bold;">المنفذ</td><td style="padding:12px;border:1px solid #e2e8f0;">' + data.owner + '</td></tr>' +
+            '<tr><td style="padding:12px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:bold;">عدد المستفيدين</td><td style="padding:12px;border:1px solid #e2e8f0;">' + (data.count||'غير محدد') + '</td></tr>' +
+            '<tr><td style="padding:12px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:bold;">التاريخ</td><td style="padding:12px;border:1px solid #e2e8f0;">' + data.date + '</td></tr>' +
+            '<tr><td style="padding:12px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:bold;">المكان</td><td style="padding:12px;border:1px solid #e2e8f0;">' + (data.place||'غير محدد') + '</td></tr>' +
+            '</table>' +
+            (data.goals ? '<div style="margin-bottom:25px;"><h4 style="color:#047857;font-size:18px;margin-bottom:10px;border-right:4px solid #10b981;padding-right:10px;">الأهداف</h4><div style="padding:15px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">' + data.goals + '</div></div>' : '') +
+            (data.desc ? '<div style="margin-bottom:25px;"><h4 style="color:#047857;font-size:18px;margin-bottom:10px;border-right:4px solid #10b981;padding-right:10px;">وصف التقرير</h4><div style="padding:15px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">' + data.desc + '</div></div>' : '') +
+            witnessHTML;
+          
           document.body.appendChild(printElement);
 
           // انتظار تحميل جميع الصور
@@ -646,40 +689,45 @@
           pdf.save('التقرير - ' + (data.title||'المدرسة') + '.pdf');
           showToast('تم التصدير بنجاح');
         }catch(err){
-          console.error(err); showToast('حدث خطأ أثناء التصدير','err');
+          console.error(err); 
+          showToast('حدث خطأ أثناء التصدير','err');
         }
       });
     }
 
     // ============== إدارة سجلات الحصص ==============
     function renderSessions(){
-      const body = document.getElementById('sessionsBody'); if(!body) return;
+      const body = document.getElementById('sessionsBody'); 
+      if(!body) return;
       body.innerHTML='';
-      sessions.forEach((s,i)=>{
+      sessions.forEach(function(s,i){
         const tr=document.createElement('tr');
-        tr.innerHTML = `
-          <td>${i+1}</td><td>${s.week||''}</td><td>${s.day||''}</td><td>${s.date||''}</td>
-          <td>${s.className||''}</td><td>${s.number||''}</td><td>${s.teacher||''}</td>
-          <td style="text-align:right">${s.activities||''}</td><td style="text-align:right">${s.fields||''}</td>
-          <td class="no-print"><button class="btn danger" type="button" data-index="${i}">حذف</button></td>`;
+        tr.innerHTML = '<td>' + (i+1) + '</td><td>' + (s.week||'') + '</td><td>' + (s.day||'') + '</td><td>' + (s.date||'') + '</td>' +
+          '<td>' + (s.className||'') + '</td><td>' + (s.number||'') + '</td><td>' + (s.teacher||'') + '</td>' +
+          '<td style="text-align:right">' + (s.activities||'') + '</td><td style="text-align:right">' + (s.fields||'') + '</td>' +
+          '<td class="no-print"><button class="btn danger" type="button" data-index="' + i + '">حذف</button></td>';
         body.appendChild(tr);
       });
-      body.querySelectorAll('button[data-index]').forEach(b=>{
+      body.querySelectorAll('button[data-index]').forEach(function(b){
         b.addEventListener('click',function(){
           const idx = +this.getAttribute('data-index');
           deleteSession(idx);
         });
       });
     }
+    
     function deleteSession(index){
       if(!confirm('حذف هذه الحصة؟')) return;
       sessions.splice(index,1);
-      try{ localStorage.setItem('sessionsData',JSON.stringify(sessions)); }catch(e){}
+      try{ 
+        localStorage.setItem('sessionsData',JSON.stringify(sessions)); 
+      }catch(e){}
       renderSessions();
       showToast('تم الحذف');
     }
+    
     function initializeSessionManagement(){
-      document.getElementById('saveSession').addEventListener('click',(e)=>{
+      document.getElementById('saveSession').addEventListener('click',function(e){
         e.preventDefault();
         const week = document.getElementById('weekNumber').value;
         const day = document.getElementById('dayName').value;
@@ -695,110 +743,140 @@
         if(document.getElementById('futureSkills').checked) fields.push('مهارات المستقبل');
 
         if(!week || !day || !date || !className || !number || !teacher || !activities || fields.length===0){
-          showToast('أكمل كل الحقول واختر مجالاً واحداً على الأقل','warn'); return;
+          showToast('أكمل كل الحقول واختر مجالاً واحداً على الأقل','warn'); 
+          return;
         }
 
-        sessions.push({week,day,date,className,number,teacher,activities,fields:fields.join('، '),witness:[...sessionWitness]});
-        try{ localStorage.setItem('sessionsData',JSON.stringify(sessions)); }catch(e){}
-        renderSessions(); showToast('تم حفظ الحصة');
+        sessions.push({
+          week:week,
+          day:day,
+          date:date,
+          className:className,
+          number:number,
+          teacher:teacher,
+          activities:activities,
+          fields:fields.join('، '),
+          witness:[...sessionWitness]
+        });
+        
+        try{ 
+          localStorage.setItem('sessionsData',JSON.stringify(sessions)); 
+        }catch(e){}
+        
+        renderSessions(); 
+        showToast('تم حفظ الحصة');
 
         document.getElementById('sesForm').reset();
-        sessionWitness=[]; document.getElementById('sessionWitnessPreview').innerHTML=''; document.getElementById('sessionWCount').textContent='(0/4)';
+        sessionWitness=[]; 
+        document.getElementById('sessionWitnessPreview').innerHTML=''; 
+        document.getElementById('sessionWCount').textContent='(0/4)';
       });
 
-      document.getElementById('clearAll').addEventListener('click',(e)=>{
+      document.getElementById('clearAll').addEventListener('click',function(e){
         e.preventDefault();
-        if(sessions.length===0){ showToast('لا توجد حصص','warn'); return; }
+        if(sessions.length===0){ 
+          showToast('لا توجد حصص','warn'); 
+          return; 
+        }
         if(!confirm('مسح جميع الحصص؟')) return;
-        sessions=[]; try{ localStorage.setItem('sessionsData',JSON.stringify(sessions)); }catch(e){}
-        renderSessions(); showToast('تم المسح');
+        sessions=[]; 
+        try{ 
+          localStorage.setItem('sessionsData',JSON.stringify(sessions)); 
+        }catch(e){}
+        renderSessions(); 
+        showToast('تم المسح');
       });
     }
 
     // ============== تصدير تقرير الحصص ==============
     function initializeSessionsExport(){
-      const btn=document.getElementById('exportSessions'); if(!btn) return;
-      btn.addEventListener('click', async (e)=>{
+      const btn=document.getElementById('exportSessions'); 
+      if(!btn) return;
+      
+      btn.addEventListener('click', async function(e){
         e.preventDefault();
-        if(!Array.isArray(sessions) || sessions.length===0){ showToast('لا توجد حصص للتصدير','warn'); return; }
+        if(!Array.isArray(sessions) || sessions.length===0){ 
+          showToast('لا توجد حصص للتصدير','warn'); 
+          return; 
+        }
+        
         try{
           showToast('جاري التصدير...','warn');
 
           const printElement=document.createElement('div');
           printElement.style.cssText="position:fixed;top:0;left:0;width:1000px;background:#fff;padding:40px;z-index:10000;font-family:'Tajawal',sans-serif;direction:rtl;";
           let rows='';
-          sessions.forEach((s,i)=>{
-            rows+=`<tr>
-              <td style="padding:10px;border:1px solid #ddd;text-align:center;">${i+1}</td>
-              <td style="padding:10px;border:1px solid #ddd;text-align:center;">${s.week||''}</td>
-              <td style="padding:10px;border:1px solid #ddd;text-align:center;">${s.day||''}</td>
-              <td style="padding:10px;border:1px solid #ddd;text-align:center;">${s.date||''}</td>
-              <td style="padding:10px;border:1px solid #ddd;text-align:center;">${s.className||''}</td>
-              <td style="padding:10px;border:1px solid #ddd;text-align:center;">${s.number||''}</td>
-              <td style="padding:10px;border:1px solid #ddd;text-align:center;">${s.teacher||''}</td>
-              <td style="padding:10px;border:1px solid #ddd;text-align:right;">${s.activities||''}</td>
-              <td style="padding:10px;border:1px solid #ddd;text-align:right;">${s.fields||''}</td>
-            </tr>`;
+          sessions.forEach(function(s,i){
+            rows+='<tr>' +
+              '<td style="padding:10px;border:1px solid #ddd;text-align:center;">' + (i+1) + '</td>' +
+              '<td style="padding:10px;border:1px solid #ddd;text-align:center;">' + (s.week||'') + '</td>' +
+              '<td style="padding:10px;border:1px solid #ddd;text-align:center;">' + (s.day||'') + '</td>' +
+              '<td style="padding:10px;border:1px solid #ddd;text-align:center;">' + (s.date||'') + '</td>' +
+              '<td style="padding:10px;border:1px solid #ddd;text-align:center;">' + (s.className||'') + '</td>' +
+              '<td style="padding:10px;border:1px solid #ddd;text-align:center;">' + (s.number||'') + '</td>' +
+              '<td style="padding:10px;border:1px solid #ddd;text-align:center;">' + (s.teacher||'') + '</td>' +
+              '<td style="padding:10px;border:1px solid #ddd;text-align:right;">' + (s.activities||'') + '</td>' +
+              '<td style="padding:10px;border:1px solid #ddd;text-align:right;">' + (s.fields||'') + '</td>' +
+              '</tr>';
           });
 
           let witnessHTML = '';
-          const sessionsWithWitness = sessions.filter(s => s.witness && s.witness.length > 0);
+          const sessionsWithWitness = sessions.filter(function(s) { 
+            return s.witness && s.witness.length > 0; 
+          });
+          
           if(sessionsWithWitness.length > 0){
-            witnessHTML = `<div style="page-break-before:always;margin-top:30px;">
-              <h2 style="color:#047857;font-size:24px;font-weight:900;border-bottom:2px solid #10b981;padding-bottom:10px;">صور الشواهد</h2>`;
+            witnessHTML = '<div style="page-break-before:always;margin-top:30px;">' +
+              '<h2 style="color:#047857;font-size:24px;font-weight:900;border-bottom:2px solid #10b981;padding-bottom:10px;">صور الشواهد</h2>';
             
-            sessionsWithWitness.forEach((s,i)=>{
-              witnessHTML += `<div style="margin:20px 0;page-break-inside:avoid;">
-                <h3 style="color:#059669;font-size:18px;margin-bottom:10px;">الحصة ${i+1}: ${s.className||''} - ${s.date||''}</h3>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">`;
+            sessionsWithWitness.forEach(function(s,i){
+              witnessHTML += '<div style="margin:20px 0;page-break-inside:avoid;">' +
+                '<h3 style="color:#059669;font-size:18px;margin-bottom:10px;">الحصة ' + (i+1) + ': ' + (s.className||'') + ' - ' + (s.date||'') + '</h3>' +
+                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">';
               
-              s.witness.forEach((w, index) => {
-                witnessHTML += `
-                  <div style="text-align:center;border:1px solid #ddd;border-radius:8px;padding:15px;background:#f8fafc;height:320px;display:flex;flex-direction:column;justify-content:center;page-break-inside:avoid;">
-                    <div style="height:280px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-                      <img src="${w.url}" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;">
-                    </div>
-                    <p style="margin-top:8px;font-size:12px;color:#64748b;">شاهد الحصة ${index + 1}</p>
-                  </div>
-                `;
+              s.witness.forEach(function(w, index) {
+                witnessHTML += '<div style="text-align:center;border:1px solid #ddd;border-radius:8px;padding:15px;background:#f8fafc;height:320px;display:flex;flex-direction:column;justify-content:center;page-break-inside:avoid;">' +
+                  '<div style="height:280px;display:flex;align-items:center;justify-content:center;overflow:hidden;">' +
+                  '<img src="' + w.url + '" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;">' +
+                  '</div>' +
+                  '<p style="margin-top:8px;font-size:12px;color:#64748b;">شاهد الحصة ' + (index + 1) + '</p>' +
+                  '</div>';
                 
                 // إضافة صفحة جديدة بعد كل صورتين
                 if ((index + 1) % 2 === 0 && index < s.witness.length - 1) {
-                  witnessHTML += </div></div><div style="page-break-before:always;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">;
+                  witnessHTML += '</div></div><div style="page-break-before:always;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">';
                 }
               });
               
-              witnessHTML += </div></div>;
+              witnessHTML += '</div></div>';
             });
             
-            witnessHTML += </div>;
+            witnessHTML += '</div>';
           }
 
-          printElement.innerHTML=`
-            <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
-              <div style="width:100%;height:120px;display:flex;align-items:center;justify-content:center;">
-                <img src="https://raw.githubusercontent.com/omymh/school26/main/26.png" alt="شعار المدرسة" style="max-width:100%;max-height:100%;object-fit:contain;">
-              </div>
-            </div>
-            <h1 style="color:#047857;font-size:32px;font-weight:900;border-bottom:3px solid #10b981;padding-bottom:12px;margin:0 0 16px 0;">تقرير حصص الانتظار</h1>
-            <table style="width:100%;border-collapse:collapse;margin-top:10px;">
-              <thead>
-                <tr style="background:#10b981;color:#fff;">
-                  <th style="padding:12px;border:1px solid #ddd;">م</th>
-                  <th style="padding:12px;border:1px solid #ddd;">الأسبوع</th>
-                  <th style="padding:12px;border:1px solid #ddd;">اليوم</th>
-                  <th style="padding:12px;border:1px solid #ddd;">التاريخ</th>
-                  <th style="padding:12px;border:1px solid #ddd;">الصف</th>
-                  <th style="padding:12px;border:1px solid #ddd;">الحصة</th>
-                  <th style="padding:12px;border:1px solid #ddd;">المعلمة الغائبة</th>
-                  <th style="padding:12px;border:1px solid #ddd;">ما تم تنفيذه</th>
-                  <th style="padding:12px;border:1px solid #ddd;">المجال</th>
-                </tr>
-              </thead>
-              <tbody>${rows}</tbody>
-            </table>
-            ${witnessHTML}
-          `;
+          printElement.innerHTML='<div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">' +
+            '<div style="width:100%;height:120px;display:flex;align-items:center;justify-content:center;">' +
+            '<img src="https://raw.githubusercontent.com/omymh/school26/main/26.png" alt="شعار المدرسة" style="max-width:100%;max-height:100%;object-fit:contain;">' +
+            '</div>' +
+            '</div>' +
+            '<h1 style="color:#047857;font-size:32px;font-weight:900;border-bottom:3px solid #10b981;padding-bottom:12px;margin:0 0 16px 0;">تقرير حصص الانتظار</h1>' +
+            '<table style="width:100%;border-collapse:collapse;margin-top:10px;">' +
+            '<thead>' +
+            '<tr style="background:#10b981;color:#fff;">' +
+            '<th style="padding:12px;border:1px solid #ddd;">م</th>' +
+            '<th style="padding:12px;border:1px solid #ddd;">الأسبوع</th>' +
+            '<th style="padding:12px;border:1px solid #ddd;">اليوم</th>' +
+            '<th style="padding:12px;border:1px solid #ddd;">التاريخ</th>' +
+            '<th style="padding:12px;border:1px solid #ddd;">الصف</th>' +
+            '<th style="padding:12px;border:1px solid #ddd;">الحصة</th>' +
+            '<th style="padding:12px;border:1px solid #ddd;">المعلمة الغائبة</th>' +
+            '<th style="padding:12px;border:1px solid #ddd;">ما تم تنفيذه</th>' +
+            '<th style="padding:12px;border:1px solid #ddd;">المجال</th>' +
+            '</tr>' +
+            '</thead>' +
+            '<tbody>' + rows + '</tbody>' +
+            '</table>' +
+            witnessHTML;
 
           document.body.appendChild(printElement);
           
@@ -828,7 +906,7 @@
 
     // ============== التقويم الهجري (خوارزمية دقيقة) ==============
     function initializeHijriCalendar(){
-      document.querySelectorAll('.date-with-hijri').forEach(wrapper=>{
+      document.querySelectorAll('.date-with-hijri').forEach(function(wrapper){
         const input = wrapper.querySelector('.hijri-date-input');
         const calendar = wrapper.querySelector('.hijri-calendar');
         const toggleBtn = wrapper.querySelector('.hijri-toggle');
@@ -846,7 +924,9 @@
         let currentHijri = gregorianToHijri(currentGregorianDate);
 
         function openCalendar(){
-          document.querySelectorAll('.hijri-calendar').forEach(c=>c.classList.remove('active'));
+          document.querySelectorAll('.hijri-calendar').forEach(function(c){
+            c.classList.remove('active');
+          });
           calendar.classList.add('active');
           renderCalendar();
         }
@@ -857,7 +937,7 @@
 
         function renderCalendar(){
           // عرض الشهر والسنة الهجرية
-          monthYearEl.textContent = ${HIJRI_MONTHS[currentHijri.month-1]} ${currentHijri.year} هـ;
+          monthYearEl.textContent = HIJRI_MONTHS[currentHijri.month-1] + ' ' + currentHijri.year + ' هـ';
           
           daysContainer.innerHTML = '';
           
@@ -901,8 +981,8 @@
               }
             }
             
-            dayElement.addEventListener('click', () => {
-              input.value = ${i} ${HIJRI_MONTHS[currentHijri.month-1]} ${currentHijri.year} هـ;
+            dayElement.addEventListener('click', function() {
+              input.value = i + ' ' + HIJRI_MONTHS[currentHijri.month-1] + ' ' + currentHijri.year + ' هـ';
               closeCalendar();
             });
             
@@ -915,15 +995,15 @@
         closeBtn.addEventListener('click', closeCalendar);
         
         // الانتقال إلى اليوم
-        todayBtn.addEventListener('click', () => {
+        todayBtn.addEventListener('click', function() {
           currentGregorianDate = new Date();
           currentHijri = gregorianToHijri(currentGregorianDate);
-          input.value = ${currentHijri.day} ${HIJRI_MONTHS[currentHijri.month-1]} ${currentHijri.year} هـ;
+          input.value = currentHijri.day + ' ' + HIJRI_MONTHS[currentHijri.month-1] + ' ' + currentHijri.year + ' هـ';
           renderCalendar();
         });
 
         // التنقل بين الأشهر
-        prevMonthBtn.addEventListener('click', () => {
+        prevMonthBtn.addEventListener('click', function() {
           currentHijri.month--;
           if (currentHijri.month < 1) {
             currentHijri.month = 12;
@@ -932,7 +1012,7 @@
           renderCalendar();
         });
 
-        nextMonthBtn.addEventListener('click', () => {
+        nextMonthBtn.addEventListener('click', function() {
           currentHijri.month++;
           if (currentHijri.month > 12) {
             currentHijri.month = 1;
@@ -942,18 +1022,18 @@
         });
 
         // التنقل بين السنوات
-        prevYearBtn.addEventListener('click', () => {
+        prevYearBtn.addEventListener('click', function() {
           currentHijri.year--;
           renderCalendar();
         });
 
-        nextYearBtn.addEventListener('click', () => {
+        nextYearBtn.addEventListener('click', function() {
           currentHijri.year++;
           renderCalendar();
         });
 
         // إغلاق التقويم عند النقر خارجها
-        document.addEventListener('click', (e) => {
+        document.addEventListener('click', function(e) {
           if (calendar.classList.contains('active') && !wrapper.contains(e.target) && !calendar.contains(e.target)) {
             closeCalendar();
           }
@@ -961,7 +1041,7 @@
         
         // تهيئة التقويم بالتاريخ الحالي
         if (!input.value) {
-          input.value = ${currentHijri.day} ${HIJRI_MONTHS[currentHijri.month-1]} ${currentHijri.year} هـ;
+          input.value = currentHijri.day + ' ' + HIJRI_MONTHS[currentHijri.month-1] + ' ' + currentHijri.year + ' هـ';
         }
       });
     }
@@ -969,11 +1049,11 @@
     // ============== دالة مساعدة لانتظار تحميل الصور ==============
     function waitForImages(element) {
       const images = Array.from(element.querySelectorAll('img'));
-      const promises = images.map(img => {
+      const promises = images.map(function(img) {
         if (img.complete) {
           return Promise.resolve();
         } else {
-          return new Promise((resolve, reject) => {
+          return new Promise(function(resolve, reject) {
             img.addEventListener('load', resolve);
             img.addEventListener('error', resolve); // نستمر حتى لو فشلت صورة
           });
