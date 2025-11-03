@@ -59,9 +59,13 @@
     .upload:hover{background:linear-gradient(135deg,#dcfce7,#d1fae5)}
     .upload p{color:var(--primary);font-weight:800;margin:0 0 8px;font-size:14px}
 
-    /* معاينة الصور */
-    .witness-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
-    .witness-grid img{width:100%;height:auto;object-fit:scale-down;border:none;box-shadow:none;background:transparent}
+    /* معاينة الصور - تحسينات مشابهة للمدرسة السابعة */
+    .witness-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin-top:12px}
+    .witness-grid img{
+        width:100%;height:160px;object-fit:contain;border-radius:10px;border:2px solid var(--light);
+        box-shadow:0 4px 12px rgba(16,185,129,.1);background:#f0fdf4;
+        padding:8px; /* إضافة padding للصور */
+    }
     .hint{text-align:center;color:var(--secondary);font-weight:600;margin-top:8px;font-size:13px}
 
     /* الجدول */
@@ -133,6 +137,9 @@
       .date-input-container .input {
         font-size: 14px;
       }
+      .witness-grid img {
+        height: 140px;
+      }
     }
 
     /* شاشات أكبر */
@@ -149,14 +156,13 @@
       .btn{padding:14px 24px;width:auto}
       .actions{flex-direction:row}
       .witness-grid{grid-template-columns:repeat(4,1fr)}
-      .witness-grid img{height:auto}
+      .witness-grid img{height:180px}
       .hijri-calendar{position:absolute;top:100%;right:0;left:auto;transform:none;width:340px;max-width:none}
     }
     @media (max-width:480px){
       .header-logo img{height:60px}
       .nav{gap:6px;padding:10px}
       .nav-btn{min-width:100px;padding:8px 12px;font-size:12px}
-      .witness-grid img{height:auto}
     }
   </style>
 </head>
@@ -529,6 +535,7 @@
             const img=document.createElement('img'); 
             img.src=ev.target.result; 
             img.alt='شاهد التقرير';
+            img.setAttribute('crossorigin','anonymous'); // إضافة من المدرسة السابعة
             preview.appendChild(img);
             processed++;
             if(processed===list.length){ 
@@ -581,6 +588,7 @@
             const img=document.createElement('img'); 
             img.src=ev.target.result; 
             img.alt='شاهد الحصة';
+            img.setAttribute('crossorigin','anonymous'); // إضافة من المدرسة السابعة
             preview.appendChild(img);
             processed++;
             if(processed===list.length){ 
@@ -631,20 +639,15 @@
           if(witness.length > 0){
             witnessHTML = '<div style="page-break-before:always;margin-top:30px;">' +
               '<h4 style="color:#047857;font-size:18px;margin-bottom:15px;border-right:4px solid #10b981;padding-right:10px;">صور الشواهد</h4>' +
-              '<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">';
+              '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px;">';
             
             witness.forEach(function(w, index) {
-              witnessHTML += '<div style="text-align:center;padding:10px;page-break-inside:avoid;height:320px;display:flex;flex-direction:column;justify-content:center;">' +
-                '<div style="height:280px;display:flex;align-items:center;justify-content:center;overflow:hidden;">' +
-                '<img src="' + w.url + '" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;">' +
+              witnessHTML += '<div style="text-align:center;border:1px solid #d1fae5;border-radius:6px;padding:8px;background:#f0fdf4;height:200px;display:flex;flex-direction:column;justify-content:center;page-break-inside:avoid;">' +
+                '<div style="height:160px;display:flex;align-items:center;justify-content:center;overflow:hidden;">' +
+                '<img src="' + w.url + '" crossorigin="anonymous" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;">' +
                 '</div>' +
-                '<p style="margin-top:8px;font-size:13px;color:#64748b;">شاهد التقرير ' + (index + 1) + '</p>' +
+                '<p style="margin-top:8px;font-size:12px;color:#64748b;">شاهد التقرير ' + (index + 1) + '</p>' +
                 '</div>';
-              
-              // إضافة صفحة جديدة بعد كل صورتين
-              if ((index + 1) % 2 === 0 && index < witness.length - 1) {
-                witnessHTML += '</div></div><div style="page-break-before:always;margin-top:30px;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">';
-              }
             });
             
             witnessHTML += '</div></div>';
@@ -832,20 +835,15 @@
             sessionsWithWitness.forEach(function(s,i){
               witnessHTML += '<div style="margin:20px 0;page-break-inside:avoid;">' +
                 '<h3 style="color:#059669;font-size:18px;margin-bottom:10px;">الحصة ' + (i+1) + ': ' + (s.className||'') + ' - ' + (s.date||'') + '</h3>' +
-                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">';
+                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px;">';
               
               s.witness.forEach(function(w, index) {
-                witnessHTML += '<div style="text-align:center;border:1px solid #ddd;border-radius:8px;padding:15px;background:#f8fafc;height:320px;display:flex;flex-direction:column;justify-content:center;page-break-inside:avoid;">' +
-                  '<div style="height:280px;display:flex;align-items:center;justify-content:center;overflow:hidden;">' +
+                witnessHTML += '<div style="text-align:center;border:1px solid #d1fae5;border-radius:6px;padding:8px;background:#f0fdf4;height:200px;display:flex;flex-direction:column;justify-content:center;page-break-inside:avoid;">' +
+                  '<div style="height:160px;display:flex;align-items:center;justify-content:center;overflow:hidden;">' +
                   '<img src="' + w.url + '" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;">' +
                   '</div>' +
                   '<p style="margin-top:8px;font-size:12px;color:#64748b;">شاهد الحصة ' + (index + 1) + '</p>' +
                   '</div>';
-                
-                // إضافة صفحة جديدة بعد كل صورتين
-                if ((index + 1) % 2 === 0 && index < s.witness.length - 1) {
-                  witnessHTML += '</div></div><div style="page-break-before:always;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">';
-                }
               });
               
               witnessHTML += '</div></div>';
