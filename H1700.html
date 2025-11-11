@@ -21,17 +21,6 @@ body {
   src: url('fonts/HelveticaNeueW23-Regular.ttf') format('truetype');
 }
 
-/* الديباجة (صورة 26) */
-.preface {
-  text-align: center;
-  margin: 10px 0 5px;
-}
-.preface img {
-  max-width: 230px;
-  height: auto;
-}
-
-/* الهيدر */
 header {
   background: #87092D;
   color: white;
@@ -41,6 +30,12 @@ header {
 header h3 {
   margin: 3px 0;
   font-size: 16px;
+}
+header img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto 8px;
 }
 
 h3 label {
@@ -99,14 +94,6 @@ button.deleteBtn {
   color: white;
 }
 
-footer {
-  text-align: center;
-  padding: 10px;
-  color: black;
-  font-weight: bold;
-  font-size: 12px;
-}
-
 @media print {
   body {
     background: none !important;
@@ -137,12 +124,11 @@ footer {
 
 <div id="mainContent">
 
-  <!-- ✅ الديباجة بصورة 26 في الأعلى -->
-  <div class="preface">
-    <img src="https://raw.githubusercontent.com/omymh/school26/main/26.png" alt="المدرسة السادسة والعشرون">
-  </div>
-
-  <header><h3>تقرير تنفيذ استراتيجية تعلّم نشط</h3></header>
+  <!-- ✅ الديباجة (صورة 26) داخل الهيدر -->
+  <header>
+    <img src="26.png" alt="شعار المدرسة السادسة والعشرون">
+    <h3>تقرير تنفيذ استراتيجية تعلّم نشط</h3>
+  </header>
 
   <div id="waiting" class="tab-content active">
 
@@ -221,32 +207,28 @@ footer {
 let uploadedImages = {};
 
 document.addEventListener("DOMContentLoaded", function() {
-  const dateIds = ['date1'];
-
-  dateIds.forEach(id => {
-    const input = document.getElementById(id);
-    if (input) {
-      flatpickr(input, {
-        locale: 'ar',
-        disableMobile: true,
-        altInput: true,
-        altFormat: 'd-MM-yyyy هـ',
-        dateFormat: 'Y-m-d',
-        onChange: function(selectedDates, dateStr, instance) {
-          if (selectedDates.length > 0) {
-            const miladi = selectedDates[0];
-            miladi.setDate(miladi.getDate() - 1);
-            const hijri = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric'
-            }).format(miladi);
-            instance.altInput.value = hijri;
-          }
+  const input = document.getElementById('date1');
+  if (input) {
+    flatpickr(input, {
+      locale: 'ar',
+      disableMobile: true,
+      altInput: true,
+      altFormat: 'd-MM-yyyy هـ',
+      dateFormat: 'Y-m-d',
+      onChange: function(selectedDates, dateStr, instance) {
+        if (selectedDates.length > 0) {
+          const miladi = selectedDates[0];
+          miladi.setDate(miladi.getDate() - 1);
+          const hijri = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+          }).format(miladi);
+          instance.altInput.value = hijri;
         }
-      });
-    }
-  });
+      }
+    });
+  }
 });
 
 function saveForm(tabId) {
@@ -345,8 +327,14 @@ function renderPreview(tabId) {
 }
 
 function printPDF(tabId, btn) {
+  // ننسخ محتوى النموذج
   const content = document.getElementById(tabId).cloneNode(true);
-  content.querySelectorAll('button,input[type="file"],#' + tabId + '-counter,#' + tabId + '-preview,#top-director').forEach(el => el.remove());
+  content.querySelectorAll(
+    'button,input[type="file"],#' + tabId + '-counter,#' + tabId + '-preview,#top-director'
+  ).forEach(el => el.remove());
+
+  // ✅ ننسخ الهيدر مع الديباجة
+  const headerClone = document.querySelector('header').cloneNode(true);
 
   const wrapper = document.createElement('div');
   wrapper.style.position = 'relative';
@@ -359,15 +347,11 @@ function printPDF(tabId, btn) {
   wrapper.style.backgroundRepeat = 'no-repeat';
   wrapper.style.backgroundPosition = 'center';
 
-  // ✅ إضافة نفس الديباجة في أعلى صفحة الـ PDF
-  const preface = document.createElement('div');
-  preface.style.textAlign = 'center';
-  preface.style.marginBottom = '5px';
-  preface.innerHTML = '<img src="https://raw.githubusercontent.com/omymh/school26/main/26.png" style="max-width:230px;height:auto;" alt="المدرسة السادسة والعشرون">';
-  wrapper.appendChild(preface);
-
+  // ترتيب الطباعة: الديباجة ثم النموذج
+  wrapper.appendChild(headerClone);
   wrapper.appendChild(content);
 
+  // الصور داخل التقرير
   const tabImages = uploadedImages[tabId] || [];
   if (tabImages.length > 0) {
     const imagesWrapper = document.createElement('div');
@@ -391,6 +375,7 @@ function printPDF(tabId, btn) {
     wrapper.appendChild(imagesWrapper);
   }
 
+  // أسماء المعلمة والمديرة في أسفل التقرير
   const healthGuide = document.getElementById('healthGuide');
   const schoolDirector = document.getElementById('schoolDirector');
 
@@ -432,6 +417,7 @@ function printPDF(tabId, btn) {
     .save();
 }
 
+// تحميل البيانات المحفوظة (اختياري)
 loadForm('waiting');
 updateCounter('waiting');
 renderPreview('waiting');
