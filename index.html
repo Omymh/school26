@@ -79,18 +79,11 @@
       color: var(--gray);
       font-size: 1rem;
     }
-    
-    .quran-verse {
-      margin-top: 10px;
-      font-size: 1.1rem;
-      font-weight: 500;
-      color: var(--dark);
-    }
 
     /* التنقل بين التقارير */
     nav {
       background:linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-      padding: 15px 0;
+      padding: 15px 0 25px;
       box-shadow: 0 4px 12px rgba(16,185,129,.2);
     }
     
@@ -111,14 +104,14 @@
     
     .cards-container {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
       gap: 20px;
     }
     
     .card {
       background: var(--card-bg);
       border-radius: 12px;
-      padding: 20px;
+      padding: 18px 16px;
       box-shadow: var(--shadow);
       transition: all 0.3s ease;
       cursor: pointer;
@@ -136,12 +129,12 @@
     }
     
     .card .icon {
-      font-size: 2.5rem;
-      margin-bottom: 15px;
+      font-size: 2.3rem;
+      margin-bottom: 12px;
       color: var(--primary);
       background: rgba(16, 185, 129, 0.1);
-      width: 70px;
-      height: 70px;
+      width: 64px;
+      height: 64px;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -149,9 +142,9 @@
     }
     
     .card .title {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: 700;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
       color: var(--dark);
     }
     
@@ -199,6 +192,7 @@
       border-radius: 12px;
       box-shadow: var(--shadow);
       border: none;
+      background:#fff;
     }
     
     /* الفوتر */
@@ -225,36 +219,31 @@
       background: var(--primary);
       color: white;
       border: none;
-      padding: 10px 15px;
-      border-radius: 5px;
+      padding: 9px 14px;
+      border-radius: 999px;
       cursor: pointer;
       font-family: 'Tajawal', sans-serif;
+      font-size: 0.9rem;
       box-shadow: 0 2px 10px rgba(0,0,0,0.2);
       display: none;
     }
 
-    /* تأثير اهتزاز أيقونة النقود */
-    .money-icon {
-      animation: shakeMoney 1.5s ease-in-out infinite;
-    }
-    
-    @keyframes shakeMoney {
-      0%, 100% { transform: translateX(0); }
-      15% { transform: translateX(-4px) rotate(-5deg); }
-      30% { transform: translateX(4px) rotate(5deg); }
-      45% { transform: translateX(-3px) rotate(-3deg); }
-      60% { transform: translateX(3px) rotate(3deg); }
-      75% { transform: translateX(-2px) rotate(-2deg); }
-      90% { transform: translateX(2px) rotate(2deg); }
-    }
-
     @media (max-width: 768px) {
       .cards-container {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
       }
       
       .header-text h1 {
         font-size: 1.5rem;
+      }
+
+      #iframe-container {
+        height: 75vh;
+      }
+
+      #back-btn {
+        top: 80px;
+        right: 10px;
       }
     }
     
@@ -278,16 +267,16 @@
       <h1>نظام التقارير الإلكترونية</h1>
       <p>منصة متكاملة لإدارة التقارير المدرسية</p>
     </div>
-    <div class="quran-verse">﴿ وَقُلْ رَبِّ زِدْنِي عِلْمًا ﴾</div>
   </div>
 </header>
 
-<nav>
+<nav id="main-nav">
   <div class="nav-container">
     <div class="nav-title">تقارير المدرسة الشاملة</div>
     <div class="cards-container">
+
       <!-- التقارير الأساسية -->
-      <div class="card reports" onclick="loadInIframe('https://defullah2010-svg.github.io/R1397/')">
+      <div class="card reports" onclick="loadInIframe('R1397/', 'التقارير')">
         <div class="icon">🗓️</div>
         <div class="title">التقارير</div>
         <div class="subtitle">
@@ -297,120 +286,121 @@
         </div>
       </div>
 
-      <div class="card activities" onclick="loadInIframe('https://defullah2010-svg.github.io/A1397/')">
+      <div class="card activities" onclick="loadInIframe('A1397/', 'النشاط الطلابي')">
         <div class="icon">🌟</div>
         <div class="title">النشاط الطلابي</div>
       </div>
 
-      <div class="card activities" onclick="loadInIframe('https://defullah2010-svg.github.io/AC1397/')">
+      <div class="card activities" onclick="loadInIframe('AC1397/', 'الأنشطة اللاصفية')">
         <div class="icon">🧩</div>
         <div class="title">الأنشطة اللاصفية</div>
       </div>
 
-      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/Trace1397/')">
+      <div class="card" onclick="loadInIframe('Trace1397/', 'متابعة الأنشطة')">
         <div class="icon">📋</div>
         <div class="title">متابعة الأنشطة</div>
       </div>
 
-      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/L1397/')">
+      <div class="card" onclick="loadInIframe('L1397/', 'التواصل مع أولياء الأمور')">
         <div class="icon">📞</div>
         <div class="title">التواصل مع أولياء الأمور</div>
       </div>
 
-      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/T1397/')">
+      <div class="card" onclick="loadInIframe('T1397/', 'التوجيه الطلابي')">
         <div class="icon">🎓</div>
         <div class="title">التوجيه الطلابي</div>
       </div>
 
-      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/V1397/')">
+      <div class="card" onclick="loadInIframe('V1397/', 'تبادل الزيارات')">
         <div class="icon">📝</div>
         <div class="title">تبادل الزيارات</div>
       </div>
 
-      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/P1397/')">
+      <div class="card" onclick="loadInIframe('P1397/', 'خريطة نواتج التعلّم')">
         <div class="icon">🗺️</div>
         <div class="title">خريطة نواتج التعلّم</div>
       </div>
 
-      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/W1397/')">
+      <div class="card" onclick="loadInIframe('W1397/', 'حصة الانتظار')">
         <div class="icon">🕒</div>
         <div class="title">حصة الانتظار</div>
       </div>
 
-      <div class="card featured" onclick="loadInIframe('https://defullah2010-svg.github.io/PLC1397/')">
+      <div class="card featured" onclick="loadInIframe('PLC1397/', 'مجتمعات التعلّم المهنية')">
         <div class="icon">📑</div>
         <div class="title">مجتمعات التعلّم المهنية</div>
       </div>
 
-      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/D1397/')">
+      <div class="card" onclick="loadInIframe('D1397/', 'التوجيه الصحّي')">
         <div class="icon">⚕️</div>
         <div class="title">التوجيه الصحّي</div>
       </div>
 
-      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/S1397/')">
+      <div class="card" onclick="loadInIframe('S1397/', 'التعلّم النشط')">
         <div class="icon">♟</div>
         <div class="title">التعلّم النشط</div>
       </div>
 
-      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/LessonA1397/')">
+      <div class="card" onclick="loadInIframe('LessonA1397/', 'الدرس التطبيقي')">
         <div class="icon">📚</div>
         <div class="title">الدرس التطبيقي</div>
       </div>
 
-      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/Warshah1397/')">
+      <div class="card" onclick="loadInIframe('Warshah1397/', 'ورش العمل')">
         <div class="icon">🛠️</div>
         <div class="title">ورش العمل</div>
       </div>
 
-      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/M1397/')">
+      <div class="card" onclick="loadInIframe('M1397/', 'المبادرات النوعية')">
         <div class="icon">💎</div>
         <div class="title">المبادرات النوعية</div>
       </div>
 
-      <div class="card featured" onclick="loadInIframe('https://defullah2010-svg.github.io/Tecno1397/')">
+      <div class="card featured" onclick="loadInIframe('Tecno1397/', 'البرامج التقنية')">
         <div class="icon">🖥️</div>
         <div class="title">البرامج التقنية</div>
       </div>
 
-      <div class="card featured" onclick="loadInIframe('https://defullah2010-svg.github.io/Electronic1397/')">
+      <div class="card featured" onclick="loadInIframe('Electronic1397/', 'التعليم الإلكتروني')">
         <div class="icon">💻</div>
         <div class="title">التعليم الإلكتروني</div>
       </div>
 
-      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/Doctor1397/')">
+      <div class="card" onclick="loadInIframe('Doctor1397/', 'الخطط الإثرائية والعلاجية')">
         <div class="icon">💡</div>
         <div class="title">الخطط الإثرائية والعلاجية</div>
       </div>
 
-      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/Search1397/')">
+      <div class="card" onclick="loadInIframe('Search1397/', 'البحث الإجرائي')">
         <div class="icon">🔍</div>
         <div class="title">البحث الإجرائي</div>
       </div>
 
-      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/Searsh1397/')">
+      <div class="card" onclick="loadInIframe('Searsh1397/', 'بحث الدّرس')">
         <div class="icon">📖</div>
         <div class="title">بحث الدّرس</div>
       </div>
 
-      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/Small1397/')">
+      <div class="card" onclick="loadInIframe('Small1397/', 'الدرس المصغّر')">
         <div class="icon">🔬</div>
         <div class="title">الدرس المصغّر</div>
       </div>
 
-      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/Group1397/')">
+      <div class="card" onclick="loadInIframe('Group1397/', 'الشراكة المجتمعية')">
         <div class="icon">🤝</div>
         <div class="title">الشراكة المجتمعية</div>
       </div>
 
-      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/VM1397/')">
+      <div class="card" onclick="loadInIframe('VM1397/', 'الزيارات التقييمية')">
         <div class="icon">🏅</div>
         <div class="title">الزيارات التقييمية</div>
       </div>
 
-      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/TM1397/')">
+      <div class="card" onclick="loadInIframe('TM1397/', 'تقييم الأداء التعليمي')">
         <div class="icon">💯</div>
         <div class="title">تقييم الأداء التعليمي</div>
       </div>
+
     </div>
   </div>
 </nav>
@@ -431,64 +421,31 @@
     const iframeContainer = document.getElementById('iframe-container');
     const iframe = document.getElementById('content-frame');
     const backBtn = document.getElementById('back-btn');
+    const nav = document.getElementById('main-nav');
     
     iframe.src = url;
     iframeContainer.style.display = 'block';
     iframeContainer.scrollIntoView({behavior: 'smooth'});
-    document.title = title + ' - نظام التقارير';
+    document.title = (title ? title + ' - ' : '') + 'نظام التقارير الإلكترونية';
     
     // إخفاء البطاقات عند عرض الإطار
-    document.querySelector('nav').style.display = 'none';
+    nav.style.display = 'none';
     
     // إظهار زر العودة
     backBtn.style.display = 'block';
     
-    // إضافة حدث لزر العودة
     backBtn.onclick = function() {
       iframeContainer.style.display = 'none';
-      document.querySelector('nav').style.display = 'block';
+      nav.style.display = 'block';
       document.title = 'المدرسة السادسة والعشرون - نظام التقارير';
       backBtn.style.display = 'none';
+      iframe.src = 'about:blank';
+      window.scrollTo({top:0, behavior:'smooth'});
     };
   }
 
-  // التحقق من أن جميع التقارير تعمل بشكل صحيح
   document.addEventListener('DOMContentLoaded', function() {
     console.log('نظام التقارير جاهز للاستخدام');
-    
-    // التأكد من أن جميع الروابط تعمل
-    const cards = document.querySelectorAll('.card');
-    cards.forEach(card => {
-      card.addEventListener('click', function() {
-        const url = this.getAttribute('onclick').match(/'([^']+)'/)[1];
-        console.log('تحميل التقرير:', url);
-        
-        // إضافة مؤشر تحميل
-        const iframe = document.getElementById('content-frame');
-        iframe.onload = function() {
-          console.log('تم تحميل التقرير بنجاح');
-          
-          // التحقق من محتوى الإطار بعد التحميل
-          setTimeout(() => {
-            try {
-              const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-              const tables = iframeDoc.querySelectorAll('table');
-              
-              tables.forEach((table, index) => {
-                const rows = table.querySelectorAll('tr');
-                if (rows.length <= 1) {
-                  console.warn(`الجدول ${index + 1} قد يكون فارغًا أو به مشكلة`);
-                } else {
-                  console.log(`الجدول ${index + 1} يحتوي على ${rows.length} صفوف`);
-                }
-              });
-            } catch (e) {
-              console.log('لا يمكن الوصول إلى محتوى الإطار بسبب سياسة CORS');
-            }
-          }, 1000);
-        };
-      });
-    });
   });
 </script>
 
