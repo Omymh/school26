@@ -21,6 +21,17 @@ body {
   src: url('fonts/HelveticaNeueW23-Regular.ttf') format('truetype');
 }
 
+/* الديباجة (صورة 26) */
+.preface {
+  text-align: center;
+  margin: 10px 0 5px;
+}
+.preface img {
+  max-width: 230px;
+  height: auto;
+}
+
+/* الهيدر */
 header {
   background: #87092D;
   color: white;
@@ -125,7 +136,14 @@ footer {
 <body>
 
 <div id="mainContent">
+
+  <!-- ✅ الديباجة بصورة 26 في الأعلى -->
+  <div class="preface">
+    <img src="https://raw.githubusercontent.com/omymh/school26/main/26.png" alt="المدرسة السادسة والعشرون">
+  </div>
+
   <header><h3>تقرير تنفيذ استراتيجية تعلّم نشط</h3></header>
+
   <div id="waiting" class="tab-content active">
 
     <!-- إدارة تعليم / المدرسة -->
@@ -340,6 +358,14 @@ function printPDF(tabId, btn) {
   wrapper.style.backgroundSize = 'cover';
   wrapper.style.backgroundRepeat = 'no-repeat';
   wrapper.style.backgroundPosition = 'center';
+
+  // ✅ إضافة نفس الديباجة في أعلى صفحة الـ PDF
+  const preface = document.createElement('div');
+  preface.style.textAlign = 'center';
+  preface.style.marginBottom = '5px';
+  preface.innerHTML = '<img src="https://raw.githubusercontent.com/omymh/school26/main/26.png" style="max-width:230px;height:auto;" alt="المدرسة السادسة والعشرون">';
+  wrapper.appendChild(preface);
+
   wrapper.appendChild(content);
 
   const tabImages = uploadedImages[tabId] || [];
