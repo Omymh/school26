@@ -6,90 +6,541 @@
   <title>المدرسة السادسة والعشرون - نظام التقارير الشامل</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
-    :root{--primary:#10b981;--secondary:#059669;--dark:#047857;--light:#d1fae5;--accent:#fbbf24;--text:#0f172a;--gray:#475569;--container:94vw}
-    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    html,body{font-family:'Tajawal',sans-serif;background:linear-gradient(135deg,#f0fdf4 0%,#dcfce7 50%,#f0fdf4 100%);color:var(--text);line-height:1.65;min-height:100vh;overflow-x:hidden;font-size:16px}
+    :root{
+      --primary:#10b981;
+      --secondary:#059669;
+      --dark:#047857;
+      --light:#d1fae5;
+      --accent:#fbbf24;
+      --text:#0f172a;
+      --gray:#475569;
+      --container:94vw
+    }
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      -webkit-tap-highlight-color:transparent
+    }
+    html,body{
+      font-family:'Tajawal',sans-serif;
+      background:linear-gradient(135deg,#f0fdf4 0%,#dcfce7 50%,#f0fdf4 100%);
+      color:var(--text);
+      line-height:1.65;
+      min-height:100vh;
+      overflow-x:hidden;
+      font-size:16px
+    }
 
     /* الهيدر والتنقل */
-    .header-logo{background:#fff;position:sticky;top:0;z-index:1000;box-shadow:0 4px 12px rgba(16,185,129,.1);border-bottom:2px solid var(--light);padding:8px 0}
-    .header-logo .wrap{width:var(--container);max-width:1200px;margin:0 auto;padding:0 12px;display:flex;justify-content:center;align-items:center}
-    .header-logo img{height:84px;width:auto;object-fit:contain}
-    nav{background:linear-gradient(135deg,var(--primary) 0%,var(--secondary) 100%);position:sticky;top:0;z-index:999;box-shadow:0 4px 12px rgba(16,185,129,.2)}
-    .nav{width:var(--container);max-width:1200px;margin:0 auto;display:flex;justify-content:center;gap:8px;padding:10px 12px;flex-wrap:wrap}
-    .nav-btn{border:none;border-radius:16px;padding:10px 14px;font-weight:700;color:var(--primary);cursor:pointer;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.1);transition:all .3s;font-size:14px;flex:1;min-width:110px;text-align:center;display:inline-flex;align-items:center;gap:8px;justify-content:center}
-    .nav-btn .icon{width:18px;height:18px;fill:currentColor}
-    .nav-btn.active{background:linear-gradient(135deg,var(--dark),var(--primary));color:#fff;transform:scale(1.03);box-shadow:0 6px 20px rgba(4,120,87,.4)}
+    .header-logo{
+      background:#fff;
+      position:sticky;
+      top:0;
+      z-index:1000;
+      box-shadow:0 4px 12px rgba(16,185,129,.1);
+      border-bottom:2px solid var(--light);
+      padding:8px 0
+    }
+    .header-logo .wrap{
+      width:var(--container);
+      max-width:1200px;
+      margin:0 auto;
+      padding:0 12px;
+      display:flex;
+      justify-content:center;
+      align-items:center
+    }
+    .header-logo img{
+      height:84px;
+      width:auto;
+      object-fit:contain
+    }
+    nav{
+      background:linear-gradient(135deg,var(--primary) 0%,var(--secondary) 100%);
+      position:sticky;
+      top:0;
+      z-index:999;
+      box-shadow:0 4px 12px rgba(16,185,129,.2)
+    }
+    .nav{
+      width:var(--container);
+      max-width:1200px;
+      margin:0 auto;
+      display:flex;
+      justify-content:center;
+      gap:8px;
+      padding:10px 12px;
+      flex-wrap:wrap
+    }
+    .nav-btn{
+      border:none;
+      border-radius:16px;
+      padding:10px 14px;
+      font-weight:700;
+      color:var(--primary);
+      cursor:pointer;
+      background:#fff;
+      box-shadow:0 2px 8px rgba(0,0,0,.1);
+      transition:all .3s;
+      font-size:14px;
+      flex:1;
+      min-width:110px;
+      text-align:center;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      justify-content:center
+    }
+    .nav-btn .icon{
+      width:18px;
+      height:18px;
+      fill:currentColor
+    }
+    .nav-btn.active{
+      background:linear-gradient(135deg,var(--dark),var(--primary));
+      color:#fff;
+      transform:scale(1.03);
+      box-shadow:0 6px 20px rgba(4,120,87,.4)
+    }
 
     /* الحاوية والصفحات */
-    .container{width:var(--container);max-width:1200px;margin:0 auto;padding:18px 12px 120px}
-    .page{display:none;background:#fff;padding:22px;border-radius:16px;box-shadow:0 8px 24px rgba(16,185,129,.1);margin-bottom:16px}
-    .page.active{display:block;animation:slideIn .28s ease}
-    @keyframes slideIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-    h1{color:var(--dark);text-align:center;margin:0 0 16px;font-size:28px;font-weight:900}
-    h2{color:var(--primary);margin:18px 0 10px;font-size:20px;border-right:4px solid var(--accent);padding-right:8px;font-weight:800}
-    .page p{text-align:center;font-size:16px;color:var(--gray);margin:12px 0;line-height:1.8}
+    .container{
+      width:var(--container);
+      max-width:1200px;
+      margin:0 auto;
+      padding:18px 12px 120px
+    }
+    .page{
+      display:none;
+      background:#fff;
+      padding:22px;
+      border-radius:16px;
+      box-shadow:0 8px 24px rgba(16,185,129,.1);
+      margin-bottom:16px
+    }
+    .page.active{
+      display:block;
+      animation:slideIn .28s ease
+    }
+    @keyframes slideIn{
+      from{opacity:0;transform:translateY(16px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+    h1{
+      color:var(--dark);
+      text-align:center;
+      margin:0 0 16px;
+      font-size:28px;
+      font-weight:900
+    }
+    h2{
+      color:var(--primary);
+      margin:18px 0 10px;
+      font-size:20px;
+      border-right:4px solid var(--accent);
+      padding-right:8px;
+      font-weight:800
+    }
+    .page p{
+      text-align:center;
+      font-size:16px;
+      color:var(--gray);
+      margin:12px 0;
+      line-height:1.8
+    }
 
     /* النماذج والحقل */
-    .form{display:grid;gap:12px}
-    .grid-2,.grid-3{display:grid;grid-template-columns:1fr;gap:10px}
-    label{display:flex;flex-direction:column;gap:6px;color:#334155;font-weight:600;font-size:14px}
-    .input,select,textarea{width:100%;padding:12px;border:2px solid #e2e8f0;border-radius:10px;background:#f8fafc;font-size:16px;transition:all .3s;font-family:'Tajawal',sans-serif}
-    .input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary);background:#fff;box-shadow:0 0 0 4px rgba(16,185,129,.08)}
-    textarea{min-height:100px;resize:vertical}
+    .form{
+      display:grid;
+      gap:12px
+    }
+    .grid-2,.grid-3{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:10px
+    }
+    label{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      color:#334155;
+      font-weight:600;
+      font-size:14px
+    }
+    .input,select,textarea{
+      width:100%;
+      padding:12px;
+      border:2px solid #e2e8f0;
+      border-radius:10px;
+      background:#f8fafc;
+      font-size:16px;
+      transition:all .3s;
+      font-family:'Tajawal',sans-serif
+    }
+    .input:focus,select:focus,textarea:focus{
+      outline:none;
+      border-color:var(--primary);
+      background:#fff;
+      box-shadow:0 0 0 4px rgba(16,185,129,.08)
+    }
+    textarea{
+      min-height:100px;
+      resize:vertical
+    }
 
     /* تقويم هجري */
-    .date-with-hijri{position:relative}
-    .date-input-container{position:relative;display:flex;align-items:center}
-    .date-input-container .input{padding-right:50px;cursor:text}
-    .hijri-toggle{position:absolute;left:10px;top:50%;transform:translateY(-50%);background:var(--light);border:none;border-radius:8px;cursor:pointer;padding:8px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;transition:all .3s;box-shadow:0 2px 6px rgba(16,185,129,.2)}
-    .hijri-toggle:hover{background:var(--primary);transform:translateY(-50%) scale(1.05)}
-    .hijri-toggle:hover .hijri-icon{fill:#fff}
-    .hijri-icon{width:20px;height:20px;fill:var(--primary);transition:all .3s}
+    .date-with-hijri{
+      position:relative
+    }
+    .date-input-container{
+      position:relative;
+      display:flex;
+      align-items:center
+    }
+    .date-input-container .input{
+      padding-right:50px;
+      cursor:text
+    }
+    .hijri-toggle{
+      position:absolute;
+      left:10px;
+      top:50%;
+      transform:translateY(-50%);
+      background:var(--light);
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+      padding:8px;
+      width:38px;
+      height:38px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition:all .3s;
+      box-shadow:0 2px 6px rgba(16,185,129,.2)
+    }
+    .hijri-toggle:hover{
+      background:var(--primary);
+      transform:translateY(-50%) scale(1.05)
+    }
+    .hijri-toggle:hover .hijri-icon{
+      fill:#fff
+    }
+    .hijri-icon{
+      width:20px;
+      height:20px;
+      fill:var(--primary);
+      transition:all .3s
+    }
 
-    .hijri-calendar{position:fixed;background:#fff;border-radius:16px;box-shadow:0 15px 40px rgba(0,0,0,.2);padding:20px;z-index:10000;width:90vw;max-width:360px;display:none;top:50%;left:50%;transform:translate(-50%,-50%);border:2px solid var(--light);max-height:80vh;overflow-y:auto}
-    .hijri-calendar.active{display:block;animation:slideIn .2s ease}
-    .hijri-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #e2e8f0}
-    .hijri-month-year{font-weight:800;color:var(--dark);font-size:18px}
-    .hijri-nav{display:flex;gap:8px}
-    .hijri-nav button{background:var(--light);border:none;border-radius:8px;padding:8px 12px;cursor:pointer;font-weight:bold;color:var(--dark);transition:all .2s;font-size:16px;display:flex;align-items:center;justify-content:center;width:36px;height:36px}
-    .hijri-nav button:hover{background:var(--primary);color:#fff}
-    .hijri-weekdays{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-weight:800;margin-bottom:10px;color:var(--dark);font-size:14px;padding-bottom:10px;border-bottom:1px solid #f1f5f9}
-    .hijri-days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-    .hijri-day{padding:10px 5px;text-align:center;border-radius:8px;cursor:pointer;transition:all .2s;font-size:14px;font-weight:600}
-    .hijri-day:hover{background:var(--light)}
-    .hijri-day.selected{background:var(--primary);color:#fff}
-    .hijri-day.today{background:var(--accent);color:#fff}
-    .hijri-day.other-month{color:#94a3b8}
-    .calendar-actions{display:flex;gap:8px;margin-top:16px}
-    .today-btn{flex:1;padding:10px;background:var(--light);color:var(--dark);border:none;border-radius:8px;cursor:pointer;font-weight:600;transition:all .2s;font-size:14px}
-    .today-btn:hover{background:var(--primary);color:#fff}
+    .hijri-calendar{
+      position:fixed;
+      background:#fff;
+      border-radius:16px;
+      box-shadow:0 15px 40px rgba(0,0,0,.2);
+      padding:20px;
+      z-index:10000;
+      width:90vw;
+      max-width:360px;
+      display:none;
+      top:50%;
+      left:50%;
+      transform:translate(-50%,-50%);
+      border:2px solid var(--light);
+      max-height:80vh;
+      overflow-y:auto
+    }
+    .hijri-calendar.active{
+      display:block;
+      animation:slideIn .2s ease
+    }
+    .hijri-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:16px;
+      padding-bottom:16px;
+      border-bottom:1px solid #e2e8f0
+    }
+    .hijri-month-year{
+      font-weight:800;
+      color:var(--dark);
+      font-size:18px
+    }
+    .hijri-nav{
+      display:flex;
+      gap:8px
+    }
+    .hijri-nav button{
+      background:var(--light);
+      border:none;
+      border-radius:8px;
+      padding:8px 12px;
+      cursor:pointer;
+      font-weight:bold;
+      color:var(--dark);
+      transition:all .2s;
+      font-size:16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:36px;
+      height:36px
+    }
+    .hijri-nav button:hover{
+      background:var(--primary);
+      color:#fff
+    }
+    .hijri-weekdays{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      text-align:center;
+      font-weight:800;
+      margin-bottom:10px;
+      color:var(--dark);
+      font-size:14px;
+      padding-bottom:10px;
+      border-bottom:1px solid #f1f5f9
+    }
+    .hijri-days{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      gap:6px
+    }
+    .hijri-day{
+      padding:10px 5px;
+      text-align:center;
+      border-radius:8px;
+      cursor:pointer;
+      transition:all .2s;
+      font-size:14px;
+      font-weight:600
+    }
+    .hijri-day:hover{
+      background:var(--light)
+    }
+    .hijri-day.selected{
+      background:var(--primary);
+      color:#fff
+    }
+    .hijri-day.today{
+      background:var(--accent);
+      color:#fff
+    }
+    .hijri-day.other-month{
+      color:#94a3b8
+    }
+    .calendar-actions{
+      display:flex;
+      gap:8px;
+      margin-top:16px
+    }
+    .today-btn{
+      flex:1;
+      padding:10px;
+      background:var(--light);
+      color:var(--dark);
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:600;
+      transition:all .2s;
+      font-size:14px
+    }
+    .today-btn:hover{
+      background:var(--primary);
+      color:#fff
+    }
 
     /* شواهد */
-    .witness-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
-    .witness-item { background: #f8fafc; border-radius: 12px; border: 2px solid var(--light); padding: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 180px; box-shadow: 0 2px 8px rgba(16,185,129,.1) }
-    .witness-item img { max-width: 100%; max-height: 140px; object-fit: contain; display: block }
-    .witness-label { margin-top: 6px; font-size: 12px; color: var(--gray); text-align: center }
-    .hint{text-align:center;color:var(--secondary);font-weight:600;margin-top:6px;font-size:13px}
-    .upload{border:3px dashed var(--primary);border-radius:12px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);padding:14px;text-align:center;cursor:pointer;transition:all .3s}
-    .upload:hover{background:linear-gradient(135deg,#dcfce7,#d1fae5)}
+    .witness-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .witness-item {
+      background: #f8fafc;
+      border-radius: 12px;
+      border: 2px solid var(--light);
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 180px;
+      box-shadow: 0 2px 8px rgba(16,185,129,.1);
+    }
+    .witness-item img {
+      max-width: 100%;
+      max-height: 140px;
+      object-fit: contain;
+      display: block;
+    }
+    .witness-label {
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--gray);
+      text-align: center;
+    }
+    .hint{
+      text-align:center;
+      color:var(--secondary);
+      font-weight:600;
+      margin-top:6px;
+      font-size:13px;
+    }
+    .upload{
+      border:3px dashed var(--primary);
+      border-radius:12px;
+      background:linear-gradient(135deg,#f0fdf4,#dcfce7);
+      padding:14px;
+      text-align:center;
+      cursor:pointer;
+      transition:all .3s;
+    }
+    .upload:hover{
+      background:linear-gradient(135deg,#dcfce7,#d1fae5);
+    }
 
     /* الجدول */
-    .table-wrap{border-radius:10px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,.05);overflow-x:auto;margin:10px 0}
-    table{width:100%;border-collapse:collapse;background:#fff;min-width:700px}
-    th,td{padding:10px 8px;text-align:center;border-bottom:1px solid #f1f5f9;font-size:14px}
-    th{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;font-weight:800;font-size:13px}
+    .table-wrap{
+      border-radius:10px;
+      overflow:hidden;
+      box-shadow:0 4px 15px rgba(0,0,0,.05);
+      overflow-x:auto;
+      margin:10px 0;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      background:#fff;
+      min-width:700px;
+    }
+    th,td{
+      padding:10px 8px;
+      text-align:center;
+      border-bottom:1px solid #f1f5f9;
+      font-size:14px;
+    }
+    th{
+      background:linear-gradient(135deg,var(--primary),var(--secondary));
+      color:#fff;
+      font-weight:800;
+      font-size:13px;
+    }
 
     /* الأزرار + الأيقونات */
-    .btn{padding:12px 16px;border:none;border-radius:16px;color:#fff;font-weight:800;cursor:pointer;background:linear-gradient(135deg,var(--primary),var(--secondary));box-shadow:0 4px 15px rgba(16,185,129,.3);transition:all .2s;font-size:14px;display:inline-flex;align-items:center;gap:8px}
-    .btn:active{transform:scale(.98)}
-    .btn .icon{width:18px;height:18px;fill:#fff;flex:0 0 auto}
-    .btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(16,185,129,.4)}
-    .btn.danger{background:linear-gradient(135deg,#ef4444,#dc2626)}
-    .actions{display:flex;flex-direction:column;gap:10px}
+    .btn{
+      padding:12px 16px;
+      border:none;
+      border-radius:16px;
+      color:#fff;
+      font-weight:800;
+      cursor:pointer;
+      background:linear-gradient(135deg,var(--primary),var(--secondary));
+      box-shadow:0 4px 15px rgba(16,185,129,.3);
+      transition:all .2s;
+      font-size:14px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .btn:active{
+      transform:scale(.98);
+    }
+    .btn .icon{
+      width:18px;
+      height:18px;
+      fill:#fff;
+      flex:0 0 auto;
+    }
+    .btn:hover{
+      transform:translateY(-2px);
+      box-shadow:0 6px 20px rgba(16,185,129,.4);
+    }
+    .btn.danger{
+      background:linear-gradient(135deg,#ef4444,#dc2626);
+    }
+    .btn.back-btn {
+      background: linear-gradient(135deg, #6b7280, #4b5563);
+      margin-bottom: 20px;
+    }
+    .actions{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
 
     /* فوتر */
-    .site-footer{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(135deg,var(--primary),var(--dark));color:#fff;padding:8px;text-align:center;box-shadow:0 -4px 20px rgba(0,0,0,.15);z-index:5}
-    .site-footer p{margin:2px 0;font-size:12px}
+    .site-footer{
+      position:fixed;
+      bottom:0;
+      left:0;
+      right:0;
+      background:linear-gradient(135deg,var(--primary),var(--dark));
+      color:#fff;
+      padding:8px;
+      text-align:center;
+      box-shadow:0 -4px 20px rgba(0,0,0,.15);
+      z-index:5;
+    }
+    .site-footer p{
+      margin:2px 0;
+      font-size:12px;
+    }
+
+    /* قائمة التقارير */
+    .reports-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .report-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+      transition: all 0.3s;
+      cursor: pointer;
+      border: 2px solid var(--light);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 12px;
+    }
+    .report-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.2);
+      border-color: var(--primary);
+    }
+    .report-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--light);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .report-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--primary);
+    }
+    .report-card h3 {
+      color: var(--dark);
+      font-size: 18px;
+      margin: 0;
+    }
+    .report-card p {
+      color: var(--gray);
+      font-size: 14px;
+      margin: 0;
+    }
 
     @media (min-width:768px){
       .grid-2{grid-template-columns:1fr 1fr}
@@ -99,17 +550,14 @@
       .hijri-calendar{position:absolute;top:100%;right:0;left:auto;transform:none;width:360px;max-width:none}
       .btn{padding:12px 18px}
       .actions{flex-direction:row}
+      .reports-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      }
     }
-    
-    /* قائمة التقارير */
-    .reports-nav { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 20px; }
-    .report-btn { background: #fff; border: 2px solid var(--light); border-radius: 12px; padding: 12px 16px; cursor: pointer; transition: all 0.3s; font-weight: 600; text-align: center; flex: 1; min-width: 150px; }
-    .report-btn:hover { background: var(--light); border-color: var(--primary); }
-    .report-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
     
     /* إخفاء عناصر الطباعة */
     @media print {
-      nav, .site-footer, .no-print { display: none !important; }
+      nav, .site-footer, .no-print, .btn.back-btn { display: none !important; }
       .page { box-shadow: none; margin: 0; padding: 10px; }
     }
   </style>
@@ -127,14 +575,6 @@
         <svg class="icon" viewBox="0 0 24 24"><path d="M12 3l9 8-1.5 1.5L18 11v8h-5v-5H11v5H6v-8l-1.5 1.5L3 11l9-8z"/></svg>
         <span>الصفحة الرئيسية</span>
       </button>
-      <button class="nav-btn" id="navReports" type="button" aria-label="جميع التقارير">
-        <svg class="icon" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm8 1.5V8h4.5"/></svg>
-        <span>جميع التقارير</span>
-      </button>
-      <button class="nav-btn" id="navSessions" type="button" aria-label="تقارير الحصص">
-        <svg class="icon" viewBox="0 0 24 24"><path d="M3 5h18v2H3V5zm0 6h18v2H3v-2zm0 6h18v2H3v-2z"/></svg>
-        <span>تقارير الحصص</span>
-      </button>
     </div>
   </nav>
 
@@ -143,35 +583,131 @@
       <h1>نظام التقارير المدرسية</h1>
       <p>منصة المدرسة السادسة والعشرون لتوثيق جميع الأنشطة والحصص والبرامج.</p>
       
-      <div class="reports-nav">
-        <button class="report-btn" data-report="general">التقارير العامة</button>
-        <button class="report-btn" data-report="student">النشاط الطلابي</button>
-        <button class="report-btn" data-report="extracurricular">الأنشطة اللاصفية</button>
-        <button class="report-btn" data-report="followup">متابعة الأنشطة</button>
-        <button class="report-btn" data-report="communication">التواصل مع أولياء الأمور</button>
-        <button class="report-btn" data-report="guidance">التوجيه الطلابي</button>
-        <button class="report-btn" data-report="visits">تبادل الزيارات</button>
-        <button class="report-btn" data-report="learning">خريطة نواتج التعلم</button>
-        <button class="report-btn" data-report="waiting">حصة الانتظار</button>
-        <button class="report-btn" data-report="plc">جلسات مجتمعات التعلم المهنية</button>
-        <button class="report-btn" data-report="health">التوجيه الصحي</button>
-        <button class="report-btn" data-report="active">استراتيجية التعلم النشط</button>
-        <button class="report-btn" data-report="lesson">تنفيذ درس تطبيقي</button>
-        <button class="report-btn" data-report="workshop">ورشة العمل</button>
-        <button class="report-btn" data-report="initiative">المبادرة النوعية</button>
-        <button class="report-btn" data-report="technical">البرنامج التقني</button>
-        <button class="report-btn" data-report="electronic">التعليم الإلكتروني</button>
-        <button class="report-btn" data-report="enrichment">الخطة الإثرائية والعلاجية</button>
-        <button class="report-btn" data-report="research">البحث الإجرائي</button>
-        <button class="report-btn" data-report="lessonResearch">بحث الدرس</button>
-        <button class="report-btn" data-report="mini">الدرس المصغر</button>
-        <button class="report-btn" data-report="partnership">الشراكة المجتمعية</button>
-        <button class="report-btn" data-report="evaluation">زيارة تقييم صفية</button>
-        <button class="report-btn" data-report="performance">تقييم أداء المعلمات</button>
+      <h2>التقارير العامة</h2>
+      <div class="reports-grid">
+        <div class="report-card" data-report="general">
+          <div class="report-icon">
+            <svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm8 1.5V8h4.5"/></svg>
+          </div>
+          <h3>التقارير العامة</h3>
+          <p>التقارير اليومية والأسبوعية والشهرية</p>
+        </div>
+        
+        <div class="report-card" data-report="student">
+          <div class="report-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          </div>
+          <h3>النشاط الطلابي</h3>
+          <p>توثيق الأنشطة الطلابية المختلفة</p>
+        </div>
+        
+        <div class="report-card" data-report="extracurricular">
+          <div class="report-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2l4 7 7 1-5 5 1 7-7-3-7 3 1-7-5-5 7-1z"/></svg>
+          </div>
+          <h3>الأنشطة اللاصفية</h3>
+          <p>الأنشطة الإضافية خارج المنهج الدراسي</p>
+        </div>
+        
+        <div class="report-card" data-report="followup">
+          <div class="report-icon">
+            <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <h3>متابعة الأنشطة</h3>
+          <p>متابعة وتقييم الأنشطة المنفذة</p>
+        </div>
+        
+        <div class="report-card" data-report="communication">
+          <div class="report-icon">
+            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          </div>
+          <h3>التواصل مع أولياء الأمور</h3>
+          <p>توثيق التواصل مع أولياء أمور الطالبات</p>
+        </div>
+        
+        <div class="report-card" data-report="guidance">
+          <div class="report-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+          </div>
+          <h3>التوجيه الطلابي</h3>
+          <p>توجيه وإرشاد الطالبات أكاديمياً ونفسياً</p>
+        </div>
+        
+        <div class="report-card" data-report="waiting">
+          <div class="report-icon">
+            <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+          </div>
+          <h3>حصة الانتظار</h3>
+          <p>تقرير حصص الانتظار والأنشطة المنفذة فيها</p>
+        </div>
+      </div>
+      
+      <h2>التقارير التعليمية</h2>
+      <div class="reports-grid">
+        <div class="report-card" data-report="learning">
+          <div class="report-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/></svg>
+          </div>
+          <h3>خريطة نواتج التعلم</h3>
+          <p>توثيق نواتج التعلم وتحليلها</p>
+        </div>
+        
+        <div class="report-card" data-report="plc">
+          <div class="report-icon">
+            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          </div>
+          <h3>مجتمعات التعلم المهنية</h3>
+          <p>جلسات ونشاطات مجتمعات التعلم المهنية</p>
+        </div>
+        
+        <div class="report-card" data-report="health">
+          <div class="report-icon">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-8 12h-2v-2h2v2zm0-4h-2V7h2v4z"/></svg>
+          </div>
+          <h3>التوجيه الصحي</h3>
+          <p>برامج التوعية الصحية والتوجيه الطبي</p>
+        </div>
+        
+        <div class="report-card" data-report="active">
+          <div class="report-icon">
+            <svg viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.25 2.52.77-1.29-3.52-2.09V8z"/></svg>
+          </div>
+          <h3>التعلم النشط</h3>
+          <p>استراتيجيات التعلم النشط المنفذة</p>
+        </div>
+        
+        <div class="report-card" data-report="lesson">
+          <div class="report-icon">
+            <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg>
+          </div>
+          <h3>الدرس التطبيقي</h3>
+          <p>تنفيذ وتقييم الدروس التطبيقية</p>
+        </div>
+        
+        <div class="report-card" data-report="workshop">
+          <div class="report-icon">
+            <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+          </div>
+          <h3>ورش العمل</h3>
+          <p>ورش العمل التدريبية والتطويرية</p>
+        </div>
+        
+        <div class="report-card" data-report="initiative">
+          <div class="report-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          </div>
+          <h3>المبادرات النوعية</h3>
+          <p>المبادرات المتميزة والنوعية</p>
+        </div>
       </div>
     </section>
 
-    <section id="reports" class="page">
+    <section id="report" class="page">
+      <button class="btn back-btn" id="backToHome">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        <span>العودة للصفحة الرئيسية</span>
+      </button>
+      
       <h1 id="reportTitle">التقرير</h1>
       <form id="reportForm" class="form" onsubmit="return false;">
         <div id="reportFields">
@@ -198,127 +734,6 @@
         </div>
       </form>
     </section>
-
-    <section id="sessions" class="page">
-      <h1>تقرير حصص الانتظار</h1>
-      <form id="sesForm" class="form" onsubmit="return false;">
-        <div class="grid-3">
-          <label>الأسبوع *<select class="input" id="weekNumber" required>
-            <option value="">اختر الأسبوع</option>
-            <option>الأسبوع الأول</option><option>الأسبوع الثاني</option><option>الأسبوع الثالث</option>
-            <option>الأسبوع الرابع</option><option>الأسبوع الخامس</option><option>الأسبوع السادس</option>
-            <option>الأسبوع السابع</option><option>الأسبوع الثامن</option><option>الأسبوع التاسع</option>
-            <option>الأسبوع العاشر</option><option>الأسبوع الحادي عشر</option><option>الأسبوع الثاني عشر</option>
-            <option>الأسبوع الثالث عشر</option>
-          </select></label>
-
-          <label>اليوم *<select class="input" id="dayName" required>
-            <option value="">اختر اليوم</option>
-            <option>الأحد</option><option>الاثنين</option><option>الثلاثاء</option><option>الأربعاء</option><option>الخميس</option>
-          </select></label>
-
-          <label class="date-with-hijri">التاريخ *
-            <div class="date-input-container">
-              <input class="input hijri-date-input" id="sessionDate" required placeholder="اختر التاريخ" readonly>
-              <button type="button" class="hijri-toggle" aria-label="فتح التقويم">
-                <svg class="hijri-icon" viewBox="0 0 24 24">
-                  <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-2 .89-2 2v14c0 1.11.89 2 2 2h14c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zM7 12h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zm-8 4h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/>
-                </svg>
-              </button>
-            </div>
-            <div class="hijri-calendar">
-              <div class="hijri-header">
-                <div class="hijri-nav">
-                  <button type="button" class="prev-year" aria-label="السنة السابقة">«</button>
-                  <button type="button" class="prev-month" aria-label="الشهر السابق">‹</button>
-                </div>
-                <div class="hijri-month-year"></div>
-                <div class="hijri-nav">
-                  <button type="button" class="next-month" aria-label="الشهر التالي">›</button>
-                  <button type="button" class="next-year" aria-label="السنة التالية">»</button>
-                </div>
-              </div>
-              <div class="hijri-weekdays">
-                <span>س</span><span>ح</span><span>ن</span><span>ث</span><span>ر</span><span>خ</span><span>ج</span>
-              </div>
-              <div class="hijri-days"></div>
-              <div class="calendar-actions">
-                <button type="button" class="today-btn">اليوم</button>
-                <button type="button" class="btn danger" id="closeCalendar" style="flex:1">
-                  <svg class="icon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
-                  <span>إغلاق</span>
-                </button>
-              </div>
-            </div>
-          </label>
-
-          <label>الصف *<input class="input" id="className" required></label>
-          <label>رقم الحصة *<input class="input" id="sessionNumber" required></label>
-          <label>المعلمة الغائبة *<input class="input" id="absentTeacher" required></label>
-        </div>
-
-        <label>ما تم تنفيذه *<textarea class="input" id="activitiesText" required></textarea></label>
-
-        <div class="chipset" style="display:flex;flex-wrap:wrap;gap:10px">
-          <label class="btn" style="background:#f1f5f9;color:#0f172a">
-            <svg class="icon" viewBox="0 0 24 24" style="fill:currentColor"><path d="M5 13l4 4L19 7"/></svg>
-            <input type="checkbox" id="basicSkills" style="accent-color:#10b981"> المهارات الأساسية
-          </label>
-          <label class="btn" style="background:#f1f5f9;color:#0f172a">
-            <svg class="icon" viewBox="0 0 24 24" style="fill:currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 6 4 4 6.5 4c1.74 0 3.41 1.01 4.22 2.53C11.59 5.01 13.26 4 15 4 17.5 4 19.5 6 19.5 8.5c0 3.78-3.4 6.86-8.05 11.54L12 21.35z"/></svg>
-            <input type="checkbox" id="values" style="accent-color:#10b981"> القيم والمواطنة الصالحة
-          </label>
-          <label class="btn" style="background:#f1f5f9;color:#0f172a">
-            <svg class="icon" viewBox="0 0 24 24" style="fill:currentColor"><path d="M12 2l4 7 7 1-5 5 1 7-7-3-7 3 1-7-5-5 7-1z"/></svg>
-            <input type="checkbox" id="futureSkills" style="accent-color:#10b981"> مهارات المستقبل
-          </label>
-        </div>
-
-        <div class="witness-container">
-          <h2>صور الشواهد</h2>
-          <div class="upload" id="sessionUploadBox">
-            <p>اضغطي هنا لرفع صور الشواهد (حتى 4)</p>
-            <input type="file" id="sessionWitnessFiles" accept="image/*" multiple hidden>
-            <button class="btn" type="button" id="addSessionWitness">
-              <svg class="icon" viewBox="0 0 24 24"><path d="M19 13H13v6h-2v-6H5v-2h6V5h2v6h6z"/></svg>
-              <span>إضافة الشواهد</span>
-            </button>
-          </div>
-          <div id="sessionWitnessPreview" class="witness-grid"></div>
-          <div class="hint" id="sessionWCount">(0/4)</div>
-        </div>
-
-        <div class="actions">
-          <button class="btn" type="button" id="saveSession">
-            <svg class="icon" viewBox="0 0 24 24"><path d="M17 3H5a2 2 0 0 0-2 2v14l4-4h10a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z"/></svg>
-            <span>حفظ الحصة</span>
-          </button>
-          <button class="btn" type="button" id="exportSessions">
-            <svg class="icon" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7 7-7z"/></svg>
-            <span>تصدير PDF</span>
-          </button>
-          <button class="btn danger" type="button" id="clearAll">
-            <svg class="icon" viewBox="0 0 24 24"><path d="M6 7h12l-1 14H7L6 7zm3-3h6l1 2H8l1-2z"/></svg>
-            <span>مسح الكل</span>
-          </button>
-        </div>
-      </form>
-
-      <h2>الحصص المسجلة</h2>
-      <div class="table-wrap">
-        <table id="sessionsTable">
-          <thead>
-          <tr>
-            <th style="width:40px">م</th><th style="width:80px">الأسبوع</th><th style="width:80px">اليوم</th>
-            <th style="width:100px">التاريخ</th><th>الصف</th><th style="width:60px">الحصة</th>
-            <th style="width:140px">المعلمة الغائبة</th><th style="min-width:200px">ما تم تنفيذه</th>
-            <th style="min-width:140px">المجال</th><th class="no-print" style="width:90px">إجراء</th>
-          </tr>
-          </thead>
-          <tbody id="sessionsBody"></tbody>
-        </table>
-      </div>
-    </section>
   </main>
 
   <footer class="site-footer">
@@ -333,26 +748,23 @@
   <script>
     // ==================== بيانات عامة ====================
     let witness = [];
-    let sessionWitness = [];
-    let sessions = [];
     let currentReportType = 'general';
 
     // ==================== تنقل ====================
-    function setPage(id, btn){
+    function setPage(id){
       document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
       document.getElementById(id).classList.add('active');
-      document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-      if (btn) btn.classList.add('active');
     }
-    document.getElementById('navHome').onclick=(e)=>setPage('home', e.currentTarget);
-    document.getElementById('navReports').onclick=(e)=>setPage('reports', e.currentTarget);
-    document.getElementById('navSessions').onclick=(e)=>setPage('sessions', e.currentTarget);
+    
+    document.getElementById('backToHome').addEventListener('click', function() {
+      setPage('home');
+    });
 
     // ==================== اختيار نوع التقرير ====================
-    document.querySelectorAll('.report-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
+    document.querySelectorAll('.report-card').forEach(card => {
+      card.addEventListener('click', function() {
         currentReportType = this.getAttribute('data-report');
-        setPage('reports', document.getElementById('navReports'));
+        setPage('report');
         loadReportForm(currentReportType);
       });
     });
@@ -382,7 +794,7 @@
                 <option>تقرير أسبوعي</option>
                 <option>تقرير شهري</option>
               </select></label>
-              <label>الفترة *<input class="input" name="period" required></label>
+              <label>الفترة *<input class="input" name="period" required placeholder="مثال: الأسبوع الأول من ربيع الأول"></label>
               <label>المنفذ *<input class="input" name="owner" required></label>
               <label class="date-with-hijri">التاريخ *
                 <div class="date-input-container">
@@ -395,8 +807,8 @@
                 </div>
               </label>
             </div>
-            <label>ملخص التقرير *<textarea class="input" name="summary" required></textarea></label>
-            <label>التوصيات<textarea class="input" name="recommendations"></textarea></label>
+            <label>ملخص التقرير *<textarea class="input" name="summary" required placeholder="ملخص شامل عن التقرير..."></textarea></label>
+            <label>التوصيات<textarea class="input" name="recommendations" placeholder="التوصيات والمقترحات..."></textarea></label>
           `;
           break;
           
@@ -404,9 +816,9 @@
           title = 'النشاط الطلابي';
           fieldsHTML = `
             <div class="grid-2">
-              <label>اسم النشاط *<input class="input" name="activityName" required></label>
-              <label>الفئة المستهدفة *<input class="input" name="targetGroup" required></label>
-              <label>عدد المشاركين<input class="input" name="participantsCount" type="number"></label>
+              <label>اسم النشاط *<input class="input" name="activityName" required placeholder="اسم النشاط الطلابي"></label>
+              <label>الفئة المستهدفة *<input class="input" name="targetGroup" required placeholder="الصفوف أو الفئات المستهدفة"></label>
+              <label>عدد المشاركين<input class="input" name="participantsCount" type="number" placeholder="عدد الطالبات المشاركات"></label>
               <label class="date-with-hijri">التاريخ *
                 <div class="date-input-container">
                   <input class="input hijri-date-input" name="date" required placeholder="اختر التاريخ" readonly>
@@ -417,29 +829,33 @@
                   </button>
                 </div>
               </label>
-              <label>المكان<input class="input" name="place"></label>
-              <label>المشرف<input class="input" name="supervisor"></label>
+              <label>المكان<input class="input" name="place" placeholder="مكان تنفيذ النشاط"></label>
+              <label>المشرف<input class="input" name="supervisor" placeholder="اسم المشرف على النشاط"></label>
             </div>
-            <label>أهداف النشاط<textarea class="input" name="goals"></textarea></label>
-            <label>وصف النشاط<textarea class="input" name="description"></textarea></label>
-            <label>النتائج والتقييم<textarea class="input" name="results"></textarea></label>
+            <label>أهداف النشاط<textarea class="input" name="goals" placeholder="الأهداف المرجوة من النشاط..."></textarea></label>
+            <label>وصف النشاط<textarea class="input" name="description" placeholder="وصف تفصيلي للنشاط..."></textarea></label>
+            <label>النتائج والتقييم<textarea class="input" name="results" placeholder="النتائج المتحققة وتقييم النشاط..."></textarea></label>
           `;
           break;
           
-        case 'extracurricular':
-          title = 'الأنشطة اللاصفية';
+        case 'waiting':
+          title = 'حصة الانتظار';
           fieldsHTML = `
-            <div class="grid-2">
-              <label>اسم النشاط *<input class="input" name="activityName" required></label>
-              <label>نوع النشاط *<select class="input" name="activityType" required>
-                <option value="">اختر نوع النشاط</option>
-                <option>ثقافي</option>
-                <option>رياضي</option>
-                <option>فني</option>
-                <option>اجتماعي</option>
-                <option>تطوعي</option>
+            <div class="grid-3">
+              <label>الأسبوع *<select class="input" name="weekNumber" required>
+                <option value="">اختر الأسبوع</option>
+                <option>الأسبوع الأول</option><option>الأسبوع الثاني</option><option>الأسبوع الثالث</option>
+                <option>الأسبوع الرابع</option><option>الأسبوع الخامس</option><option>الأسبوع السادس</option>
+                <option>الأسبوع السابع</option><option>الأسبوع الثامن</option><option>الأسبوع التاسع</option>
+                <option>الأسبوع العاشر</option><option>الأسبوع الحادي عشر</option><option>الأسبوع الثاني عشر</option>
+                <option>الأسبوع الثالث عشر</option>
               </select></label>
-              <label>الفئة المستهدفة<input class="input" name="targetGroup"></label>
+
+              <label>اليوم *<select class="input" name="dayName" required>
+                <option value="">اختر اليوم</option>
+                <option>الأحد</option><option>الاثنين</option><option>الثلاثاء</option><option>الأربعاء</option><option>الخميس</option>
+              </select></label>
+
               <label class="date-with-hijri">التاريخ *
                 <div class="date-input-container">
                   <input class="input hijri-date-input" name="date" required placeholder="اختر التاريخ" readonly>
@@ -450,25 +866,38 @@
                   </button>
                 </div>
               </label>
-              <label>المكان<input class="input" name="place"></label>
-              <label>المشرف<input class="input" name="supervisor"></label>
+
+              <label>الصف *<input class="input" name="className" required placeholder="الصف الدراسي"></label>
+              <label>رقم الحصة *<input class="input" name="sessionNumber" required placeholder="رقم الحصة"></label>
+              <label>المعلمة الغائبة *<input class="input" name="absentTeacher" required placeholder="اسم المعلمة الغائبة"></label>
             </div>
-            <label>أهداف النشاط<textarea class="input" name="goals"></textarea></label>
-            <label>وصف النشاط<textarea class="input" name="description"></textarea></label>
-            <label>النتائج والتقييم<textarea class="input" name="results"></textarea></label>
+
+            <label>ما تم تنفيذه *<textarea class="input" name="activities" required placeholder="الأنشطة والتمارين المنفذة خلال الحصة..."></textarea></label>
+
+            <div class="chipset" style="display:flex;flex-wrap:wrap;gap:10px">
+              <label class="btn" style="background:#f1f5f9;color:#0f172a">
+                <svg class="icon" viewBox="0 0 24 24" style="fill:currentColor"><path d="M5 13l4 4L19 7"/></svg>
+                <input type="checkbox" name="basicSkills" style="accent-color:#10b981"> المهارات الأساسية
+              </label>
+              <label class="btn" style="background:#f1f5f9;color:#0f172a">
+                <svg class="icon" viewBox="0 0 24 24" style="fill:currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 6 4 4 6.5 4c1.74 0 3.41 1.01 4.22 2.53C11.59 5.01 13.26 4 15 4 17.5 4 19.5 6 19.5 8.5c0 3.78-3.4 6.86-8.05 11.54L12 21.35z"/></svg>
+                <input type="checkbox" name="values" style="accent-color:#10b981"> القيم والمواطنة الصالحة
+              </label>
+              <label class="btn" style="background:#f1f5f9;color:#0f172a">
+                <svg class="icon" viewBox="0 0 24 24" style="fill:currentColor"><path d="M12 2l4 7 7 1-5 5 1 7-7-3-7 3 1-7-5-5 7-1z"/></svg>
+                <input type="checkbox" name="futureSkills" style="accent-color:#10b981"> مهارات المستقبل
+              </label>
+            </div>
           `;
           break;
           
-        // يمكن إضافة المزيد من الحالات للتقارير الأخرى هنا
-        // ...
-        
         default:
           title = 'تقرير عام';
           fieldsHTML = `
             <div class="grid-2">
-              <label>اسم البرنامج *<input class="input" name="title" required></label>
-              <label>المنفذ *<input class="input" name="owner" required></label>
-              <label>عدد المستفيدين<input class="input" name="count" type="number" min="1"></label>
+              <label>اسم البرنامج *<input class="input" name="title" required placeholder="اسم البرنامج أو النشاط"></label>
+              <label>المنفذ *<input class="input" name="owner" required placeholder="اسم المنفذ"></label>
+              <label>عدد المستفيدين<input class="input" name="count" type="number" min="1" placeholder="عدد المستفيدين"></label>
               <label class="date-with-hijri">التاريخ *
                 <div class="date-input-container">
                   <input class="input hijri-date-input" name="date" required placeholder="اختر التاريخ" readonly>
@@ -479,10 +908,10 @@
                   </button>
                 </div>
               </label>
-              <label>المكان<input class="input" name="place"></label>
+              <label>المكان<input class="input" name="place" placeholder="مكان التنفيذ"></label>
             </div>
-            <label>الأهداف<textarea class="input" name="goals"></textarea></label>
-            <label>وصف التقرير<textarea class="input" name="desc"></textarea></label>
+            <label>الأهداف<textarea class="input" name="goals" placeholder="أهداف البرنامج أو النشاط..."></textarea></label>
+            <label>وصف التقرير<textarea class="input" name="desc" placeholder="وصف تفصيلي للتقرير..."></textarea></label>
           `;
       }
       
@@ -516,91 +945,7 @@
       });
     });
 
-    // ==================== رفع شواهد الحصص ====================
-    function openPickerSes(){ document.getElementById('sessionWitnessFiles').click(); }
-    document.getElementById('sessionUploadBox').addEventListener('click', openPickerSes);
-    document.getElementById('addSessionWitness').addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); openPickerSes(); });
-    document.getElementById('sessionWitnessFiles').addEventListener('change', e=>{
-      const preview = document.getElementById('sessionWitnessPreview');
-      const count = document.getElementById('sessionWCount');
-      const list = Array.from(e.target.files || []).filter(f=>f.type.startsWith('image/')).slice(0, 4 - sessionWitness.length);
-      if(!list.length) return;
-      list.forEach(file=>{
-        const rd = new FileReader();
-        rd.onload = ev=>{
-          sessionWitness.push({name:file.name,url:ev.target.result});
-          const item = document.createElement('div');
-          item.className = 'witness-item';
-          item.innerHTML = '<div style="height:140px;display:flex;align-items:center;justify-content:center;overflow:hidden;"><img src="'+ev.target.result+'" alt="شاهد"></div><div class="witness-label">شاهد '+sessionWitness.length+'</div>';
-          preview.appendChild(item);
-          count.textContent='(' + sessionWitness.length + '/4)';
-        };
-        rd.readAsDataURL(file);
-      });
-    });
-
-    // ==================== حفظ/حذف الحصص ====================
-    document.getElementById('saveSession').addEventListener('click', function(e){
-      e.preventDefault();
-      const week = document.getElementById('weekNumber').value;
-      const day = document.getElementById('dayName').value;
-      const date = document.getElementById('sessionDate').value || '—';
-      const className = document.getElementById('className').value.trim();
-      const number = document.getElementById('sessionNumber').value.trim();
-      const teacher = document.getElementById('absentTeacher').value.trim();
-      const activities = document.getElementById('activitiesText').value.trim();
-      const fields=[];
-      if(document.getElementById('basicSkills').checked) fields.push('المهارات الأساسية');
-      if(document.getElementById('values').checked) fields.push('القيم والمواطنة الصالحة');
-      if(document.getElementById('futureSkills').checked) fields.push('مهارات المستقبل');
-      if(!week || !day || !date || !className || !number || !teacher || !activities || fields.length===0){
-        alert('أكمل كل الحقول واختر مجالاً واحداً على الأقل'); 
-        return;
-      }
-      sessions.push({week, day, date, className, number, teacher, activities, fields:fields.join('، '), witness:[...sessionWitness]});
-      try{ localStorage.setItem('sessionsData',JSON.stringify(sessions)); }catch(e){}
-      renderSessions();
-      document.getElementById('sesForm').reset();
-      sessionWitness=[]; 
-      document.getElementById('sessionWitnessPreview').innerHTML=''; 
-      document.getElementById('sessionWCount').textContent='(0/4)';
-    });
-
-    function deleteSession(idx){
-      if(!confirm('حذف هذه الحصة؟')) return;
-      sessions.splice(idx,1);
-      try{ localStorage.setItem('sessionsData',JSON.stringify(sessions)); }catch(e){}
-      renderSessions();
-    }
-
-    function loadSessions(){
-      try{
-        const saved = localStorage.getItem('sessionsData');
-        if(saved){ sessions = JSON.parse(saved); renderSessions(); }
-      }catch(e){}
-    }
-    function renderSessions(){
-      const body = document.getElementById('sessionsBody'); 
-      if(!body) return;
-      body.innerHTML='';
-      sessions.forEach(function(s,i){
-        const tr=document.createElement('tr');
-        tr.innerHTML = '<td>'+(i+1)+'</td><td>'+s.week+'</td><td>'+s.day+'</td><td>'+s.date+'</td>'+
-          '<td>'+s.className+'</td><td>'+s.number+'</td><td>'+s.teacher+'</td>'+
-          '<td style="text-align:right">'+s.activities+'</td><td style="text-align:right">'+s.fields+'</td>'+
-          '<td class="no-print"><button class="btn danger" type="button" data-index="'+i+'">'+
-            '<svg class="icon" viewBox="0 0 24 24"><path d="M6 7h12l-1 14H7L6 7zm3-3h6l1 2H8l1-2z"/></svg>'+
-            '<span>حذف</span>'+
-          '</button></td>';
-        body.appendChild(tr);
-      });
-      body.querySelectorAll('button[data-index]').forEach(function(b){
-        b.addEventListener('click',function(){ deleteSession(+this.getAttribute('data-index')); });
-      });
-    }
-    loadSessions();
-
-    // ==================== تقويم هجري (كما كان) ====================
+    // ==================== تقويم هجري ====================
     function gregorianToHijri(gregorianDate) {
       const gd = gregorianDate.getDate();
       const gm = gregorianDate.getMonth() + 1;
@@ -725,7 +1070,6 @@
         }
       });
     }
-    initializeHijriCalendar();
 
     // ==================== أدوات الطباعة الذكية ====================
     function waitForImages(el){
@@ -804,8 +1148,8 @@
         case 'student':
           requiredFields = ['activityName', 'targetGroup', 'date'];
           break;
-        case 'extracurricular':
-          requiredFields = ['activityName', 'activityType', 'date'];
+        case 'waiting':
+          requiredFields = ['weekNumber', 'dayName', 'date', 'className', 'sessionNumber', 'absentTeacher', 'activities'];
           break;
         default:
           requiredFields = ['title', 'owner', 'date'];
@@ -846,7 +1190,12 @@
           `;
           break;
           
-        case 'student':
+        case 'waiting':
+          const fields = [];
+          if(data.basicSkills) fields.push('المهارات الأساسية');
+          if(data.values) fields.push('القيم والمواطنة الصالحة');
+          if(data.futureSkills) fields.push('مهارات المستقبل');
+          
           content = `
             <div class="avoid-split" style="text-align:center;margin-bottom:12px;">
               <div class="avoid-split" style="width:100%;height:96px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
@@ -855,22 +1204,21 @@
               <h1 class="avoid-split" style="color:#047857;font-size:34px;margin:0;font-weight:900;border-bottom:3px solid #10b981;padding-bottom:8px;">${reportTitle}</h1>
             </div>
             <table class="avoid-split" style="width:100%;border-collapse:collapse;margin-bottom:12px;font-size:18px;">
-              <tr class="avoid-split"><td style="padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;width:28%;">اسم النشاط</td><td style="padding:10px;border:1px solid #e2e8f0;">${data.activityName}</td></tr>
-              <tr class="avoid-split"><td style="padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;">الفئة المستهدفة</td><td style="padding:10px;border:1px solid #e2e8f0;">${data.targetGroup}</td></tr>
-              <tr class="avoid-split"><td style="padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;">عدد المشاركين</td><td style="padding:10px;border:1px solid #e2e8f0;">${data.participantsCount || 'غير محدد'}</td></tr>
+              <tr class="avoid-split"><td style="padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;width:28%;">الأسبوع</td><td style="padding:10px;border:1px solid #e2e8f0;">${data.weekNumber}</td></tr>
+              <tr class="avoid-split"><td style="padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;">اليوم</td><td style="padding:10px;border:1px solid #e2e8f0;">${data.dayName}</td></tr>
               <tr class="avoid-split"><td style="padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;">التاريخ</td><td style="padding:10px;border:1px solid #e2e8f0;">${data.date}</td></tr>
-              <tr class="avoid-split"><td style="padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;">المكان</td><td style="padding:10px;border:1px solid #e2e8f0;">${data.place || 'غير محدد'}</td></tr>
-              <tr class="avoid-split"><td style="padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;">المشرف</td><td style="padding:10px;border:1px solid #e2e8f0;">${data.supervisor || 'غير محدد'}</td></tr>
+              <tr class="avoid-split"><td style="padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;">الصف</td><td style="padding:10px;border:1px solid #e2e8f0;">${data.className}</td></tr>
+              <tr class="avoid-split"><td style="padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;">رقم الحصة</td><td style="padding:10px;border:1px solid #e2e8f0;">${data.sessionNumber}</td></tr>
+              <tr class="avoid-split"><td style="padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;">المعلمة الغائبة</td><td style="padding:10px;border:1px solid #e2e8f0;">${data.absentTeacher}</td></tr>
+              <tr class="avoid-split"><td style="padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;">المجال</td><td style="padding:10px;border:1px solid #e2e8f0;">${fields.join('، ')}</td></tr>
             </table>
-            ${data.goals ? '<div class="avoid-split" style="margin-bottom:10px;"><h4 class="avoid-split" style="color:#047857;font-size:18px;margin-bottom:6px;border-right:4px solid #10b981;padding-right:8px;">أهداف النشاط</h4><div class="avoid-split" style="padding:10px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">'+data.goals+'</div></div>' : ''}
-            ${data.description ? '<div class="avoid-split" style="margin-bottom:10px;"><h4 class="avoid-split" style="color:#047857;font-size:18px;margin-bottom:6px;border-right:4px solid #10b981;padding-right:8px;">وصف النشاط</h4><div class="avoid-split" style="padding:10px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">'+data.description+'</div></div>' : ''}
-            ${data.results ? '<div class="avoid-split" style="margin-bottom:10px;"><h4 class="avoid-split" style="color:#047857;font-size:18px;margin-bottom:6px;border-right:4px solid #10b981;padding-right:8px;">النتائج والتقييم</h4><div class="avoid-split" style="padding:10px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">'+data.results+'</div></div>' : ''}
+            <div class="avoid-split" style="margin-bottom:10px;">
+              <h4 class="avoid-split" style="color:#047857;font-size:18px;margin-bottom:6px;border-right:4px solid #10b981;padding-right:8px;">ما تم تنفيذه</h4>
+              <div class="avoid-split" style="padding:10px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">${data.activities}</div>
+            </div>
           `;
           break;
           
-        // يمكن إضافة المزيد من الحالات للتقارير الأخرى هنا
-        // ...
-        
         default:
           content = `
             <div class="avoid-split" style="text-align:center;margin-bottom:12px;">
@@ -933,96 +1281,9 @@
       pdf.save(reportTitle + '.pdf');
       document.body.removeChild(print);
     });
-
-    // ==================== تصدير الحصص ====================
-    document.getElementById('exportSessions').addEventListener('click', async function(e){
-      e.preventDefault();
-      if(!Array.isArray(sessions) || sessions.length===0){ alert('لا توجد حصص للتصدير'); return; }
-      const DOMW = 780;
-      const print=document.createElement('div');
-      print.style.cssText="position:fixed;top:0;left:0;width:"+DOMW+"px;background:#fff;padding:16px;z-index:10000;font-family:'Tajawal',sans-serif;direction:rtl;font-size:18px;line-height:1.9;";
-
-      let rows='';
-      sessions.forEach(function(s,i){
-        rows+='<tr class=\"avoid-split\">' +
-          '<td style=\"padding:10px;border:1px solid #ddd;text-align:center;\">'+(i+1)+'</td>' +
-          '<td style=\"padding:10px;border:1px solid #ddd;text-align:center;\">'+(s.week||'')+'</td>' +
-          '<td style=\"padding:10px;border:1px solid #ddd;text-align:center;\">'+(s.day||'')+'</td>' +
-          '<td style=\"padding:10px;border:1px solid #ddd;text-align:center;\">'+(s.date||'')+'</td>' +
-          '<td style=\"padding:10px;border:1px solid #ddd;text-align:center;\">'+(s.className||'')+'</td>' +
-          '<td style=\"padding:10px;border:1px solid #ddd;text-align:center;\">'+(s.number||'')+'</td>' +
-          '<td style=\"padding:10px;border:1px solid #ddd;text-align:center;\">'+(s.teacher||'')+'</td>' +
-          '<td style=\"padding:10px;border:1px solid #ddd;text-align:right;\">'+(s.activities||'')+'</td>' +
-          '<td style=\"padding:10px;border:1px solid #ddd;text-align:right;\">'+(s.fields||'')+'</td>' +
-          '</tr>';
-      });
-
-      const allW = [];
-      sessions.forEach(function(s,si){
-        (s.witness||[]).forEach(function(w,wi){
-          allW.push({url:w.url, label:'الحصة '+(si+1)+' - شاهد '+(wi+1), meta:(s.className||'')+' • '+(s.date||'')});
-        });
-      });
-
-      let witnessBlock = '';
-      if(allW.length){
-        const firstTwo = allW.slice(0,2);
-        const rest = allW.slice(2);
-        witnessBlock += '<div class=\"avoid-split\" style=\"page-break-before:always;margin-top:8px;\">' +
-          '<h2 class=\"avoid-split\" style=\"color:#047857;font-size:24px;font-weight:900;border-bottom:2px solid #10b981;padding-bottom:8px;\">صور الشواهد</h2>';
-        if(firstTwo.length){
-          witnessBlock += '<div class=\"avoid-split\" style=\"display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;\">';
-          firstTwo.forEach(function(w){
-            witnessBlock += '<div class=\"avoid-split\" style=\"text-align:center;border:1px solid #d1fae5;border-radius:8px;padding:8px;background:#f8fafc;height:240px;display:flex;flex-direction:column;justify-content:center;\">' +
-              '<div class=\"avoid-split\" style=\"height:190px;display:flex;align-items:center;justify-content:center;overflow:hidden;\">' +
-              '<img class=\"avoid-split\" src=\"'+w.url+'\" style=\"max-width:100%;max-height:100%;object-fit:contain;\"/>' +
-              '</div><p class=\"avoid-split\" style=\"margin-top:6px;font-size:12px;color:#64748b;\">'+w.label+' — '+w.meta+'</p></div>';
-          });
-          witnessBlock += '</div><div class=\"force-break-after\" style=\"height:1px\"></div>';
-        }
-        if(rest.length){
-          witnessBlock += '<div class=\"avoid-split\" style=\"display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;\">';
-          rest.forEach(function(w){
-            witnessBlock += '<div class=\"avoid-split\" style=\"text-align:center;border:1px solid #d1fae5;border-radius:8px;padding:8px;background:#f8fafc;height:240px;display:flex;flex-direction:column;justify-content:center;\">' +
-              '<div class=\"avoid-split\" style=\"height:190px;display:flex;align-items:center;justify-content:center;overflow:hidden;\">' +
-              '<img class=\"avoid-split\" src=\"'+w.url+'\" style=\"max-width:100%;max-height:100%;object-fit:contain;\"/>' +
-              '</div><p class=\"avoid-split\" style=\"margin-top:6px;font-size:12px;color:#64748b;\">'+w.label+' — '+w.meta+'</p></div>';
-          });
-          witnessBlock += '</div>';
-        }
-        witnessBlock += '</div>';
-      }
-
-      print.innerHTML='<div class=\"avoid-split\" style=\"display:flex;align-items:center;gap:12px;margin-bottom:8px;\">' +
-        '<div class=\"avoid-split\" style=\"width:100%;height:96px;display:flex;align-items:center;justify-content:center\">' +
-        '<img class=\"avoid-split\" src=\"https://raw.githubusercontent.com/omymh/school26/main/26.png\" alt=\"شعار\" style=\"max-width:100%;max-height:100%;object-fit:contain;\">' +
-        '</div></div>' +
-        '<h1 class=\"avoid-split\" style=\"color:#047857;font-size:32px;font-weight:900;border-bottom:3px solid #10b981;padding-bottom:8px;margin:0 0 10px 0;\">تقرير حصص الانتظار</h1>' +
-        '<table class=\"avoid-split\" style=\"width:100%;border-collapse:collapse;margin-top:6px;\">' +
-        '<thead class=\"avoid-split\"><tr class=\"avoid-split\" style=\"background:#10b981;color:#fff;\">' +
-        '<th style=\"padding:12px;border:1px solid #ddd;\">م</th>' +
-        '<th style=\"padding:12px;border:1px solid #ddd;\">الأسبوع</th>' +
-        '<th style=\"padding:12px;border:1px solid #ddd;\">اليوم</th>' +
-        '<th style=\"padding:12px;border:1px solid #ddd;\">التاريخ</th>' +
-        '<th style=\"padding:12px;border:1px solid #ddd;\">الصف</th>' +
-        '<th style=\"padding:12px;border:1px solid #ddd;\">الحصة</th>' +
-        '<th style=\"padding:12px;border:1px solid #ddd;\">المعلمة الغائبة</th>' +
-        '<th style=\"padding:12px;border:1px solid #ddd;\">ما تم تنفيذه</th>' +
-        '<th style=\"padding:12px;border:1px solid #ddd;\">المجال</th>' +
-        '</tr></thead><tbody class=\"avoid-split\">'+rows+'</tbody></table>' +
-        witnessBlock;
-
-      document.body.appendChild(print);
-      await waitForImages(print);
-      const canvas = await elementToCanvas(print, DOMW);
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
-      addCanvasToPdfSmart(pdf, canvas, print, DOMW);
-      pdf.save('تقرير_حصص_الانتظار.pdf');
-      document.body.removeChild(print);
-    });
     
     // تهيئة التطبيق
+    initializeHijriCalendar();
     loadReportForm('general');
   </script>
 </body>
