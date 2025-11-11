@@ -10,26 +10,29 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
 
 <style>
+@font-face {
+  font-family: 'HelveticaNeueW23';
+  src: url('fonts/HelveticaNeueW23-Regular.ttf') format('truetype');
+}
+
 body {
   margin: 0;
   padding: 0;
   font-family: 'HelveticaNeueW23', Arial, sans-serif;
   background: #fff;
 }
-@font-face {
-  font-family: 'HelveticaNeueW23';
-  src: url('fonts/HelveticaNeueW23-Regular.ttf') format('truetype');
+
+/* الحاوية العامة اللي نطبعها */
+#printArea {
+  padding: 10px;
 }
 
+/* الهيدر مع الديباجة */
 header {
   background: #87092D;
   color: white;
   text-align: center;
   padding: 10px;
-}
-header h3 {
-  margin: 3px 0;
-  font-size: 16px;
 }
 header img {
   max-width: 100%;
@@ -37,15 +40,13 @@ header img {
   display: block;
   margin: 0 auto 8px;
 }
-
-h3 label {
-  font-weight: bold;
+header h3 {
+  margin: 3px 0;
   font-size: 18px;
-  text-align: center;
-  display: block;
-  margin-bottom: 10px;
+  font-weight: bold;
 }
 
+/* الحقول */
 label {
   display: block;
   margin: 5px 0 2px;
@@ -72,6 +73,7 @@ textarea {
   min-height: 40px;
 }
 
+/* الأزرار */
 button {
   border: none;
   padding: 8px 10px;
@@ -84,7 +86,6 @@ button {
   font-family: 'HelveticaNeueW23', Arial, sans-serif;
   text-align: center;
 }
-
 button.printBtn {
   background: #87092D;
   color: white;
@@ -94,29 +95,34 @@ button.deleteBtn {
   color: white;
 }
 
-@media print {
-  body {
-    background: none !important;
-  }
+/* معاينة الصور */
+#waiting-preview img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
 
-  input,
-  textarea,
-  label {
-    background: transparent !important;
-    color: black;
-    border-color: #c2c1c2;
-    margin-bottom: 20px !important;
-  }
-
-  /* إخفاء اسم المعلمة والمديرة العلوي عند الطباعة */
-  #top-director {
-    display: none !important;
-  }
-
-  /* إخفاء الأزرار ومؤشرات رفع الصور */
-  button, #waiting-counter, #waiting-preview {
-    display: none !important;
-  }
+/* زر X فوق الصورة */
+.preview-item {
+  position: relative;
+  display: inline-block;
+}
+.preview-item button {
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 18px;
+  font-size: 10px;
+  background: red;
+  color: white;
+  border: 2px solid white;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
 }
 </style>
 </head>
@@ -124,87 +130,99 @@ button.deleteBtn {
 
 <div id="mainContent">
 
-  <!-- ✅ الديباجة (صورة 26) داخل الهيدر -->
-  <header>
-    <img src="26.png" alt="شعار المدرسة السادسة والعشرون">
-    <h3>تقرير تنفيذ استراتيجية تعلّم نشط</h3>
-  </header>
+  <!-- ✅ كل ما نريده في الـ PDF داخل printArea -->
+  <div id="printArea">
 
-  <div id="waiting" class="tab-content active">
+    <!-- ✅ الديباجة 26.png -->
+    <header>
+      <!-- لو الصورة في نفس المجلد: -->
+      <img src="26.png" alt="شعار المدرسة السادسة والعشرون">
+      <!-- لو حطيتها في مجلد images استبدلي السطر السابق بهذا:
+      <img src="images/26.png" alt="شعار المدرسة السادسة والعشرون">
+      -->
+      <h3>تقرير تنفيذ استراتيجية تعلّم نشط</h3>
+    </header>
 
-    <!-- إدارة تعليم / المدرسة -->
-    <div style="display:flex; gap:10px; justify-content:center; margin-bottom:10px;">
-      <div style="width:200px;"><label>إدارة التعليم</label><input type="text" id="eduDept" /></div>
-      <div style="width:200px;"><label>اسم المدرسة</label><input type="text" id="schoolName" /></div>
-    </div>
+    <div id="waiting">
 
-    <!-- الاستراتيجية المستخدمة -->
-    <div style="display:flex; gap:10px; justify-content:center; margin-bottom:10px;">
-      <div style="width:400px;"><label>الاستراتيجية المستخدمة</label><input type="text" /></div>
-    </div>
+      <!-- إدارة تعليم / المدرسة -->
+      <div style="display:flex; gap:10px; justify-content:center; margin-bottom:10px; margin-top:10px;">
+        <div style="width:200px;"><label>إدارة التعليم</label><input type="text" id="eduDept" /></div>
+        <div style="width:200px;"><label>اسم المدرسة</label><input type="text" id="schoolName" /></div>
+      </div>
 
-    <!-- بيانات الدرس -->
-    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:5px;">
-      <div><label>المادة</label><input type="text" /></div>
-      <div><label>الوحدة الدراسية</label><input type="text" /></div>
-      <div><label>موضوع الدرس</label><input type="text" /></div>
-      <div><label>الصف</label><input type="text" /></div>
-    </div>
+      <!-- الاستراتيجية المستخدمة -->
+      <div style="display:flex; gap:10px; justify-content:center; margin-bottom:10px;">
+        <div style="width:400px;"><label>الاستراتيجية المستخدمة</label><input type="text" /></div>
+      </div>
 
-    <!-- توزيع الطالبات / العدد / التاريخ / مدة التنفيذ -->
-    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:5px;">
-      <div><label>توزيع الطالبات</label><input type="text" /></div>
-      <div><label>العدد</label><input type="text" /></div>
-      <div><label>تاريخ التنفيذ</label><input type="text" id="date1" placeholder="اختر التاريخ" style="flex:1;" readonly /></div>
-      <div><label>مدة التنفيذ</label><input type="text" /></div>
-    </div>
+      <!-- بيانات الدرس -->
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:5px;">
+        <div><label>المادة</label><input type="text" /></div>
+        <div><label>الوحدة الدراسية</label><input type="text" /></div>
+        <div><label>موضوع الدرس</label><input type="text" /></div>
+        <div><label>الصف</label><input type="text" /></div>
+      </div>
 
-    <!-- وصف الاستراتيجية -->
-    <div style="display:grid; grid-template-columns:repeat(1,1fr); gap:5px;">
-      <div><label>وصف الاستراتيجية</label><input type="text" /></div>
-    </div>
+      <!-- توزيع الطالبات / العدد / التاريخ / مدة التنفيذ -->
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:5px;">
+        <div><label>توزيع الطالبات</label><input type="text" /></div>
+        <div><label>العدد</label><input type="text" /></div>
+        <div><label>تاريخ التنفيذ</label><input type="text" id="date1" placeholder="اختر التاريخ" readonly /></div>
+        <div><label>مدة التنفيذ</label><input type="text" /></div>
+      </div>
 
-    <!-- أهداف الاستراتيجية -->
-    <label>أهداف الاستراتيجية</label>
-    <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:5px;">
-      <input type="text" /><input type="text" />
-      <input type="text" /><input type="text" />
-    </div>
+      <!-- وصف الاستراتيجية -->
+      <div style="display:grid; grid-template-columns:repeat(1,1fr); gap:5px; margin-top:5px;">
+        <div><label>وصف الاستراتيجية</label><input type="text" /></div>
+      </div>
 
-    <!-- خطوات التنفيذ -->
-    <label>خطوات تنفيذ الاستراتيجية</label>
-    <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:5px;">
-      <input type="text" /><input type="text" />
-      <input type="text" /><input type="text" />
-    </div>
+      <!-- أهداف الاستراتيجية -->
+      <label style="margin-top:5px;">أهداف الاستراتيجية</label>
+      <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:5px;">
+        <input type="text" /><input type="text" />
+        <input type="text" /><input type="text" />
+      </div>
 
-    <!-- الأدوات -->
-    <label>الأدوات المستخدمة في تنفيذ الاستراتيجية</label>
-    <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:5px;">
-      <input type="text" /><input type="text" />
-      <input type="text" /><input type="text" />
-    </div>
+      <!-- خطوات التنفيذ -->
+      <label style="margin-top:5px;">خطوات تنفيذ الاستراتيجية</label>
+      <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:5px;">
+        <input type="text" /><input type="text" />
+        <input type="text" /><input type="text" />
+      </div>
 
-    <!-- الشواهد -->
-    <label>الشواهد</label>
-    <input type="file" multiple accept="image/*" onchange="storeImages(event,'waiting')" />
-    <div id="waiting-counter" style="font-size:12px; color:#15445a; font-weight:bold;">عدد الصور المرفوعة: 0 / 4</div>
-    <div id="waiting-preview" style="display:flex; gap:5px; flex-wrap:wrap; margin-top:5px;"></div>
+      <!-- الأدوات -->
+      <label style="margin-top:5px;">الأدوات المستخدمة في تنفيذ الاستراتيجية</label>
+      <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:5px;">
+        <input type="text" /><input type="text" />
+        <input type="text" /><input type="text" />
+      </div>
 
-    <!-- اسم المعلمة / مديرة المدرسة العلوي -->
-    <div id="top-director" style="display:flex; gap:10px; justify-content:center; margin-bottom:5px;">
-      <div style="width:200px;"><label>اسم المعلمة</label><input type="text" id="healthGuide" /></div>
-      <div style="width:200px;"><label>مديرة المدرسة</label><input type="text" id="schoolDirector" /></div>
-    </div>
+      <!-- الشواهد -->
+      <label style="margin-top:5px;">الشواهد</label>
+      <input type="file" multiple accept="image/*" onchange="storeImages(event,'waiting')" />
+      <div id="waiting-counter" style="font-size:12px; color:#15445a; font-weight:bold;">عدد الصور المرفوعة: 0 / 4</div>
+      <div id="waiting-preview" style="display:flex; gap:5px; flex-wrap:wrap; margin-top:5px;"></div>
 
-    <!-- الأزرار -->
-    <button class="printBtn" onclick="printPDF('waiting',this)">طباعة التقرير</button>
+      <!-- اسم المعلمة / مديرة المدرسة -->
+      <div id="top-director" style="display:flex; gap:10px; justify-content:center; margin:10px 0;">
+        <div style="width:200px;"><label>اسم المعلمة</label><input type="text" id="healthGuide" /></div>
+        <div style="width:200px;"><label>مديرة المدرسة</label><input type="text" id="schoolDirector" /></div>
+      </div>
+
+    </div> <!-- /waiting -->
+  </div> <!-- /printArea -->
+
+  <!-- الأزرار (خارج printArea حتى لا تطبع) -->
+  <div style="max-width:500px; margin:0 auto 20px;">
+    <button class="printBtn" onclick="printPDF()">طباعة التقرير</button>
     <button class="deleteBtn" onclick="clearForm('waiting')">حذف البيانات</button>
   </div>
+
 </div>
 
 <script>
-let uploadedImages = {};
+let uploadedImages = { waiting: [] };
 
 document.addEventListener("DOMContentLoaded", function() {
   const input = document.getElementById('date1');
@@ -231,31 +249,13 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 });
 
-function saveForm(tabId) {
-  const tab = document.getElementById(tabId);
-  const data = {};
-  tab.querySelectorAll('input[type="text"],textarea').forEach(input => {
-    data[input.previousElementSibling ? input.previousElementSibling.textContent : input.name] = input.value;
-  });
-  localStorage.setItem(tabId + '-form', JSON.stringify(data));
-}
-
-function loadForm(tabId) {
-  const tab = document.getElementById(tabId);
-  const data = JSON.parse(localStorage.getItem(tabId + '-form') || '{}');
-  tab.querySelectorAll('input[type="text"],textarea').forEach(input => {
-    const key = input.previousElementSibling ? input.previousElementSibling.textContent : input.name;
-    if (data[key]) input.value = data[key];
-  });
-}
-
 function clearForm(tabId) {
   const tab = document.getElementById(tabId);
+  if (!tab) return;
   tab.querySelectorAll('input[type="text"],textarea').forEach(input => input.value = '');
   uploadedImages[tabId] = [];
   updateCounter(tabId);
   renderPreview(tabId);
-  localStorage.removeItem(tabId + '-form');
 }
 
 function storeImages(event, tabId) {
@@ -272,7 +272,6 @@ function storeImages(event, tabId) {
       uploadedImages[tabId].push(e.target.result);
       updateCounter(tabId);
       renderPreview(tabId);
-      saveForm(tabId);
     };
     reader.readAsDataURL(files[i]);
   }
@@ -289,36 +288,19 @@ function updateCounter(tabId) {
 
 function renderPreview(tabId) {
   const preview = document.getElementById(tabId + '-preview');
+  if (!preview) return;
   preview.innerHTML = '';
   (uploadedImages[tabId] || []).forEach((src, index) => {
     const container = document.createElement('div');
-    container.style.position = 'relative';
+    container.className = 'preview-item';
     const img = document.createElement('img');
     img.src = src;
-    img.style.width = '70px';
-    img.style.height = '70px';
-    img.style.objectFit = 'cover';
-    img.style.border = '1px solid #ccc';
-    img.style.borderRadius = '4px';
     const btn = document.createElement('button');
     btn.textContent = 'x';
-    btn.style.position = 'absolute';
-    btn.style.top = '2px';
-    btn.style.left = '50%';
-    btn.style.transform = 'translateX(-50%)';
-    btn.style.width = '18px';
-    btn.style.height = '18px';
-    btn.style.fontSize = '10px';
-    btn.style.background = 'red';
-    btn.style.color = 'white';
-    btn.style.border = '2px solid white';
-    btn.style.borderRadius = '50%';
-    btn.style.cursor = 'pointer';
     btn.onclick = () => {
       uploadedImages[tabId].splice(index, 1);
       updateCounter(tabId);
       renderPreview(tabId);
-      saveForm(tabId);
     };
     container.appendChild(img);
     container.appendChild(btn);
@@ -326,105 +308,57 @@ function renderPreview(tabId) {
   });
 }
 
-function printPDF(tabId, btn) {
-  // ننسخ محتوى النموذج
-  const content = document.getElementById(tabId).cloneNode(true);
-  content.querySelectorAll(
-    'button,input[type="file"],#' + tabId + '-counter,#' + tabId + '-preview,#top-director'
-  ).forEach(el => el.remove());
+function printPDF() {
+  // ننسخ المنطقة كاملة: الديباجة + التقرير
+  const area = document.getElementById('printArea').cloneNode(true);
 
-  // ✅ ننسخ الهيدر مع الديباجة
-  const headerClone = document.querySelector('header').cloneNode(true);
-
-  const wrapper = document.createElement('div');
-  wrapper.style.position = 'relative';
-  wrapper.style.width = '210mm';
-  wrapper.style.height = '296.5mm';
-  wrapper.style.padding = '30mm 10mm 20mm 10mm';
-  wrapper.style.boxSizing = 'border-box';
-  wrapper.style.backgroundImage = 'url("images/background.png")';
-  wrapper.style.backgroundSize = 'cover';
-  wrapper.style.backgroundRepeat = 'no-repeat';
-  wrapper.style.backgroundPosition = 'center';
-
-  // ترتيب الطباعة: الديباجة ثم النموذج
-  wrapper.appendChild(headerClone);
-  wrapper.appendChild(content);
-
-  // الصور داخل التقرير
+  // نحط الصور في أسفل التقرير داخل النسخة
+  const tabId = 'waiting';
   const tabImages = uploadedImages[tabId] || [];
   if (tabImages.length > 0) {
     const imagesWrapper = document.createElement('div');
     imagesWrapper.style.display = 'flex';
     imagesWrapper.style.flexWrap = 'wrap';
     imagesWrapper.style.justifyContent = 'center';
-    imagesWrapper.style.marginTop = '20px';
+    imagesWrapper.style.marginTop = '15px';
     imagesWrapper.style.gap = '10px';
 
     tabImages.forEach(src => {
       const img = document.createElement('img');
       img.src = src;
-      img.style.width = '160px';
-      img.style.height = '160px';
+      img.style.width = '140px';
+      img.style.height = '140px';
       img.style.objectFit = 'cover';
       img.style.border = '1px solid #ccc';
       img.style.borderRadius = '4px';
       imagesWrapper.appendChild(img);
     });
 
-    wrapper.appendChild(imagesWrapper);
+    area.appendChild(imagesWrapper);
   }
 
-  // أسماء المعلمة والمديرة في أسفل التقرير
-  const healthGuide = document.getElementById('healthGuide');
-  const schoolDirector = document.getElementById('schoolDirector');
+  // نضيف الحاوية إلى wrapper مع خلفية التقرير
+  const wrapper = document.createElement('div');
+  wrapper.style.position = 'relative';
+  wrapper.style.width = '210mm';
+  wrapper.style.minHeight = '296.5mm';
+  wrapper.style.padding = '25mm 10mm 15mm 10mm';
+  wrapper.style.boxSizing = 'border-box';
+  wrapper.style.backgroundImage = 'url("images/background.png")'; /* لو ما عندك خلفية احذفي هذا السطر */
+  wrapper.style.backgroundSize = 'cover';
+  wrapper.style.backgroundRepeat = 'no-repeat';
+  wrapper.style.backgroundPosition = 'center';
+  wrapper.appendChild(area);
 
-  const footerRow = document.createElement('div');
-  footerRow.style.display = 'flex';
-  footerRow.style.justifyContent = 'center';
-  footerRow.style.gap = '60px';
-  footerRow.style.marginTop = '20px';
-
-  const healthDiv = document.createElement('div');
-  healthDiv.style.textAlign = 'center';
-  healthDiv.innerHTML = `
-    <label style="font-weight:bold; display:block; margin-bottom:5px;">اسم المعلمة</label>
-    <input type="text" value="${healthGuide?.value || ''}" readonly
-      style="width:200px; text-align:center; border:1px solid #c2c1c2; border-radius:4px; padding:4px; background:transparent;" />
-  `;
-
-  const directorDiv = document.createElement('div');
-  directorDiv.style.textAlign = 'center';
-  directorDiv.innerHTML = `
-    <label style="font-weight:bold; display:block; margin-bottom:5px;">مديرة المدرسة</label>
-    <input type="text" value="${schoolDirector?.value || ''}" readonly
-      style="width:200px; text-align:center; border:1px solid #c2c1c2; border-radius:4px; padding:4px; background:transparent;" />
-  `;
-
-  footerRow.appendChild(healthDiv);
-  footerRow.appendChild(directorDiv);
-  wrapper.appendChild(footerRow);
-
-  html2pdf()
-    .set({
-      margin: 0,
-      filename: 'active-learning-strategy-report.pdf',
-      image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: { scale: 3, useCORS: true, backgroundColor: null, scrollY: 0 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-    })
-    .from(wrapper)
-    .save();
+  html2pdf().set({
+    margin: 0,
+    filename: 'تقريب-استراتيجية-تعلم-نشط.pdf',
+    image: { type: 'jpeg', quality: 0.95 },
+    html2canvas: { scale: 3, useCORS: true, backgroundColor: null, scrollY: 0 },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+  }).from(wrapper).save();
 }
-
-// تحميل البيانات المحفوظة (اختياري)
-loadForm('waiting');
-updateCounter('waiting');
-renderPreview('waiting');
-
-document.querySelectorAll('#waiting input[type="text"], #waiting textarea').forEach(input => {
-  input.addEventListener('input', () => saveForm('waiting'));
-});
 </script>
+
 </body>
 </html>
