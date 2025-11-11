@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>المدرسة السادسة والعشرون - تبوك (أيقونات الأزرار مُضافة)</title>
+  <title>المدرسة السادسة والعشرون - نظام التقارير الشامل</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
     :root{--primary:#10b981;--secondary:#059669;--dark:#047857;--light:#d1fae5;--accent:#fbbf24;--text:#0f172a;--gray:#475569;--container:94vw}
@@ -100,6 +100,18 @@
       .btn{padding:12px 18px}
       .actions{flex-direction:row}
     }
+    
+    /* قائمة التقارير */
+    .reports-nav { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 20px; }
+    .report-btn { background: #fff; border: 2px solid var(--light); border-radius: 12px; padding: 12px 16px; cursor: pointer; transition: all 0.3s; font-weight: 600; text-align: center; flex: 1; min-width: 150px; }
+    .report-btn:hover { background: var(--light); border-color: var(--primary); }
+    .report-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    
+    /* إخفاء عناصر الطباعة */
+    @media print {
+      nav, .site-footer, .no-print { display: none !important; }
+      .page { box-shadow: none; margin: 0; padding: 10px; }
+    }
   </style>
 </head>
 <body>
@@ -115,9 +127,9 @@
         <svg class="icon" viewBox="0 0 24 24"><path d="M12 3l9 8-1.5 1.5L18 11v8h-5v-5H11v5H6v-8l-1.5 1.5L3 11l9-8z"/></svg>
         <span>الصفحة الرئيسية</span>
       </button>
-      <button class="nav-btn" id="navReport" type="button" aria-label="التقرير">
+      <button class="nav-btn" id="navReports" type="button" aria-label="جميع التقارير">
         <svg class="icon" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm8 1.5V8h4.5"/></svg>
-        <span>التقرير</span>
+        <span>جميع التقارير</span>
       </button>
       <button class="nav-btn" id="navSessions" type="button" aria-label="تقارير الحصص">
         <svg class="icon" viewBox="0 0 24 24"><path d="M3 5h18v2H3V5zm0 6h18v2H3v-2zm0 6h18v2H3v-2z"/></svg>
@@ -129,58 +141,43 @@
   <main class="container">
     <section id="home" class="page active">
       <h1>نظام التقارير المدرسية</h1>
-      <p>منصة المدرسة السادسة والعشرون لتوثيق الأنشطة والحصص.</p>
+      <p>منصة المدرسة السادسة والعشرون لتوثيق جميع الأنشطة والحصص والبرامج.</p>
+      
+      <div class="reports-nav">
+        <button class="report-btn" data-report="general">التقارير العامة</button>
+        <button class="report-btn" data-report="student">النشاط الطلابي</button>
+        <button class="report-btn" data-report="extracurricular">الأنشطة اللاصفية</button>
+        <button class="report-btn" data-report="followup">متابعة الأنشطة</button>
+        <button class="report-btn" data-report="communication">التواصل مع أولياء الأمور</button>
+        <button class="report-btn" data-report="guidance">التوجيه الطلابي</button>
+        <button class="report-btn" data-report="visits">تبادل الزيارات</button>
+        <button class="report-btn" data-report="learning">خريطة نواتج التعلم</button>
+        <button class="report-btn" data-report="waiting">حصة الانتظار</button>
+        <button class="report-btn" data-report="plc">جلسات مجتمعات التعلم المهنية</button>
+        <button class="report-btn" data-report="health">التوجيه الصحي</button>
+        <button class="report-btn" data-report="active">استراتيجية التعلم النشط</button>
+        <button class="report-btn" data-report="lesson">تنفيذ درس تطبيقي</button>
+        <button class="report-btn" data-report="workshop">ورشة العمل</button>
+        <button class="report-btn" data-report="initiative">المبادرة النوعية</button>
+        <button class="report-btn" data-report="technical">البرنامج التقني</button>
+        <button class="report-btn" data-report="electronic">التعليم الإلكتروني</button>
+        <button class="report-btn" data-report="enrichment">الخطة الإثرائية والعلاجية</button>
+        <button class="report-btn" data-report="research">البحث الإجرائي</button>
+        <button class="report-btn" data-report="lessonResearch">بحث الدرس</button>
+        <button class="report-btn" data-report="mini">الدرس المصغر</button>
+        <button class="report-btn" data-report="partnership">الشراكة المجتمعية</button>
+        <button class="report-btn" data-report="evaluation">زيارة تقييم صفية</button>
+        <button class="report-btn" data-report="performance">تقييم أداء المعلمات</button>
+      </div>
     </section>
 
-    <section id="report" class="page">
-      <h1>التقرير</h1>
+    <section id="reports" class="page">
+      <h1 id="reportTitle">التقرير</h1>
       <form id="reportForm" class="form" onsubmit="return false;">
-        <div class="grid-2">
-          <label>اسم البرنامج *<input class="input" name="title" required></label>
-          <label>المنفذ *<input class="input" name="owner" required></label>
-          <label>عدد المستفيدين<input class="input" name="count" type="number" min="1"></label>
-
-          <label class="date-with-hijri">التاريخ *
-            <div class="date-input-container">
-              <input class="input hijri-date-input" name="date" required placeholder="اختر التاريخ" readonly>
-              <button type="button" class="hijri-toggle" aria-label="فتح التقويم">
-                <svg class="hijri-icon" viewBox="0 0 24 24">
-                  <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-2 .89-2 2v14c0 1.11.89 2 2 2h14c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zM7 12h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zm-8 4h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/>
-                </svg>
-              </button>
-            </div>
-            <div class="hijri-calendar">
-              <div class="hijri-header">
-                <div class="hijri-nav">
-                  <button type="button" class="prev-year" aria-label="السنة السابقة">«</button>
-                  <button type="button" class="prev-month" aria-label="الشهر السابق">‹</button>
-                </div>
-                <div class="hijri-month-year"></div>
-                <div class="hijri-nav">
-                  <button type="button" class="next-month" aria-label="الشهر التالي">›</button>
-                  <button type="button" class="next-year" aria-label="السنة التالية">»</button>
-                </div>
-              </div>
-              <div class="hijri-weekdays">
-                <span>س</span><span>ح</span><span>ن</span><span>ث</span><span>ر</span><span>خ</span><span>ج</span>
-              </div>
-              <div class="hijri-days"></div>
-              <div class="calendar-actions">
-                <button type="button" class="today-btn">اليوم</button>
-                <button type="button" class="btn danger" id="closeCalendar" style="flex:1">
-                  <svg class="icon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
-                  <span>إغلاق</span>
-                </button>
-              </div>
-            </div>
-          </label>
-
-          <label>المكان<input class="input" name="place"></label>
+        <div id="reportFields">
+          <!-- سيتم تعبئة الحقول ديناميكياً بناءً على نوع التقرير -->
         </div>
-
-        <label>الأهداف<textarea class="input" name="goals"></textarea></label>
-        <label>وصف التقرير<textarea class="input" name="desc"></textarea></label>
-
+        
         <div class="witness-container">
           <div class="upload" id="uploadBox">
             <p>اضغطي هنا لرفع صور الشواهد (حتى 4)</p>
@@ -338,17 +335,163 @@
     let witness = [];
     let sessionWitness = [];
     let sessions = [];
+    let currentReportType = 'general';
 
     // ==================== تنقل ====================
     function setPage(id, btn){
       document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
       document.getElementById(id).classList.add('active');
       document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
+      if (btn) btn.classList.add('active');
     }
     document.getElementById('navHome').onclick=(e)=>setPage('home', e.currentTarget);
-    document.getElementById('navReport').onclick=(e)=>setPage('report', e.currentTarget);
+    document.getElementById('navReports').onclick=(e)=>setPage('reports', e.currentTarget);
     document.getElementById('navSessions').onclick=(e)=>setPage('sessions', e.currentTarget);
+
+    // ==================== اختيار نوع التقرير ====================
+    document.querySelectorAll('.report-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        currentReportType = this.getAttribute('data-report');
+        setPage('reports', document.getElementById('navReports'));
+        loadReportForm(currentReportType);
+      });
+    });
+
+    // ==================== تحميل نموذج التقرير المناسب ====================
+    function loadReportForm(reportType) {
+      const reportFields = document.getElementById('reportFields');
+      const reportTitle = document.getElementById('reportTitle');
+      
+      // إعادة تعيين الحقول والشواهد
+      witness = [];
+      document.getElementById('witnessPreview').innerHTML = '';
+      document.getElementById('wCount').textContent = '(0/4)';
+      
+      // تحديد الحقول بناءً على نوع التقرير
+      let fieldsHTML = '';
+      let title = '';
+      
+      switch(reportType) {
+        case 'general':
+          title = 'التقارير العامة';
+          fieldsHTML = `
+            <div class="grid-2">
+              <label>نوع التقرير *<select class="input" name="reportType" required>
+                <option value="">اختر نوع التقرير</option>
+                <option>تقرير يومي</option>
+                <option>تقرير أسبوعي</option>
+                <option>تقرير شهري</option>
+              </select></label>
+              <label>الفترة *<input class="input" name="period" required></label>
+              <label>المنفذ *<input class="input" name="owner" required></label>
+              <label class="date-with-hijri">التاريخ *
+                <div class="date-input-container">
+                  <input class="input hijri-date-input" name="date" required placeholder="اختر التاريخ" readonly>
+                  <button type="button" class="hijri-toggle" aria-label="فتح التقويم">
+                    <svg class="hijri-icon" viewBox="0 0 24 24">
+                      <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-2 .89-2 2v14c0 1.11.89 2 2 2h14c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zM7 12h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zm-8 4h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/>
+                    </svg>
+                  </button>
+                </div>
+              </label>
+            </div>
+            <label>ملخص التقرير *<textarea class="input" name="summary" required></textarea></label>
+            <label>التوصيات<textarea class="input" name="recommendations"></textarea></label>
+          `;
+          break;
+          
+        case 'student':
+          title = 'النشاط الطلابي';
+          fieldsHTML = `
+            <div class="grid-2">
+              <label>اسم النشاط *<input class="input" name="activityName" required></label>
+              <label>الفئة المستهدفة *<input class="input" name="targetGroup" required></label>
+              <label>عدد المشاركين<input class="input" name="participantsCount" type="number"></label>
+              <label class="date-with-hijri">التاريخ *
+                <div class="date-input-container">
+                  <input class="input hijri-date-input" name="date" required placeholder="اختر التاريخ" readonly>
+                  <button type="button" class="hijri-toggle" aria-label="فتح التقويم">
+                    <svg class="hijri-icon" viewBox="0 0 24 24">
+                      <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-2 .89-2 2v14c0 1.11.89 2 2 2h14c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zM7 12h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zm-8 4h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/>
+                    </svg>
+                  </button>
+                </div>
+              </label>
+              <label>المكان<input class="input" name="place"></label>
+              <label>المشرف<input class="input" name="supervisor"></label>
+            </div>
+            <label>أهداف النشاط<textarea class="input" name="goals"></textarea></label>
+            <label>وصف النشاط<textarea class="input" name="description"></textarea></label>
+            <label>النتائج والتقييم<textarea class="input" name="results"></textarea></label>
+          `;
+          break;
+          
+        case 'extracurricular':
+          title = 'الأنشطة اللاصفية';
+          fieldsHTML = `
+            <div class="grid-2">
+              <label>اسم النشاط *<input class="input" name="activityName" required></label>
+              <label>نوع النشاط *<select class="input" name="activityType" required>
+                <option value="">اختر نوع النشاط</option>
+                <option>ثقافي</option>
+                <option>رياضي</option>
+                <option>فني</option>
+                <option>اجتماعي</option>
+                <option>تطوعي</option>
+              </select></label>
+              <label>الفئة المستهدفة<input class="input" name="targetGroup"></label>
+              <label class="date-with-hijri">التاريخ *
+                <div class="date-input-container">
+                  <input class="input hijri-date-input" name="date" required placeholder="اختر التاريخ" readonly>
+                  <button type="button" class="hijri-toggle" aria-label="فتح التقويم">
+                    <svg class="hijri-icon" viewBox="0 0 24 24">
+                      <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-2 .89-2 2v14c0 1.11.89 2 2 2h14c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zM7 12h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zm-8 4h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/>
+                    </svg>
+                  </button>
+                </div>
+              </label>
+              <label>المكان<input class="input" name="place"></label>
+              <label>المشرف<input class="input" name="supervisor"></label>
+            </div>
+            <label>أهداف النشاط<textarea class="input" name="goals"></textarea></label>
+            <label>وصف النشاط<textarea class="input" name="description"></textarea></label>
+            <label>النتائج والتقييم<textarea class="input" name="results"></textarea></label>
+          `;
+          break;
+          
+        // يمكن إضافة المزيد من الحالات للتقارير الأخرى هنا
+        // ...
+        
+        default:
+          title = 'تقرير عام';
+          fieldsHTML = `
+            <div class="grid-2">
+              <label>اسم البرنامج *<input class="input" name="title" required></label>
+              <label>المنفذ *<input class="input" name="owner" required></label>
+              <label>عدد المستفيدين<input class="input" name="count" type="number" min="1"></label>
+              <label class="date-with-hijri">التاريخ *
+                <div class="date-input-container">
+                  <input class="input hijri-date-input" name="date" required placeholder="اختر التاريخ" readonly>
+                  <button type="button" class="hijri-toggle" aria-label="فتح التقويم">
+                    <svg class="hijri-icon" viewBox="0 0 24 24">
+                      <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-2 .89-2 2v14c0 1.11.89 2 2 2h14c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zM7 12h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zm-8 4h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/>
+                    </svg>
+                  </button>
+                </div>
+              </label>
+              <label>المكان<input class="input" name="place"></label>
+            </div>
+            <label>الأهداف<textarea class="input" name="goals"></textarea></label>
+            <label>وصف التقرير<textarea class="input" name="desc"></textarea></label>
+          `;
+      }
+      
+      reportTitle.textContent = title;
+      reportFields.innerHTML = fieldsHTML;
+      
+      // إعادة تهيئة التقويم الهجري للحقول الجديدة
+      initializeHijriCalendar();
+    }
 
     // ==================== رفع شواهد التقرير ====================
     function openPicker(){ document.getElementById('witnessFiles').click(); }
@@ -650,13 +793,105 @@
       e.preventDefault();
       const form = document.getElementById('reportForm');
       const data = Object.fromEntries(new FormData(form));
-      if(!data.title || !data.owner || !data.date){ alert('أكمل الحقول الأساسية (*)'); return; }
+      const reportTitle = document.getElementById('reportTitle').textContent;
+      
+      // التحقق من الحقول المطلوبة حسب نوع التقرير
+      let requiredFields = [];
+      switch(currentReportType) {
+        case 'general':
+          requiredFields = ['reportType', 'period', 'owner', 'date', 'summary'];
+          break;
+        case 'student':
+          requiredFields = ['activityName', 'targetGroup', 'date'];
+          break;
+        case 'extracurricular':
+          requiredFields = ['activityName', 'activityType', 'date'];
+          break;
+        default:
+          requiredFields = ['title', 'owner', 'date'];
+      }
+      
+      for (const field of requiredFields) {
+        if (!data[field]) {
+          alert('أكمل الحقول الأساسية (*)');
+          return;
+        }
+      }
 
       const DOMW = 780;
       const print = document.createElement('div');
       print.style.cssText = "position:fixed;top:0;left:0;width:"+DOMW+"px;background:#fff;padding:16px;z-index:10000;font-family:'Tajawal',sans-serif;direction:rtl;font-size:18px;line-height:1.9;";
+      
+      let content = '';
       let firstGrid = '', secondGrid = '';
 
+      // بناء محتوى التقرير حسب النوع
+      switch(currentReportType) {
+        case 'general':
+          content = `
+            <div class="avoid-split" style="text-align:center;margin-bottom:12px;">
+              <div class="avoid-split" style="width:100%;height:96px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+                <img class="avoid-split" src="https://raw.githubusercontent.com/omymh/school26/main/26.png" style="max-width:100%;max-height:100%;object-fit:contain;"/>
+              </div>
+              <h1 class="avoid-split" style="color:#047857;font-size:34px;margin:0;font-weight:900;border-bottom:3px solid #10b981;padding-bottom:8px;">${reportTitle}</h1>
+            </div>
+            <table class="avoid-split" style="width:100%;border-collapse:collapse;margin-bottom:12px;font-size:18px;">
+              <tr class="avoid-split"><td style="padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;width:28%;">نوع التقرير</td><td style="padding:10px;border:1px solid #e2e8f0;">${data.reportType}</td></tr>
+              <tr class="avoid-split"><td style="padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;">الفترة</td><td style="padding:10px;border:1px solid #e2e8f0;">${data.period}</td></tr>
+              <tr class="avoid-split"><td style="padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;">المنفذ</td><td style="padding:10px;border:1px solid #e2e8f0;">${data.owner}</td></tr>
+              <tr class="avoid-split"><td style="padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;">التاريخ</td><td style="padding:10px;border:1px solid #e2e8f0;">${data.date}</td></tr>
+            </table>
+            ${data.summary ? '<div class="avoid-split" style="margin-bottom:10px;"><h4 class="avoid-split" style="color:#047857;font-size:18px;margin-bottom:6px;border-right:4px solid #10b981;padding-right:8px;">ملخص التقرير</h4><div class="avoid-split" style="padding:10px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">'+data.summary+'</div></div>' : ''}
+            ${data.recommendations ? '<div class="avoid-split" style="margin-bottom:10px;"><h4 class="avoid-split" style="color:#047857;font-size:18px;margin-bottom:6px;border-right:4px solid #10b981;padding-right:8px;">التوصيات</h4><div class="avoid-split" style="padding:10px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">'+data.recommendations+'</div></div>' : ''}
+          `;
+          break;
+          
+        case 'student':
+          content = `
+            <div class="avoid-split" style="text-align:center;margin-bottom:12px;">
+              <div class="avoid-split" style="width:100%;height:96px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+                <img class="avoid-split" src="https://raw.githubusercontent.com/omymh/school26/main/26.png" style="max-width:100%;max-height:100%;object-fit:contain;"/>
+              </div>
+              <h1 class="avoid-split" style="color:#047857;font-size:34px;margin:0;font-weight:900;border-bottom:3px solid #10b981;padding-bottom:8px;">${reportTitle}</h1>
+            </div>
+            <table class="avoid-split" style="width:100%;border-collapse:collapse;margin-bottom:12px;font-size:18px;">
+              <tr class="avoid-split"><td style="padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;width:28%;">اسم النشاط</td><td style="padding:10px;border:1px solid #e2e8f0;">${data.activityName}</td></tr>
+              <tr class="avoid-split"><td style="padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;">الفئة المستهدفة</td><td style="padding:10px;border:1px solid #e2e8f0;">${data.targetGroup}</td></tr>
+              <tr class="avoid-split"><td style="padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;">عدد المشاركين</td><td style="padding:10px;border:1px solid #e2e8f0;">${data.participantsCount || 'غير محدد'}</td></tr>
+              <tr class="avoid-split"><td style="padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;">التاريخ</td><td style="padding:10px;border:1px solid #e2e8f0;">${data.date}</td></tr>
+              <tr class="avoid-split"><td style="padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;">المكان</td><td style="padding:10px;border:1px solid #e2e8f0;">${data.place || 'غير محدد'}</td></tr>
+              <tr class="avoid-split"><td style="padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;">المشرف</td><td style="padding:10px;border:1px solid #e2e8f0;">${data.supervisor || 'غير محدد'}</td></tr>
+            </table>
+            ${data.goals ? '<div class="avoid-split" style="margin-bottom:10px;"><h4 class="avoid-split" style="color:#047857;font-size:18px;margin-bottom:6px;border-right:4px solid #10b981;padding-right:8px;">أهداف النشاط</h4><div class="avoid-split" style="padding:10px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">'+data.goals+'</div></div>' : ''}
+            ${data.description ? '<div class="avoid-split" style="margin-bottom:10px;"><h4 class="avoid-split" style="color:#047857;font-size:18px;margin-bottom:6px;border-right:4px solid #10b981;padding-right:8px;">وصف النشاط</h4><div class="avoid-split" style="padding:10px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">'+data.description+'</div></div>' : ''}
+            ${data.results ? '<div class="avoid-split" style="margin-bottom:10px;"><h4 class="avoid-split" style="color:#047857;font-size:18px;margin-bottom:6px;border-right:4px solid #10b981;padding-right:8px;">النتائج والتقييم</h4><div class="avoid-split" style="padding:10px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">'+data.results+'</div></div>' : ''}
+          `;
+          break;
+          
+        // يمكن إضافة المزيد من الحالات للتقارير الأخرى هنا
+        // ...
+        
+        default:
+          content = `
+            <div class="avoid-split" style="text-align:center;margin-bottom:12px;">
+              <div class="avoid-split" style="width:100%;height:96px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+                <img class="avoid-split" src="https://raw.githubusercontent.com/omymh/school26/main/26.png" style="max-width:100%;max-height:100%;object-fit:contain;"/>
+              </div>
+              <h1 class="avoid-split" style="color:#047857;font-size:34px;margin:0;font-weight:900;border-bottom:3px solid #10b981;padding-bottom:8px;">${reportTitle}</h1>
+            </div>
+            <table class="avoid-split" style="width:100%;border-collapse:collapse;margin-bottom:12px;font-size:18px;">
+              <tr class="avoid-split"><td style="padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;width:28%;">اسم البرنامج</td><td style="padding:10px;border:1px solid #e2e8f0;">${data.title}</td></tr>
+              <tr class="avoid-split"><td style="padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;">المنفذ</td><td style="padding:10px;border:1px solid #e2e8f0;">${data.owner}</td></tr>
+              <tr class="avoid-split"><td style="padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;">عدد المستفيدين</td><td style="padding:10px;border:1px solid #e2e8f0;">${data.count || 'غير محدد'}</td></tr>
+              <tr class="avoid-split"><td style="padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;">التاريخ</td><td style="padding:10px;border:1px solid #e2e8f0;">${data.date}</td></tr>
+              <tr class="avoid-split"><td style="padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;">المكان</td><td style="padding:10px;border:1px solid #e2e8f0;">${data.place || 'غير محدد'}</td></tr>
+            </table>
+            ${data.goals ? '<div class="avoid-split" style="margin-bottom:10px;"><h4 class="avoid-split" style="color:#047857;font-size:18px;margin-bottom:6px;border-right:4px solid #10b981;padding-right:8px;">الأهداف</h4><div class="avoid-split" style="padding:10px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">'+data.goals+'</div></div>' : ''}
+            ${data.desc ? '<div class="avoid-split" style="margin-bottom:10px;"><h4 class="avoid-split" style="color:#047857;font-size:18px;margin-bottom:6px;border-right:4px solid #10b981;padding-right:8px;">وصف التقرير</h4><div class="avoid-split" style="padding:10px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">'+data.desc+'</div></div>' : ''}
+          `;
+      }
+
+      // إضافة الشواهد
       if(witness.length){
         const firstTwo = witness.slice(0,2);
         const rest = witness.slice(2);
@@ -687,23 +922,7 @@
         }
       }
 
-      print.innerHTML =
-        '<div class=\"avoid-split\" style=\"text-align:center;margin-bottom:12px;\">' +
-          '<div class=\"avoid-split\" style=\"width:100%;height:96px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;\">' +
-            '<img class=\"avoid-split\" src=\"https://raw.githubusercontent.com/omymh/school26/main/26.png\" style=\"max-width:100%;max-height:100%;object-fit:contain;\"/>' +
-          '</div>' +
-          '<h1 class=\"avoid-split\" style=\"color:#047857;font-size:34px;margin:0;font-weight:900;border-bottom:3px solid #10b981;padding-bottom:8px;\">التقرير</h1>' +
-        '</div>' +
-        '<table class=\"avoid-split\" style=\"width:100%;border-collapse:collapse;margin-bottom:12px;font-size:18px;\">' +
-          '<tr class=\"avoid-split\"><td style=\"padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;width:28%;\">اسم البرنامج</td><td style=\"padding:10px;border:1px solid #e2e8f0;\">'+data.title+'</td></tr>' +
-          '<tr class=\"avoid-split\"><td style=\"padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;\">المنفذ</td><td style=\"padding:10px;border:1px solid #e2e8f0;\">'+data.owner+'</td></tr>' +
-          '<tr class=\"avoid-split\"><td style=\"padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;\">عدد المستفيدين</td><td style=\"padding:10px;border:1px solid #e2e8f0;\">'+(data.count||'غير محدد')+'</td></tr>' +
-          '<tr class=\"avoid-split\"><td style=\"padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;\">التاريخ</td><td style=\"padding:10px;border:1px solid #e2e8f0;\">'+data.date+'</td></tr>' +
-          '<tr class=\"avoid-split\"><td style=\"padding:10px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:800;\">المكان</td><td style=\"padding:10px;border:1px solid #e2e8f0;\">'+(data.place||'غير محدد')+'</td></tr>' +
-        '</table>' +
-        (data.goals ? '<div class=\"avoid-split\" style=\"margin-bottom:10px;\"><h4 class=\"avoid-split\" style=\"color:#047857;font-size:18px;margin-bottom:6px;border-right:4px solid #10b981;padding-right:8px;\">الأهداف</h4><div class=\"avoid-split\" style=\"padding:10px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;\">'+data.goals+'</div></div>' : '') +
-        (data.desc ? '<div class=\"avoid-split\" style=\"margin-bottom:10px;\"><h4 class=\"avoid-split\" style=\"color:#047857;font-size:18px;margin-bottom:6px;border-right:4px solid #10b981;padding-right:8px;\">وصف التقرير</h4><div class=\"avoid-split\" style=\"padding:10px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;\">'+data.desc+'</div></div>' : '') +
-        firstGrid + secondGrid;
+      print.innerHTML = content + firstGrid + secondGrid;
 
       document.body.appendChild(print);
       await waitForImages(print);
@@ -711,7 +930,7 @@
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
       addCanvasToPdfSmart(pdf, canvas, print, DOMW);
-      pdf.save('التقرير.pdf');
+      pdf.save(reportTitle + '.pdf');
       document.body.removeChild(print);
     });
 
@@ -802,6 +1021,9 @@
       pdf.save('تقرير_حصص_الانتظار.pdf');
       document.body.removeChild(print);
     });
+    
+    // تهيئة التطبيق
+    loadReportForm('general');
   </script>
 </body>
 </html>
