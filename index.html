@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>المدرسة السادسة والعشرون - نظام التقارير</title>
+  <title>نظام التقارير الإلكترونية</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
     :root{
@@ -79,11 +79,18 @@
       color: var(--gray);
       font-size: 1rem;
     }
+    
+    .quran-verse {
+      margin-top: 10px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--dark);
+    }
 
-    /* شريط البطاقات */
+    /* التنقل بين التقارير */
     nav {
       background:linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-      padding: 15px 0 25px;
+      padding: 15px 0;
       box-shadow: 0 4px 12px rgba(16,185,129,.2);
     }
     
@@ -192,7 +199,6 @@
       border-radius: 12px;
       box-shadow: var(--shadow);
       border: none;
-      background: #fff;
     }
     
     /* الفوتر */
@@ -252,11 +258,13 @@
 
 <header class="header-logo">
   <div class="wrap">
-    <img src="26.png" alt="شعار المدرسة السادسة والعشرون">
+    <!-- حذف اسم المدرسة من الـ alt -->
+    <img src="https://raw.githubusercontent.com/omymh/school26/main/26.png" alt="شعار النظام">
     <div class="header-text">
       <h1>نظام التقارير الإلكترونية</h1>
-      <p>أهلا بمعلمات المدرسة السادسة والعشرون في منصة إدارة التقارير المدرسية</p>
+      <p>منصة متكاملة لإدارة التقارير المدرسية</p>
     </div>
+    <div class="quran-verse">﴿ وَقُلْ رَبِّ زِدْنِي عِلْمًا ﴾</div>
   </div>
 </header>
 
@@ -264,8 +272,8 @@
   <div class="nav-container">
     <div class="nav-title">تقارير المدرسة الشاملة</div>
     <div class="cards-container">
-      <!-- 1 التقارير (يومي/أسبوعي/شهري) -->
-      <div class="card reports" onclick="loadInIframe('R1397.html','التقارير اليومية والأسبوعية والشهرية')">
+      <!-- التقارير الأساسية -->
+      <div class="card reports" onclick="loadInIframe('https://defullah2010-svg.github.io/R1397/', 'التقارير')">
         <div class="icon">🗓️</div>
         <div class="title">التقارير</div>
         <div class="subtitle">
@@ -275,140 +283,117 @@
         </div>
       </div>
 
-      <!-- 2 النشاط الطلابي -->
-      <div class="card activities" onclick="loadInIframe('A1397.html','النشاط الطلابي')">
+      <div class="card activities" onclick="loadInIframe('https://defullah2010-svg.github.io/A1397/', 'النشاط الطلابي')">
         <div class="icon">🌟</div>
         <div class="title">النشاط الطلابي</div>
       </div>
 
-      <!-- 3 الأنشطة اللاصفية -->
-      <div class="card activities" onclick="loadInIframe('AC1397.html','الأنشطة اللاصفية')">
+      <div class="card activities" onclick="loadInIframe('https://defullah2010-svg.github.io/AC1397/', 'الأنشطة اللاصفية')">
         <div class="icon">🧩</div>
         <div class="title">الأنشطة اللاصفية</div>
       </div>
 
-      <!-- 4 متابعة الأنشطة -->
-      <div class="card" onclick="loadInIframe('Trace1397.html','متابعة الأنشطة')">
+      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/Trace1397/', 'متابعة الأنشطة')">
         <div class="icon">📋</div>
         <div class="title">متابعة الأنشطة</div>
       </div>
 
-      <!-- 5 التواصل مع أولياء الأمور -->
-      <div class="card" onclick="loadInIframe('ParentContactForm.html','التواصل مع أولياء الأمور')">
+      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/L1397/', 'التواصل مع أولياء الأمور')">
         <div class="icon">📞</div>
         <div class="title">التواصل مع أولياء الأمور</div>
       </div>
 
-      <!-- 6 التوجيه الطلابي -->
-      <div class="card" onclick="loadInIframe('T1397.html','التوجيه الطلابي')">
+      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/T1397/', 'التوجيه الطلابي')">
         <div class="icon">🎓</div>
         <div class="title">التوجيه الطلابي</div>
       </div>
 
-      <!-- 7 تبادل الزيارات -->
-      <div class="card" onclick="loadInIframe('V1397.html','تبادل الزيارات')">
+      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/V1397/', 'تبادل الزيارات')">
         <div class="icon">📝</div>
         <div class="title">تبادل الزيارات</div>
       </div>
 
-      <!-- 8 خريطة نواتج التعلم -->
-      <div class="card" onclick="loadInIframe('P1397.html','خريطة نواتج التعلّم')">
+      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/P1397/', 'خريطة نواتج التعلّم')">
         <div class="icon">🗺️</div>
         <div class="title">خريطة نواتج التعلّم</div>
       </div>
 
-      <!-- 9 حصة الانتظار -->
-      <div class="card" onclick="loadInIframe('W1397.html','حصة الانتظار')">
+      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/W1397/', 'حصة الانتظار')">
         <div class="icon">🕒</div>
         <div class="title">حصة الانتظار</div>
       </div>
 
-      <!-- 10 مجتمعات التعلّم المهنية -->
-      <div class="card featured" onclick="loadInIframe('PLC1397.html','مجتمعات التعلّم المهنية')">
+      <div class="card featured" onclick="loadInIframe('https://defullah2010-svg.github.io/PLC1397/', 'مجتمعات التعلّم المهنية')">
         <div class="icon">📑</div>
         <div class="title">مجتمعات التعلّم المهنية</div>
       </div>
 
-      <!-- 11 التوجيه الصحي -->
-      <div class="card" onclick="loadInIframe('D1397.html','التوجيه الصحي')">
+      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/D1397/', 'التوجيه الصحّي')">
         <div class="icon">⚕️</div>
         <div class="title">التوجيه الصحّي</div>
       </div>
 
-      <!-- 12 التعلّم النشط -->
-      <div class="card" onclick="loadInIframe('H-ActiveLearningStrategy.html','التعلّم النشط')">
+      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/S1397/', 'التعلّم النشط')">
         <div class="icon">♟</div>
         <div class="title">التعلّم النشط</div>
       </div>
 
-      <!-- 13 الدرس التطبيقي -->
-      <div class="card" onclick="loadInIframe('H-LessonLessonApplied.html','الدرس التطبيقي')">
+      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/LessonA1397/', 'الدرس التطبيقي')">
         <div class="icon">📚</div>
         <div class="title">الدرس التطبيقي</div>
       </div>
 
-      <!-- 14 ورش العمل -->
-      <div class="card" onclick="loadInIframe('H-WorkshopReport.html','ورش العمل')">
+      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/Warshah1397/', 'ورش العمل')">
         <div class="icon">🛠️</div>
         <div class="title">ورش العمل</div>
       </div>
 
-      <!-- 15 المبادرات النوعية -->
-      <div class="card" onclick="loadInIframe('H-InitiativeReport.html','المبادرات النوعية')">
+      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/M1397/', 'المبادرات النوعية')">
         <div class="icon">💎</div>
         <div class="title">المبادرات النوعية</div>
       </div>
 
-      <!-- 16 البرامج التقنية -->
-      <div class="card featured" onclick="loadInIframe('H-TechProgramReport.html','البرامج التقنية')">
+      <div class="card featured" onclick="loadInIframe('https://defullah2010-svg.github.io/Tecno1397/', 'البرامج التقنية')">
         <div class="icon">🖥️</div>
         <div class="title">البرامج التقنية</div>
       </div>
 
-      <!-- 17 التعليم الإلكتروني -->
-      <div class="card featured" onclick="loadInIframe('Electronic1397.html','التعليم الإلكتروني')">
+      <div class="card featured" onclick="loadInIframe('https://defullah2010-svg.github.io/Electronic1397/', 'التعليم الإلكتروني')">
         <div class="icon">💻</div>
         <div class="title">التعليم الإلكتروني</div>
       </div>
 
-      <!-- 18 الخطط الإثرائية والعلاجية -->
-      <div class="card" onclick="loadInIframe('Doctor1397.html','الخطط الإثرائية والعلاجية')">
+      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/Doctor1397/', 'الخطط الإثرائية والعلاجية')">
         <div class="icon">💡</div>
         <div class="title">الخطط الإثرائية والعلاجية</div>
       </div>
 
-      <!-- 19 البحث الإجرائي -->
-      <div class="card" onclick="loadInIframe('Search1397.html','البحث الإجرائي')">
+      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/Search1397/', 'البحث الإجرائي')">
         <div class="icon">🔍</div>
         <div class="title">البحث الإجرائي</div>
       </div>
 
-      <!-- 20 بحث الدرس -->
-      <div class="card" onclick="loadInIframe('Taqrir-Bahth-Addars.html','بحث الدرس')">
+      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/Searsh1397/', 'بحث الدّرس')">
         <div class="icon">📖</div>
-        <div class="title">بحث الدرس</div>
+        <div class="title">بحث الدّرس</div>
       </div>
 
-      <!-- 21 الدرس المصغر -->
-      <div class="card" onclick="loadInIframe('Taqrir-AIDars-AlMusagqar.html','الدرس المصغّر')">
+      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/Small1397/', 'الدرس المصغّر')">
         <div class="icon">🔬</div>
         <div class="title">الدرس المصغّر</div>
       </div>
 
-      <!-- 22 الشراكة المجتمعية -->
-      <div class="card" onclick="loadInIframe('Taqrir-AlSharakah-AlMujtamaeyyah.html','الشراكة المجتمعية')">
+      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/Group1397/', 'الشراكة المجتمعية')">
         <div class="icon">🤝</div>
         <div class="title">الشراكة المجتمعية</div>
       </div>
 
-      <!-- 23 الزيارات التقييمية -->
-      <div class="card" onclick="loadInIframe('Istemarat-Ziyara-Taqyim-Safiyah.html','الزيارات التقييمية')">
+      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/VM1397/', 'الزيارات التقييمية')">
         <div class="icon">🏅</div>
         <div class="title">الزيارات التقييمية</div>
       </div>
 
-      <!-- 24 تقييم الأداء التعليمي -->
-      <div class="card" onclick="loadInIframe('TM1397.html','تقييم الأداء التعليمي')">
+      <div class="card" onclick="loadInIframe('https://defullah2010-svg.github.io/TM1397/', 'تقييم الأداء التعليمي')">
         <div class="icon">💯</div>
         <div class="title">تقييم الأداء التعليمي</div>
       </div>
@@ -428,28 +413,110 @@
 <button id="back-btn">← العودة للرئيسية</button>
 
 <script>
+  // عبارات المدرسة والإدارة التي نريد حذفها من كل التقارير
+  const SCHOOL_PHRASES = [
+    'المدرسة السادسة والعشرون',
+    'مدرسة السادسة والعشرون',
+    'مدرسة 26',
+    'الابتدائية السادسة والعشرون'
+  ];
+
+  const ED_PHRASES = [
+    'الإدارة العامة للتعليم بمنطقة تبوك',
+    'إدارة التعليم بمنطقة تبوك',
+    'إدارة تعليم تبوك',
+    'تعليم تبوك'
+  ];
+
+  function cleanReportDoc(doc){
+    if (!doc) return;
+
+    // 1) تعديل عنوان التقرير نفسه
+    let newTitle = doc.title || '';
+    [...SCHOOL_PHRASES, ...ED_PHRASES].forEach(p => {
+      if (p && newTitle.includes(p)) {
+        newTitle = newTitle.split(p).join('');
+      }
+    });
+    doc.title = newTitle.trim();
+
+    // 2) إزالة النصوص من كل العقد النصية داخل body
+    if (doc.body) {
+      const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT, null, false);
+      let node;
+      while ((node = walker.nextNode())) {
+        let txt = node.nodeValue;
+        let changed = false;
+        [...SCHOOL_PHRASES, ...ED_PHRASES].forEach(p => {
+          if (p && txt.includes(p)) {
+            txt = txt.split(p).join('');
+            changed = true;
+          }
+        });
+        if (changed) {
+          node.nodeValue = txt;
+        }
+      }
+    }
+
+    // 3) تفريغ alt/title من العناصر التي تحتوي الاسم
+    const allEls = doc.querySelectorAll('[alt],[title]');
+    allEls.forEach(el => {
+      [...SCHOOL_PHRASES, ...ED_PHRASES].forEach(p => {
+        if (!p) return;
+        if (el.alt && el.alt.includes(p)) el.alt = '';
+        if (el.title && el.title.includes(p)) el.title = '';
+      });
+    });
+  }
+
   function loadInIframe(url, title){
     const iframeContainer = document.getElementById('iframe-container');
     const iframe = document.getElementById('content-frame');
     const backBtn = document.getElementById('back-btn');
+    const nav = document.querySelector('nav');
     
     iframe.src = url;
     iframeContainer.style.display = 'block';
     iframeContainer.scrollIntoView({behavior: 'smooth'});
-    document.title = (title || 'تقرير') + ' - نظام التقارير';
+    document.title = (title || 'تقرير') + ' - نظام التقارير الإلكترونية';
     
-    // إخفاء البطاقات
-    document.querySelector('nav').style.display = 'none';
+    // إخفاء البطاقات عند عرض الإطار
+    if (nav) nav.style.display = 'none';
     
-    // زر العودة
+    // إظهار زر العودة
     backBtn.style.display = 'block';
+    
+    // عند اكتمال تحميل التقرير داخل iframe نحاول تنظيفه
+    iframe.onload = function() {
+      console.log('تم تحميل التقرير:', url);
+      try {
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        cleanReportDoc(iframeDoc);
+
+        // (اختياري) مثال على فحص الجداول لو حابة تبقيه
+        const tables = iframeDoc.querySelectorAll('table');
+        tables.forEach((table, index) => {
+          const rows = table.querySelectorAll('tr');
+          if (rows.length <= 1) {
+            console.warn(`الجدول ${index + 1} قد يكون فارغًا أو به مشكلة`);
+          } else {
+            console.log(`الجدول ${index + 1} يحتوي على ${rows.length} صفوف`);
+          }
+        });
+
+      } catch (e) {
+        console.log('لا يمكن الوصول إلى محتوى الإطار بسبب سياسة CORS أو اختلاف الدومين');
+      }
+    };
+
+    // زر العودة
     backBtn.onclick = function() {
       iframeContainer.style.display = 'none';
-      document.querySelector('nav').style.display = 'block';
-      document.title = 'المدرسة السادسة والعشرون - نظام التقارير';
+      if (nav) nav.style.display = 'block';
+      document.title = 'نظام التقارير الإلكترونية';
       backBtn.style.display = 'none';
       iframe.src = 'about:blank';
-      window.scrollTo({top:0, behavior:'smooth'});
     };
   }
 
