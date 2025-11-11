@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>تقرير التوجيه الصحي</title>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -19,31 +20,32 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'HelveticaNeueW23', Arial, sans-serif;
-  background: #fff;
+  background: #ffffff;
 }
 
-/* الحاوية العامة اللي نطبعها */
-#printArea {
+/* ✅ هذا هو الإطار اللي نطبعه (فيه الديباجة + التقرير كله) */
+#page {
   padding: 10px;
 }
 
-/* الهيدر مع الديباجة */
+/* الديباجة + عنوان التقرير */
 header {
-  background: #87092D;
-  color: white;
   text-align: center;
-  padding: 10px;
+  padding: 10px 0 5px;
+  background: #ffffff;
+  border-bottom: 3px solid #87092D;
 }
 header img {
   max-width: 100%;
   height: auto;
   display: block;
-  margin: 0 auto 8px;
+  margin: 0 auto 5px;
 }
 header h3 {
   margin: 3px 0;
   font-size: 18px;
   font-weight: bold;
+  color: #87092D;
 }
 
 /* الحقول */
@@ -68,12 +70,11 @@ textarea {
   background: transparent;
   font-family: 'HelveticaNeueW23', Arial, sans-serif;
 }
-
 textarea {
   min-height: 40px;
 }
 
-/* الأزرار */
+/* الأزرار (خارج المساحة المطبوعة) */
 button {
   border: none;
   padding: 8px 10px;
@@ -96,18 +97,22 @@ button.deleteBtn {
 }
 
 /* معاينة الصور */
-#waiting-preview img {
+#health-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 5px;
+}
+.preview-item {
+  position: relative;
+  display: inline-block;
+}
+.preview-item img {
   width: 70px;
   height: 70px;
   object-fit: cover;
   border: 1px solid #ccc;
   border-radius: 4px;
-}
-
-/* زر X فوق الصورة */
-.preview-item {
-  position: relative;
-  display: inline-block;
 }
 .preview-item button {
   position: absolute;
@@ -124,106 +129,133 @@ button.deleteBtn {
   cursor: pointer;
   padding: 0;
 }
+
+/* ترتيب توقيعات أسفل التقرير */
+.sign-row {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  margin-top: 15px;
+}
+.sign-box {
+  text-align: center;
+}
+.sign-box input {
+  width: 200px;
+}
 </style>
 </head>
 <body>
 
 <div id="mainContent">
 
-  <!-- ✅ كل ما نريده في الـ PDF داخل printArea -->
-  <div id="printArea">
+  <!-- ✅ كل ما سيُطبع داخل هذا العنصر -->
+  <div id="page">
 
-    <!-- ✅ الديباجة 26.png -->
+    <!-- ✅ الديباجة (تطبع مع التقرير) -->
     <header>
-      <!-- لو الصورة في نفس المجلد: -->
+      <!-- مهم: 26.png يجب أن تكون في نفس مجلد H1600.html -->
       <img src="26.png" alt="شعار المدرسة السادسة والعشرون">
-      <!-- لو حطيتها في مجلد images استبدلي السطر السابق بهذا:
-      <img src="images/26.png" alt="شعار المدرسة السادسة والعشرون">
-      -->
-      <h3>تقرير تنفيذ استراتيجية تعلّم نشط</h3>
+      <h3>تقرير التوجيه الصحي</h3>
     </header>
 
-    <div id="waiting">
+    <div id="health" style="margin-top:10px;">
 
-      <!-- إدارة تعليم / المدرسة -->
-      <div style="display:flex; gap:10px; justify-content:center; margin-bottom:10px; margin-top:10px;">
-        <div style="width:200px;"><label>إدارة التعليم</label><input type="text" id="eduDept" /></div>
-        <div style="width:200px;"><label>اسم المدرسة</label><input type="text" id="schoolName" /></div>
+      <!-- إدارة التعليم / اسم المدرسة -->
+      <div style="display:flex; gap:10px; justify-content:center; margin-bottom:8px;">
+        <div style="width:200px;">
+          <label>إدارة التعليم</label>
+          <input type="text" id="eduDept" />
+        </div>
+        <div style="width:200px;">
+          <label>اسم المدرسة</label>
+          <input type="text" id="schoolName" />
+        </div>
       </div>
 
-      <!-- الاستراتيجية المستخدمة -->
-      <div style="display:flex; gap:10px; justify-content:center; margin-bottom:10px;">
-        <div style="width:400px;"><label>الاستراتيجية المستخدمة</label><input type="text" /></div>
+      <!-- بيانات البرنامج الصحي -->
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:5px;">
+        <div>
+          <label>عنوان البرنامج الصحي</label>
+          <input type="text" />
+        </div>
+        <div>
+          <label>الفئة المستهدفة</label>
+          <input type="text" />
+        </div>
+        <div>
+          <label>مكان التنفيذ</label>
+          <input type="text" />
+        </div>
       </div>
 
-      <!-- بيانات الدرس -->
-      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:5px;">
-        <div><label>المادة</label><input type="text" /></div>
-        <div><label>الوحدة الدراسية</label><input type="text" /></div>
-        <div><label>موضوع الدرس</label><input type="text" /></div>
-        <div><label>الصف</label><input type="text" /></div>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:5px;">
+        <div>
+          <label>تاريخ التنفيذ</label>
+          <input type="text" id="date1" placeholder="اختر التاريخ" readonly />
+        </div>
+        <div>
+          <label>مدة التنفيذ</label>
+          <input type="text" />
+        </div>
+        <div>
+          <label>عدد المستفيدات</label>
+          <input type="text" />
+        </div>
       </div>
 
-      <!-- توزيع الطالبات / العدد / التاريخ / مدة التنفيذ -->
-      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:5px;">
-        <div><label>توزيع الطالبات</label><input type="text" /></div>
-        <div><label>العدد</label><input type="text" /></div>
-        <div><label>تاريخ التنفيذ</label><input type="text" id="date1" placeholder="اختر التاريخ" readonly /></div>
-        <div><label>مدة التنفيذ</label><input type="text" /></div>
-      </div>
-
-      <!-- وصف الاستراتيجية -->
-      <div style="display:grid; grid-template-columns:repeat(1,1fr); gap:5px; margin-top:5px;">
-        <div><label>وصف الاستراتيجية</label><input type="text" /></div>
-      </div>
-
-      <!-- أهداف الاستراتيجية -->
-      <label style="margin-top:5px;">أهداف الاستراتيجية</label>
+      <!-- أهداف البرنامج -->
+      <label style="margin-top:5px;">أهداف البرنامج</label>
       <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:5px;">
         <input type="text" /><input type="text" />
         <input type="text" /><input type="text" />
       </div>
 
-      <!-- خطوات التنفيذ -->
-      <label style="margin-top:5px;">خطوات تنفيذ الاستراتيجية</label>
+      <!-- محاور / أنشطة -->
+      <label style="margin-top:5px;">محاور / أنشطة البرنامج</label>
       <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:5px;">
         <input type="text" /><input type="text" />
         <input type="text" /><input type="text" />
       </div>
 
-      <!-- الأدوات -->
-      <label style="margin-top:5px;">الأدوات المستخدمة في تنفيذ الاستراتيجية</label>
-      <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:5px;">
-        <input type="text" /><input type="text" />
-        <input type="text" /><input type="text" />
-      </div>
+      <!-- نتائج / ملاحظات -->
+      <label style="margin-top:5px;">نتائج وملاحظات</label>
+      <textarea></textarea>
 
       <!-- الشواهد -->
-      <label style="margin-top:5px;">الشواهد</label>
-      <input type="file" multiple accept="image/*" onchange="storeImages(event,'waiting')" />
-      <div id="waiting-counter" style="font-size:12px; color:#15445a; font-weight:bold;">عدد الصور المرفوعة: 0 / 4</div>
-      <div id="waiting-preview" style="display:flex; gap:5px; flex-wrap:wrap; margin-top:5px;"></div>
+      <label style="margin-top:5px;">الشواهد (صور من التنفيذ)</label>
+      <input type="file" multiple accept="image/*" onchange="storeImages(event,'health')" />
+      <div id="health-counter" style="font-size:12px; color:#15445a; font-weight:bold;">عدد الصور المرفوعة: 0 / 4</div>
+      <div id="health-preview"></div>
 
-      <!-- اسم المعلمة / مديرة المدرسة -->
-      <div id="top-director" style="display:flex; gap:10px; justify-content:center; margin:10px 0;">
-        <div style="width:200px;"><label>اسم المعلمة</label><input type="text" id="healthGuide" /></div>
-        <div style="width:200px;"><label>مديرة المدرسة</label><input type="text" id="schoolDirector" /></div>
+      <!-- الأسماء داخل التقرير (للطباعة في الأسفل) -->
+      <div class="sign-row" style="margin-top:10px;">
+        <div class="sign-box">
+          <label>منفذة البرنامج الصحي</label>
+          <input type="text" id="healthGuide" />
+        </div>
+        <div class="sign-box">
+          <label>مديرة المدرسة</label>
+          <input type="text" id="schoolDirector" />
+        </div>
       </div>
 
-    </div> <!-- /waiting -->
-  </div> <!-- /printArea -->
+    </div> <!-- /health -->
 
-  <!-- الأزرار (خارج printArea حتى لا تطبع) -->
-  <div style="max-width:500px; margin:0 auto 20px;">
+  </div> <!-- /page -->
+
+  <!-- ✅ الأزرار خارج المساحة المطبوعة -->
+  <div style="max-width:500px; margin:10px auto 20px;">
     <button class="printBtn" onclick="printPDF()">طباعة التقرير</button>
-    <button class="deleteBtn" onclick="clearForm('waiting')">حذف البيانات</button>
+    <button class="deleteBtn" onclick="clearForm('health')">حذف البيانات</button>
   </div>
 
 </div>
 
 <script>
-let uploadedImages = { waiting: [] };
+let uploadedImages = { health: [] };
 
+/* التقويم الهجري/الميلادي */
 document.addEventListener("DOMContentLoaded", function() {
   const input = document.getElementById('date1');
   if (input) {
@@ -249,6 +281,7 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 });
 
+/* حذف البيانات */
 function clearForm(tabId) {
   const tab = document.getElementById(tabId);
   if (!tab) return;
@@ -258,14 +291,17 @@ function clearForm(tabId) {
   renderPreview(tabId);
 }
 
+/* تخزين الصور */
 function storeImages(event, tabId) {
   const files = event.target.files;
   if (!uploadedImages[tabId]) uploadedImages[tabId] = [];
+
   if (uploadedImages[tabId].length + files.length > 4) {
     alert('مسموح برفع 4 صور فقط.');
     event.target.value = '';
     return;
   }
+
   for (let i = 0; i < files.length; i++) {
     const reader = new FileReader();
     reader.onload = function (e) {
@@ -277,6 +313,7 @@ function storeImages(event, tabId) {
   }
 }
 
+/* عداد الصور */
 function updateCounter(tabId) {
   const counter = document.getElementById(tabId + '-counter');
   if (counter) {
@@ -286,6 +323,7 @@ function updateCounter(tabId) {
   }
 }
 
+/* معاينة الصور */
 function renderPreview(tabId) {
   const preview = document.getElementById(tabId + '-preview');
   if (!preview) return;
@@ -308,19 +346,19 @@ function renderPreview(tabId) {
   });
 }
 
+/* طباعة PDF: يأخذ كامل #page (فيه الديباجة + كل شيء) */
 function printPDF() {
-  // ننسخ المنطقة كاملة: الديباجة + التقرير
-  const area = document.getElementById('printArea').cloneNode(true);
+  const page = document.getElementById('page').cloneNode(true);
 
-  // نحط الصور في أسفل التقرير داخل النسخة
-  const tabId = 'waiting';
+  /* نضيف الصور المرفوعة في أسفل الصفحة داخل النسخة */
+  const tabId = 'health';
   const tabImages = uploadedImages[tabId] || [];
   if (tabImages.length > 0) {
     const imagesWrapper = document.createElement('div');
     imagesWrapper.style.display = 'flex';
     imagesWrapper.style.flexWrap = 'wrap';
     imagesWrapper.style.justifyContent = 'center';
-    imagesWrapper.style.marginTop = '15px';
+    imagesWrapper.style.marginTop = '10px';
     imagesWrapper.style.gap = '10px';
 
     tabImages.forEach(src => {
@@ -334,25 +372,27 @@ function printPDF() {
       imagesWrapper.appendChild(img);
     });
 
-    area.appendChild(imagesWrapper);
+    page.appendChild(imagesWrapper);
   }
 
-  // نضيف الحاوية إلى wrapper مع خلفية التقرير
+  /* تجهيز wrapper للطباعة (لو حابة تضيفي خلفية موحدة لكل التقارير) */
   const wrapper = document.createElement('div');
   wrapper.style.position = 'relative';
   wrapper.style.width = '210mm';
   wrapper.style.minHeight = '296.5mm';
   wrapper.style.padding = '25mm 10mm 15mm 10mm';
   wrapper.style.boxSizing = 'border-box';
-  wrapper.style.backgroundImage = 'url("images/background.png")'; /* لو ما عندك خلفية احذفي هذا السطر */
+  /* لو عندك خلفية عامة للتقارير:
+     wrapper.style.backgroundImage = 'url("images/background.png")';
+     غيري المسار حسب ملفك */
   wrapper.style.backgroundSize = 'cover';
   wrapper.style.backgroundRepeat = 'no-repeat';
   wrapper.style.backgroundPosition = 'center';
-  wrapper.appendChild(area);
+  wrapper.appendChild(page);
 
   html2pdf().set({
     margin: 0,
-    filename: 'تقريب-استراتيجية-تعلم-نشط.pdf',
+    filename: 'تقرير-التوجيه-الصحي.pdf',
     image: { type: 'jpeg', quality: 0.95 },
     html2canvas: { scale: 3, useCORS: true, backgroundColor: null, scrollY: 0 },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
