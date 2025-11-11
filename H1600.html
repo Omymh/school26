@@ -1,3 +1,5 @@
+[file name]: H1600.html
+[file content begin]
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -94,6 +96,16 @@ footer {
   color: black;
   font-weight: bold;
   font-size: 12px;
+}
+
+/* إضافة شعار المدرسة للطباعة */
+.print-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+.print-header img {
+  max-width: 160px;
+  height: auto;
 }
 
 @media print {
@@ -338,6 +350,15 @@ function printPDF(tabId, btn) {
   wrapper.style.backgroundSize = 'cover';
   wrapper.style.backgroundRepeat = 'no-repeat';
   wrapper.style.backgroundPosition = 'center';
+  
+  // إضافة شعار المدرسة في الرأس
+  const header = document.createElement('div');
+  header.className = 'print-header';
+  header.innerHTML = `
+    <img src="26.png" alt="شعار المدرسة السادسة والعشرون">
+  `;
+  
+  wrapper.appendChild(header);
   wrapper.appendChild(content);
 
   const tabImages = uploadedImages[tabId] || [];
@@ -406,3 +427,4 @@ function printPDF(tabId, btn) {
 </script>
 </body>
 </html>
+[file content end]
